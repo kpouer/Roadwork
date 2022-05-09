@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.7</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.kpouer</groupId>
+    <artifactId>Roadwork</artifactId>
+    <version>0.0.4-SNAPSHOT</version>
+    <name>Roadwork</name>
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout-swing</artifactId>
+            <version>11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kpouer</groupId>
+            <artifactId>k-mapview</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kpouer</groupId>
+            <artifactId>roadwork-lib</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>--add-modules java.annotation</jvmArguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.github.fvarrui</groupId>
+                <artifactId>javapackager</artifactId>
+                <version>1.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.kpouer.roadwork.RoadworkApplication</mainClass>
+                            <bundleJre>false</bundleJre>
+                            <generateInstaller>true</generateInstaller>
+                            <administratorRequired>false</administratorRequired>
+                            <platform>mac</platform>
+                            <!--                            <additionalResources>-->
+                            <!--                                <additionalResource>file path</additionalResource>-->
+                            <!--                                <additionalResource>folder path</additionalResource>-->
+                            <!--                                <additionalResource>...</additionalResource>-->
+                            <!--                            </additionalResources>-->
+                            <!--                            <linuxConfig>...</linuxConfig>-->
+                            <!--                            <macConfig>...</macConfig>-->
+                            <!--                            <winConfig>...</winConfig>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>sh.tak.appbundler</groupId>-->
+            <!--                <artifactId>appbundle-maven-plugin</artifactId>-->
+            <!--                <version>1.2.0</version>-->
+            <!--                <configuration>-->
+            <!--                    <mainClass>com.kpouer.roadwork.RoadworkApplication</mainClass>-->
+            <!--                    <generateDiskImageFile>true</generateDiskImageFile>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>package</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>bundle</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>com.akathist.maven.plugins.launch4j</groupId>-->
+<!--                <artifactId>launch4j-maven-plugin</artifactId>-->
+<!--                <version>1.7.25</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>l4j-clui</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>launch4j</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <headerType>gui</headerType>-->
+<!--                            <jar>${project.build.directory}/${project.artifactId}-${version}-shaded.jar</jar>-->
+<!--                            <outfile>${project.build.directory}/howtodoinjava.exe</outfile>-->
+<!--                            <downloadUrl>http://java.com/download</downloadUrl>-->
+<!--                            <classPath>-->
+<!--                                <mainClass>com.howtodoinjava.ApplicationMain</mainClass>-->
+<!--                                <preCp>anything</preCp>-->
+<!--                            </classPath>-->
+<!--                            <icon>application.ico</icon>-->
+<!--                            <jre>-->
+<!--                                <minVersion>17</minVersion>-->
+<!--                                <jdkPreference>preferJre</jdkPreference>-->
+<!--                            </jre>-->
+<!--                            <versionInfo>-->
+<!--                                <fileVersion>1.0.0.0</fileVersion>-->
+<!--                                <txtFileVersion>${project.version}</txtFileVersion>-->
+<!--                                <fileDescription>${project.name}</fileDescription>-->
+<!--                                <copyright>2012 howtodoinjava.com</copyright>-->
+<!--                                <productVersion>1.0.0.0</productVersion>-->
+<!--                                <txtProductVersion>1.0.0.0</txtProductVersion>-->
+<!--                                <productName>${project.name}</productName>-->
+<!--                                <companyName>howtodoinjava.com</companyName>-->
+<!--                                <internalName>howtodoinjava</internalName>-->
+<!--                                <originalFilename>howtodoinjava.exe</originalFilename>-->
+<!--                            </versionInfo>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+        </plugins>
+    </build>
+
+</project>

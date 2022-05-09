@@ -1,0 +1,24 @@
+[
+  {
+    "name": "File",
+    "children": [
+      {
+        "name": "Synchronization settings",
+        "action": "synchronizationSettingsAction"
+      },
+      {
+        "name": "Exit",
+        "action": "exitAction"
+      }
+    ]
+  },
+  {
+    "name": "?",
+    "children": [
+      {
+        "name": "About",
+        "action": "aboutAction"
+      }
+    ]
+  }
+]
