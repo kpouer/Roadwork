@@ -60,8 +60,6 @@ public class SynchronizationService {
     public void synchronize(RoadworkData roadworkData) {
         if (userSettings.isSynchronizationEnabled()) {
             logger.info("synchronize");
-            String synchronizationUrl = userSettings.getSynchronizationUrl();
-            String synchronizationTeam = userSettings.getSynchronizationTeam();
             String url = getUrl(roadworkData.getSource());
             logger.info("Will synchronize with url {}", url);
             RestOperations restTemplate = new RestTemplate();
