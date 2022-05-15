@@ -20,10 +20,12 @@ import com.kpouer.roadwork.configuration.UserSettings;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
+import com.kpouer.roadwork.ui.MainPanel;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,9 +37,12 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+import javax.swing.*;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import static javax.swing.JComponent.getDefaultLocale;
 
 /**
  * @author Matthieu Casanova
@@ -47,9 +52,13 @@ public class SynchronizationService {
     private static final Logger logger = LoggerFactory.getLogger(SynchronizationService.class);
 
     private final UserSettings userSettings;
+    private final MessageSource resourceBundle;
+    private final SoftwareModel softwareModel;
 
-    public SynchronizationService(Config config) {
+    public SynchronizationService(Config config, MessageSource resourceBundle, SoftwareModel softwareModel) {
         userSettings = config.getUserSettings();
+        this.resourceBundle = resourceBundle;
+        this.softwareModel = softwareModel;
     }
 
     /**
@@ -80,7 +89,11 @@ public class SynchronizationService {
                     roadwork.updateMarker();
                 }
             } catch (HttpClientErrorException.Unauthorized e) {
-                logger.error("Error posting to synchronization server, invalid credencials", e);
+                logger.warn("Error posting to synchronization server, invalid credencials");
+                JOptionPane.showMessageDialog(softwareModel.getMainFrame(),
+                        resourceBundle.getMessage("dialog.synchronization.unauthorized.message", null, getDefaultLocale()),
+                        resourceBundle.getMessage("dialog.synchronization.unauthorized.title", null, getDefaultLocale()),
+                        JOptionPane.WARNING_MESSAGE);
             } catch (RestClientException e) {
                 logger.error("Error posting to synchronization server", e);
             }
