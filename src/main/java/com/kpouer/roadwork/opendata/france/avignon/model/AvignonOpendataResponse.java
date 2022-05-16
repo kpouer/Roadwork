@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.model;
+package com.kpouer.roadwork.opendata.france.avignon.model;
 
 /**
  * @author Matthieu Casanova
  */
-public enum GeometryType {
-    Polygon,
-    Point,
-    MultiPolygon
+public class AvignonOpendataResponse {
+    Feature[] features;
+
+    public Feature[] getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(Feature[] features) {
+        this.features = features;
+    }
 }
