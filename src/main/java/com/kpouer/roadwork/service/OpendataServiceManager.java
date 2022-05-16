@@ -179,8 +179,7 @@ public class OpendataServiceManager {
                 .values()
                 .stream()
                 .filter(Roadwork::isExpired)
-                .forEach(roadwork -> roadwork
-                        .getSyncData()
-                        .setStatus(Status.Finished));
+                .map(Roadwork::getSyncData)
+                .forEach(syncData -> syncData.setStatus(Status.Finished));
     }
 }
