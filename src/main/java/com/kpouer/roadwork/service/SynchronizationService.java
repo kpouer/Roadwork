@@ -17,6 +17,7 @@ package com.kpouer.roadwork.service;
 
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
+import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
@@ -24,6 +25,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -54,11 +56,16 @@ public class SynchronizationService {
     private final UserSettings userSettings;
     private final MessageSource resourceBundle;
     private final SoftwareModel softwareModel;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public SynchronizationService(Config config, MessageSource resourceBundle, SoftwareModel softwareModel) {
+    public SynchronizationService(Config config,
+                                  MessageSource resourceBundle,
+                                  SoftwareModel softwareModel,
+                                  ApplicationEventPublisher applicationEventPublisher) {
         userSettings = config.getUserSettings();
         this.resourceBundle = resourceBundle;
         this.softwareModel = softwareModel;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     /**
@@ -97,6 +104,8 @@ public class SynchronizationService {
             } catch (RestClientException e) {
                 if (e.getCause() instanceof ConnectException) {
                     logger.error("Unable to connect to synchronization server " + url);
+                    userSettings.setSynchronizationEnabled(false);
+                    applicationEventPublisher.publishEvent(new SynchronizationSettingsUpdated(this));
                 } else {
                     logger.error("Error posting to synchronization server", e);
                 }
