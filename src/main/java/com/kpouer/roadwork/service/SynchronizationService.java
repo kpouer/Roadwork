@@ -20,7 +20,6 @@ import com.kpouer.roadwork.configuration.UserSettings;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
-import com.kpouer.roadwork.ui.MainPanel;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -38,6 +37,7 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 import javax.swing.*;
+import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +95,11 @@ public class SynchronizationService {
                         resourceBundle.getMessage("dialog.synchronization.unauthorized.title", null, getDefaultLocale()),
                         JOptionPane.WARNING_MESSAGE);
             } catch (RestClientException e) {
-                logger.error("Error posting to synchronization server", e);
+                if (e.getCause() instanceof ConnectException) {
+                    logger.error("Unable to connect to synchronization server " + url);
+                } else {
+                    logger.error("Error posting to synchronization server", e);
+                }
             }
         }
     }
