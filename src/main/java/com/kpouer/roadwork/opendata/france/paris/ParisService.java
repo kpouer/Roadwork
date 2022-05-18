@@ -72,14 +72,17 @@ public class ParisService extends AbstractOpendataService<ParisOpendataResponse>
         }
         Geometry geometry = record.getGeometry();
         Objects.requireNonNull(geometry, "Unable to create roadwork " + record);
+        String road = fields.getVoie();
+        if (fields.getPrecision_localisation() != null && !fields.getPrecision_localisation().isEmpty()) {
+            road = fields.getPrecision_localisation() + ' ' + road;
+        }
         return RoadworkBuilder.aRoadwork()
                 .withId(record.getRecordid())
                 .withLatitude(geometry.getCoordinates()[1])
                 .withLongitude(geometry.getCoordinates()[0])
                 .withStart(dateStart)
                 .withEnd(dateEnd)
-                .withRoad(fields.getVoie())
-                .withLocationDetails(fields.getPrecision_localisation())
+                .withRoad(road)
                 .withImpactCirculationDetail(fields.getImpact_circulation_detail())
                 .withDescription(fields.getDescription())
                 .build();
