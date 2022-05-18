@@ -40,9 +40,6 @@ public class Roadwork {
     private SyncData syncData;
     private String shortUrl;
 
-    public Roadwork() {
-    }
-
     public String getId() {
         return id;
     }
