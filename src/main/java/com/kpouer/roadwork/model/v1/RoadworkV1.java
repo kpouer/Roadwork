@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.model.v1;
 
 import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.model.sync.SyncData;
 
@@ -153,16 +154,15 @@ public class RoadworkV1 {
     }
 
     public Roadwork toRoadwork() {
-        Roadwork roadwork = new Roadwork(id,
-                latitude,
-                longitude,
-                start,
-                end,
-                road,
-                locationDetails,
-                postCode,
-                impactCirculationDetail,
-                description);
+        Roadwork roadwork = RoadworkBuilder.aRoadwork()
+                .withLatitude(latitude)
+                .withLongitude(longitude)
+                .withStart(start)
+                .withEnd(end)
+                .withLocationDetails(locationDetails)
+                .withImpactCirculationDetail(impactCirculationDetail)
+                .withDescription(description)
+                .build();
         SyncData syncData = roadwork.getSyncData();
         syncData.setStatus(status);
         syncData.setLocalUpdateTime(lastUpdate);

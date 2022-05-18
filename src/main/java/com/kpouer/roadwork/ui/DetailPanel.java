@@ -44,7 +44,6 @@ public class DetailPanel extends JPanel {
     private final JTextField stop;
     private final JTextField road;
     private final JTextField locationDetails;
-    private final JTextField postCode;
     private final JTextArea circulationDetail;
     private final JTextArea description;
     private final Config config;
@@ -64,7 +63,6 @@ public class DetailPanel extends JPanel {
         add(stop = new JTextField(40), "wrap, span 3");
         add(road = new JTextField(40), "wrap, span 3");
         add(locationDetails = new JTextField(40), "wrap, span 32");
-        add(postCode = new JTextField(40), "wrap, span 3");
         JScrollPane circulationDetailsScroll = new JScrollPane(circulationDetail = new JTextArea(3, 40));
         add(circulationDetailsScroll, "wrap, span 3");
         JScrollPane descriptionScroll = new JScrollPane(description = new JTextArea(3, 40));
@@ -75,7 +73,6 @@ public class DetailPanel extends JPanel {
         stop.setBorder(BorderFactory.createTitledBorder("Fin"));
         road.setBorder(BorderFactory.createTitledBorder("Voie"));
         locationDetails.setBorder(BorderFactory.createTitledBorder("Détail de l'emplacement"));
-        postCode.setBorder(BorderFactory.createTitledBorder("Code postal"));
         circulationDetailsScroll.setBorder(BorderFactory.createTitledBorder("Impact"));
         circulationDetail.setLineWrap(true);
         description.setLineWrap(true);
@@ -111,12 +108,13 @@ public class DetailPanel extends JPanel {
         start.setText(format.format(new Date(roadwork.getStart())));
         stop.setText(format.format(new Date(roadwork.getEnd())));
         road.setText(roadwork.getRoad());
+        road.setCaretPosition(0);
         locationDetails.setText(roadwork.getLocationDetails());
         locationDetails.setCaretPosition(0);
-        postCode.setText(roadwork.getPostCode());
         circulationDetail.setText(roadwork.getImpactCirculationDetail());
         circulationDetail.setCaretPosition(0);
         description.setText(roadwork.getDescription());
+        description.setWrapStyleWord(true);
         statusRadioButtons.get(roadwork.getSyncData().getStatus()).setSelected(true);
     }
 

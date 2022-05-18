@@ -17,6 +17,7 @@ package com.kpouer.roadwork.opendata.france.toulouse;
 
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.toulouse.model.Fields;
@@ -71,17 +72,16 @@ public class ToulouseService extends AbstractOpendataService<ToulouseOpendataRes
         }
         Geometry geometry = record.getGeometry();
         Objects.requireNonNull(geometry, "Unable to create roadwork " + record);
-        Roadwork roadwork = new Roadwork(record.getRecordid(),
-                geometry.getCoordinates()[1],
-                geometry.getCoordinates()[0],
-                dateStart,
-                dateEnd,
-                fields.getVoie(),
-                fields.getLibelle(),
-                "",
-                fields.getCirculation(),
-                ""
-        );
-        return roadwork;
+        return RoadworkBuilder
+                .aRoadwork()
+                .withId(record.getRecordid())
+                .withLatitude(geometry.getCoordinates()[1])
+                .withLongitude(geometry.getCoordinates()[0])
+                .withStart(dateStart)
+                .withEnd(dateEnd)
+                .withRoad(fields.getVoie())
+                .withLocationDetails(fields.getLibelle())
+                .withImpactCirculationDetail(fields.getCirculation())
+                .build();
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /**
@@ -43,8 +44,10 @@ public class SynchronizationSettingsAction extends AbstractAction {
 
     @Override
     public void actionPerformed(@Nullable ActionEvent e) {
-        SynchronizationSettingsDialog dialog = new SynchronizationSettingsDialog(softwareModel, config, applicationEventPublisher);
-        dialog.setLocationRelativeTo(softwareModel.getMainFrame());
-        dialog.setVisible(true);
+        EventQueue.invokeLater(() -> {
+            SynchronizationSettingsDialog dialog = new SynchronizationSettingsDialog(softwareModel, config, applicationEventPublisher);
+            dialog.setLocationRelativeTo(softwareModel.getMainFrame());
+            dialog.setVisible(true);
+        });
     }
 }

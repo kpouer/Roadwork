@@ -15,6 +15,7 @@
  */
 package com.kpouer.roadwork.service;
 
+import com.kpouer.roadwork.action.SynchronizationSettingsAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
@@ -25,6 +26,7 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.ParameterizedTypeReference;
@@ -57,15 +59,18 @@ public class SynchronizationService {
     private final MessageSource resourceBundle;
     private final SoftwareModel softwareModel;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationContext applicationContext;
 
     public SynchronizationService(Config config,
                                   MessageSource resourceBundle,
                                   SoftwareModel softwareModel,
-                                  ApplicationEventPublisher applicationEventPublisher) {
+                                  ApplicationEventPublisher applicationEventPublisher,
+                                  ApplicationContext applicationContext) {
         userSettings = config.getUserSettings();
         this.resourceBundle = resourceBundle;
         this.softwareModel = softwareModel;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.applicationContext = applicationContext;
     }
 
     /**
@@ -101,6 +106,7 @@ public class SynchronizationService {
                         resourceBundle.getMessage("dialog.synchronization.unauthorized.message", null, getDefaultLocale()),
                         resourceBundle.getMessage("dialog.synchronization.unauthorized.title", null, getDefaultLocale()),
                         JOptionPane.WARNING_MESSAGE);
+                applicationContext.getBean(SynchronizationSettingsAction.class).actionPerformed(null);
             } catch (RestClientException e) {
                 if (e.getCause() instanceof ConnectException) {
                     logger.error("Unable to connect to synchronization server " + url);

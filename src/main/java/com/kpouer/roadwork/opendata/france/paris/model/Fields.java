@@ -28,7 +28,6 @@ public class Fields {
     private String impact_circulation_detail;
     private String impact_circulation;
     private String precision_localisation;
-    private String cp_arrondissement;
     private String description;
     private double[] geo_point_2d;
 
@@ -102,14 +101,6 @@ public class Fields {
 
     public void setPrecision_localisation(String precision_localisation) {
         this.precision_localisation = precision_localisation;
-    }
-
-    public String getCp_arrondissement() {
-        return cp_arrondissement;
-    }
-
-    public void setCp_arrondissement(String cp_arrondissement) {
-        this.cp_arrondissement = cp_arrondissement;
     }
 
     public String getDescription() {

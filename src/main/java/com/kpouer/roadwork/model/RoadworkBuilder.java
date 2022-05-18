@@ -10,7 +10,6 @@ public final class RoadworkBuilder {
     private long end;
     private String road;
     private String locationDetails;
-    private String postCode;
     private String impactCirculationDetail;
     private String description;
     private SyncData syncData;
@@ -59,11 +58,6 @@ public final class RoadworkBuilder {
         return this;
     }
 
-    public RoadworkBuilder withPostCode(String postCode) {
-        this.postCode = postCode;
-        return this;
-    }
-
     public RoadworkBuilder withImpactCirculationDetail(String impactCirculationDetail) {
         this.impactCirculationDetail = impactCirculationDetail;
         return this;
@@ -93,7 +87,6 @@ public final class RoadworkBuilder {
         roadwork.setEnd(end);
         roadwork.setRoad(road);
         roadwork.setLocationDetails(locationDetails);
-        roadwork.setPostCode(postCode);
         roadwork.setImpactCirculationDetail(impactCirculationDetail);
         roadwork.setDescription(description);
         roadwork.setSyncData(syncData);

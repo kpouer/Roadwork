@@ -17,6 +17,7 @@ package com.kpouer.roadwork.opendata.france.paris;
 
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.paris.model.Fields;
@@ -71,16 +72,16 @@ public class ParisService extends AbstractOpendataService<ParisOpendataResponse>
         }
         Geometry geometry = record.getGeometry();
         Objects.requireNonNull(geometry, "Unable to create roadwork " + record);
-        Roadwork roadwork = new Roadwork(record.getRecordid(),
-                geometry.getCoordinates()[1],
-                geometry.getCoordinates()[0],
-                dateStart,
-                dateEnd,
-                fields.getVoie(),
-                fields.getPrecision_localisation(), fields.getCp_arrondissement(),
-                fields.getImpact_circulation_detail(),
-                fields.getDescription()
-        );
-        return roadwork;
+        return RoadworkBuilder.aRoadwork()
+                .withId(record.getRecordid())
+                .withLatitude(geometry.getCoordinates()[1])
+                .withLongitude(geometry.getCoordinates()[0])
+                .withStart(dateStart)
+                .withEnd(dateEnd)
+                .withRoad(fields.getVoie())
+                .withLocationDetails(fields.getPrecision_localisation())
+                .withImpactCirculationDetail(fields.getImpact_circulation_detail())
+                .withDescription(fields.getDescription())
+                .build();
     }
 }

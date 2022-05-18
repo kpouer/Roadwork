@@ -17,6 +17,7 @@ package com.kpouer.roadwork.opendata.france.bordeaux;
 
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.bordeaux.model.BordeauxOpendataResponse;
@@ -70,17 +71,16 @@ public class BordeauxService extends AbstractOpendataService<BordeauxOpendataRes
         }
         Geometry geometry = record.getGeometry();
         Objects.requireNonNull(geometry, "Unable to create roadwork " + record);
-        Roadwork roadwork = new Roadwork(record.getRecordid(),
-                geometry.getCoordinates()[1],
-                geometry.getCoordinates()[0],
-                dateStart,
-                dateEnd,
-                fields.getLocalisation(),
-                fields.getLocalisation_emprise(),
-                "",
-                fields.getLibelle(),
-                ""
-        );
-        return roadwork;
+        return RoadworkBuilder
+                .aRoadwork()
+                .withId(record.getRecordid())
+                .withLatitude(geometry.getCoordinates()[1])
+                .withLongitude(geometry.getCoordinates()[0])
+                .withStart(dateStart)
+                .withEnd(dateEnd)
+                .withRoad(fields.getLocalisation())
+                .withLocationDetails(fields.getLocalisation_emprise())
+                .withImpactCirculationDetail(fields.getLibelle())
+                .build();
     }
 }

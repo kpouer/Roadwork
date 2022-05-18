@@ -33,7 +33,6 @@ public class Roadwork {
     private long end;
     private String road;
     private String locationDetails;
-    private String postCode;
     private String impactCirculationDetail;
     private String description;
     @JsonIgnore
@@ -42,29 +41,6 @@ public class Roadwork {
     private String shortUrl;
 
     public Roadwork() {
-    }
-
-    public Roadwork(String id,
-                    double latitude,
-                    double longitude,
-                    long start,
-                    long end,
-                    String road,
-                    String locationDetails,
-                    String postCode,
-                    String impactCirculationDetail,
-                    String description) {
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.start = start;
-        this.end = end;
-        this.road = road;
-        this.locationDetails = locationDetails;
-        this.postCode = postCode;
-        this.impactCirculationDetail = impactCirculationDetail;
-        this.description = description;
-        syncData = new SyncData();
     }
 
     public String getId() {
@@ -121,14 +97,6 @@ public class Roadwork {
 
     public void setLocationDetails(String locationDetails) {
         this.locationDetails = locationDetails;
-    }
-
-    public String getPostCode() {
-        return postCode;
-    }
-
-    public void setPostCode(String postCode) {
-        this.postCode = postCode;
     }
 
     public String getImpactCirculationDetail() {

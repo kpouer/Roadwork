@@ -17,6 +17,7 @@ package com.kpouer.roadwork.opendata.france.lyon;
 
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.lyon.model.Features;
@@ -66,17 +67,17 @@ public class LyonService extends AbstractOpendataService<LyonOpendataResponse> {
 
         } catch (ParseException e) {
         }
-        Roadwork roadwork = new Roadwork(Integer.toString(fields.getIdentifiant()),
-                record.getGeometry().getCoordinates()[0][0][1],
-                record.getGeometry().getCoordinates()[0][0][0],
-                dateStart,
-                dateEnd,
-                fields.getNom(),
-                fields.getPrecisionlocalisation(),
-                "",
-                fields.getTypeperturbation(),
-                fields.getNomchantier()
-        );
-        return roadwork;
+        return RoadworkBuilder
+                .aRoadwork()
+                .withId(Integer.toString(fields.getIdentifiant()))
+                .withLatitude(record.getGeometry().getCoordinates()[0][0][1])
+                .withLongitude(record.getGeometry().getCoordinates()[0][0][0])
+                .withStart(dateStart)
+                .withEnd(dateEnd)
+                .withRoad(fields.getNom())
+                .withLocationDetails(fields.getPrecisionlocalisation())
+                .withImpactCirculationDetail(fields.getTypeperturbation())
+                .withDescription(fields.getNomchantier())
+                .build();
     }
 }
