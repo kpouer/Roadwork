@@ -79,7 +79,7 @@ public class BordeauxService extends AbstractOpendataService<BordeauxOpendataRes
                 .withStart(dateStart)
                 .withEnd(dateEnd)
                 .withRoad(fields.getLocalisation())
-                .withLocationDetails(fields.getLocalisation_emprise())
+                .withDescription(fields.getLocalisation_emprise())
                 .withImpactCirculationDetail(fields.getLibelle())
                 .build();
     }
