@@ -18,7 +18,6 @@ package com.kpouer.roadwork.opendata.france.bordeaux;
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
-import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.bordeaux.model.BordeauxOpendataResponse;
 import com.kpouer.roadwork.opendata.france.bordeaux.model.Fields;
@@ -30,15 +29,12 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Matthieu Casanova
  */
 @Service("BordeauxService")
-public class BordeauxService extends AbstractOpendataService<BordeauxOpendataResponse> {
+public class BordeauxService extends AbstractOpendataService<Record, BordeauxOpendataResponse> {
     private static final Logger logger = LoggerFactory.getLogger(BordeauxService.class);
     private static final String URL = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=ci_chantier&q=&rows=1000&facet=alias_nature_n1&facet=alias_nature_n2&facet=geo_shape_type";
 
@@ -47,15 +43,7 @@ public class BordeauxService extends AbstractOpendataService<BordeauxOpendataRes
     }
 
     @Override
-    protected RoadworkData getRoadworkData(BordeauxOpendataResponse response) {
-        List<Roadwork> roadworks = Arrays.stream(response.getRecords())
-                .filter(record -> record.getGeometry() != null)
-                .map(this::getRoadwork)
-                .toList();
-        return new RoadworkData(getClass().getSimpleName(), roadworks);
-    }
-
-    private Roadwork getRoadwork(Record record) {
+    protected Roadwork getRoadwork(Record record) {
         Fields fields = record.getFields();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         long dateStart = 0;
@@ -70,7 +58,6 @@ public class BordeauxService extends AbstractOpendataService<BordeauxOpendataRes
         } catch (ParseException e) {
         }
         Geometry geometry = record.getGeometry();
-        Objects.requireNonNull(geometry, "Unable to create roadwork " + record);
         return RoadworkBuilder
                 .aRoadwork()
                 .withId(record.getRecordid())

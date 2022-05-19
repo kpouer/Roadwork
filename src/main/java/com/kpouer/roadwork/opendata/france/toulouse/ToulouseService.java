@@ -18,7 +18,6 @@ package com.kpouer.roadwork.opendata.france.toulouse;
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
-import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.toulouse.model.Fields;
 import com.kpouer.roadwork.opendata.france.toulouse.model.Geometry;
@@ -30,15 +29,12 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Matthieu Casanova
  */
 @Service("ToulouseService")
-public class ToulouseService extends AbstractOpendataService<ToulouseOpendataResponse> {
+public class ToulouseService extends AbstractOpendataService<Record, ToulouseOpendataResponse> {
     private static final Logger logger = LoggerFactory.getLogger(ToulouseService.class);
     private static final String URL = "https://data.toulouse-metropole.fr/api/records/1.0/search/?dataset=chantiers-en-cours&q=&rows=1000&facet=voie&facet=commune&facet=pole&facet=declarant&facet=entreprise&facet=datedebut&facet=datefin";
 
@@ -47,16 +43,7 @@ public class ToulouseService extends AbstractOpendataService<ToulouseOpendataRes
     }
 
     @Override
-    protected RoadworkData getRoadworkData(ToulouseOpendataResponse opendataResponse) {
-        logger.info("getRoadworkData {}", opendataResponse);
-        List<Roadwork> roadworks = Arrays.stream(opendataResponse.getRecords())
-                .filter(record -> record.getGeometry() != null)
-                .map(this::getRoadwork)
-                .toList();
-        return new RoadworkData(getClass().getSimpleName(), roadworks);
-    }
-
-    private Roadwork getRoadwork(Record record) {
+    protected Roadwork getRoadwork(Record record) {
         Fields fields = record.getFields();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         long dateStart = 0;
@@ -71,7 +58,6 @@ public class ToulouseService extends AbstractOpendataService<ToulouseOpendataRes
         } catch (ParseException e) {
         }
         Geometry geometry = record.getGeometry();
-        Objects.requireNonNull(geometry, "Unable to create roadwork " + record);
         return RoadworkBuilder
                 .aRoadwork()
                 .withId(record.getRecordid())

@@ -15,10 +15,16 @@
  */
 package com.kpouer.roadwork.opendata.france.paris.model;
 
+import com.fasterxml.jackson.databind.util.ArrayIterator;
+import com.kpouer.roadwork.opendata.OpendataResponse;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
+
 /**
  * @author Matthieu Casanova
  */
-public class ParisOpendataResponse {
+public class ParisOpendataResponse implements OpendataResponse<Record> {
     private Record[] records;
 
     public Record[] getRecords() {
@@ -27,5 +33,11 @@ public class ParisOpendataResponse {
 
     public void setRecords(Record[] records) {
         this.records = records;
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Record> iterator() {
+        return new ArrayIterator<>(records);
     }
 }

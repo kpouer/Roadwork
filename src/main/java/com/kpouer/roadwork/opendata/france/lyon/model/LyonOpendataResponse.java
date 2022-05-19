@@ -15,12 +15,16 @@
  */
 package com.kpouer.roadwork.opendata.france.lyon.model;
 
+import com.kpouer.roadwork.opendata.OpendataResponse;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author Matthieu Casanova
  */
-public class LyonOpendataResponse {
+public class LyonOpendataResponse implements OpendataResponse<Features> {
     private List<Features> features;
 
     public List<Features> getFeatures() {
@@ -29,5 +33,11 @@ public class LyonOpendataResponse {
 
     public void setFeatures(List<Features> features) {
         this.features = features;
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Features> iterator() {
+        return features.iterator();
     }
 }

@@ -15,10 +15,16 @@
  */
 package com.kpouer.roadwork.opendata.france.bordeaux.model;
 
+import com.fasterxml.jackson.databind.util.ArrayIterator;
+import com.kpouer.roadwork.opendata.OpendataResponse;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
+
 /**
  * @author Matthieu Casanova
  */
-public class BordeauxOpendataResponse {
+public class BordeauxOpendataResponse implements OpendataResponse<Record> {
     private Record[] records;
 
     public Record[] getRecords() {
@@ -27,5 +33,11 @@ public class BordeauxOpendataResponse {
 
     public void setRecords(Record[] records) {
         this.records = records;
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Record> iterator() {
+        return new ArrayIterator<>(records);
     }
 }

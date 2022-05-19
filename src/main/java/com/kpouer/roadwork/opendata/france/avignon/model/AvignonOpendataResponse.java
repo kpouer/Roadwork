@@ -15,11 +15,17 @@
  */
 package com.kpouer.roadwork.opendata.france.avignon.model;
 
+import com.fasterxml.jackson.databind.util.ArrayIterator;
+import com.kpouer.roadwork.opendata.OpendataResponse;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
+
 /**
  * @author Matthieu Casanova
  */
-public class AvignonOpendataResponse {
-    Feature[] features;
+public class AvignonOpendataResponse implements OpendataResponse<Feature> {
+    private Feature[] features;
 
     public Feature[] getFeatures() {
         return features;
@@ -27,5 +33,11 @@ public class AvignonOpendataResponse {
 
     public void setFeatures(Feature[] features) {
         this.features = features;
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Feature> iterator() {
+        return new ArrayIterator<>(features);
     }
 }

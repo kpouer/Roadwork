@@ -18,7 +18,6 @@ package com.kpouer.roadwork.opendata.france.avignon;
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
-import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.avignon.model.AvignonOpendataResponse;
 import com.kpouer.roadwork.opendata.france.avignon.model.Feature;
@@ -30,15 +29,12 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Matthieu Casanova
  */
 @Service("AvignonService")
-public class AvignonService extends AbstractOpendataService<AvignonOpendataResponse> {
+public class AvignonService extends AbstractOpendataService<Feature, AvignonOpendataResponse> {
     private static final Logger logger = LoggerFactory.getLogger(AvignonService.class);
 
     public static final String SOURCE_URL = "https://trouver.datasud.fr/dataset/avignon-arretes-travaux-avec-impact-circulation";
@@ -49,15 +45,7 @@ public class AvignonService extends AbstractOpendataService<AvignonOpendataRespo
     }
 
     @Override
-    protected RoadworkData getRoadworkData(AvignonOpendataResponse response) {
-        List<Roadwork> roadworks = Arrays.stream(response.getFeatures())
-                .filter(record -> record.getGeometry() != null)
-                .map(this::getRoadwork)
-                .toList();
-        return new RoadworkData(getClass().getSimpleName(), roadworks);
-    }
-
-    private Roadwork getRoadwork(Feature feature) {
+    protected Roadwork getRoadwork(Feature feature) {
         Properties properties = feature.getProperties();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
         long dateStart = 0;
@@ -72,7 +60,6 @@ public class AvignonService extends AbstractOpendataService<AvignonOpendataRespo
         } catch (ParseException e) {
         }
         Geometry geometry = feature.getGeometry();
-        Objects.requireNonNull(geometry, "Unable to create roadwork " + feature);
         return RoadworkBuilder
                 .aRoadwork()
                 .withId(properties.getIdarrete())

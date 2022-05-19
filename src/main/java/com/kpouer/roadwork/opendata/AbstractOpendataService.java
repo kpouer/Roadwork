@@ -16,17 +16,21 @@
 package com.kpouer.roadwork.opendata;
 
 import com.kpouer.mapview.LatLng;
+import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
  * @author Matthieu Casanova
  */
-public abstract class AbstractOpendataService<E> implements OpendataService {
+public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> implements OpendataService {
     private static final Logger logger = LoggerFactory.getLogger(AbstractOpendataService.class);
 
     private final LatLng location;
@@ -55,5 +59,18 @@ public abstract class AbstractOpendataService<E> implements OpendataService {
         return Optional.of(getRoadworkData(response));
     }
 
-    protected abstract RoadworkData getRoadworkData(E response);
+    protected RoadworkData getRoadworkData(E opendataResponse) {
+        logger.info("getRoadworkData {}", opendataResponse);
+        long deadline = System.currentTimeMillis() + 7 * 86400000;
+        List<Roadwork> roadworks = opendataResponse.parallelStream()
+                .map(this::getRoadwork)
+                .filter(Objects::nonNull)
+                .filter(roadwork -> roadwork.getEnd() < deadline
+                )
+                .toList();
+        return new RoadworkData(getClass().getSimpleName(), roadworks);
+    }
+
+    @Nullable
+    protected abstract Roadwork getRoadwork(R opendataRoadwork);
 }

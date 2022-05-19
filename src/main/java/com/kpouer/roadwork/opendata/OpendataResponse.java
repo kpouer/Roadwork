@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.france.toulouse.model;
+package com.kpouer.roadwork.opendata;
 
-import com.fasterxml.jackson.databind.util.ArrayIterator;
-import com.kpouer.roadwork.opendata.OpendataResponse;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Matthieu Casanova
  */
-public class ToulouseOpendataResponse implements OpendataResponse<Record> {
-    private Record[] records;
-
-    public Record[] getRecords() {
-        return records;
-    }
-
-    public void setRecords(Record[] records) {
-        this.records = records;
-    }
-
-    @NotNull
-    @Override
-    public Iterator<Record> iterator() {
-        return new ArrayIterator<>(records);
+public interface OpendataResponse<R> extends Iterable<R> {
+    default Stream<R> parallelStream() {
+        return StreamSupport.stream(spliterator(), true);
     }
 }
