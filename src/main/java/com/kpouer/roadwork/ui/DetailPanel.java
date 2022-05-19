@@ -20,8 +20,8 @@ import com.kpouer.roadwork.action.WmeAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.sync.Status;
+import com.kpouer.roadwork.service.LocalizationService;
 import net.miginfocom.swing.MigLayout;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -51,7 +51,7 @@ public class DetailPanel extends JPanel {
     private final Map<Status, JRadioButton> statusRadioButtons;
     private Roadwork roadwork;
 
-    public DetailPanel(Config config, MapView mapView, MessageSource resourceBundle, WmeAction wmeAction) {
+    public DetailPanel(Config config, MapView mapView, LocalizationService localizationService, WmeAction wmeAction) {
         super(new MigLayout());
         this.config = config;
         this.mapView = mapView;
@@ -68,22 +68,22 @@ public class DetailPanel extends JPanel {
         JScrollPane descriptionScroll = new JScrollPane(description = new JTextArea(3, 40));
         add(descriptionScroll, "wrap, span 3");
         id.setBorder(BorderFactory.createTitledBorder("id"));
-        location.setBorder(BorderFactory.createTitledBorder("Emplacement"));
-        start.setBorder(BorderFactory.createTitledBorder("Début"));
-        stop.setBorder(BorderFactory.createTitledBorder("Fin"));
-        road.setBorder(BorderFactory.createTitledBorder("Voie"));
-        locationDetails.setBorder(BorderFactory.createTitledBorder("Détail de l'emplacement"));
-        circulationDetailsScroll.setBorder(BorderFactory.createTitledBorder("Impact"));
+        location.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.location")));
+        start.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.start")));
+        stop.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.end")));
+        road.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.road")));
+        locationDetails.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.locationDetail")));
+        circulationDetailsScroll.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.impact")));
         circulationDetail.setLineWrap(true);
         description.setLineWrap(true);
-        descriptionScroll.setBorder(BorderFactory.createTitledBorder("Description"));
+        descriptionScroll.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.description")));
 
-        statusRadioButtons = new EnumMap<Status, JRadioButton>(Status.class);
+        statusRadioButtons = new EnumMap<>(Status.class);
         ButtonGroup statusGroup = new ButtonGroup();
         Status[] values = Status.values();
         for (int i = 0; i < values.length; i++) {
             Status status = values[i];
-            JRadioButton radioButton = new JRadioButton(resourceBundle.getMessage("enum.status." + status, null, getDefaultLocale()));
+            JRadioButton radioButton = new JRadioButton(localizationService.getMessage("enum.status." + status));
             statusGroup.add(radioButton);
             radioButton.addActionListener(new StatusChangeAction(status));
             statusRadioButtons.put(status, radioButton);

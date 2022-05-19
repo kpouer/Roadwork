@@ -1,0 +1,57 @@
+/*
+ * Copyright 2022 Matthieu Casanova
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.kpouer.roadwork.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+
+import static javax.swing.JComponent.getDefaultLocale;
+
+/**
+ * @author Matthieu Casanova
+ */
+@Service
+public class LocalizationService {
+    private static final Logger logger = LoggerFactory.getLogger(LocalizationService.class);
+
+    private final MessageSource resourceBundle;
+
+    public LocalizationService(MessageSource resourceBundle) {
+        this.resourceBundle = resourceBundle;
+    }
+
+    public String getMessage(String code, @Nullable Object[] args) {
+        try {
+            return resourceBundle.getMessage(code, args, getDefaultLocale());
+        } catch (NoSuchMessageException e) {
+            logger.error("Unable to get message {}", code);
+            return code;
+        }
+    }
+
+    public String getMessage(String code) {
+        try {
+            return resourceBundle.getMessage(code, null, getDefaultLocale());
+        } catch (NoSuchMessageException e) {
+            logger.error("Unable to get message {}", code);
+            return code;
+        }
+    }
+}

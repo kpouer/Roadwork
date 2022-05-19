@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,8 +45,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static javax.swing.JComponent.getDefaultLocale;
-
 /**
  * @author Matthieu Casanova
  */
@@ -56,18 +53,18 @@ public class SynchronizationService {
     private static final Logger logger = LoggerFactory.getLogger(SynchronizationService.class);
 
     private final UserSettings userSettings;
-    private final MessageSource resourceBundle;
+    private final LocalizationService localizationService;
     private final SoftwareModel softwareModel;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final ApplicationContext applicationContext;
 
     public SynchronizationService(Config config,
-                                  MessageSource resourceBundle,
+                                  LocalizationService localizationService,
                                   SoftwareModel softwareModel,
                                   ApplicationEventPublisher applicationEventPublisher,
                                   ApplicationContext applicationContext) {
         userSettings = config.getUserSettings();
-        this.resourceBundle = resourceBundle;
+        this.localizationService = localizationService;
         this.softwareModel = softwareModel;
         this.applicationEventPublisher = applicationEventPublisher;
         this.applicationContext = applicationContext;
@@ -103,8 +100,8 @@ public class SynchronizationService {
             } catch (HttpClientErrorException.Unauthorized e) {
                 logger.warn("Error posting to synchronization server, invalid credencials");
                 JOptionPane.showMessageDialog(softwareModel.getMainFrame(),
-                        resourceBundle.getMessage("dialog.synchronization.unauthorized.message", null, getDefaultLocale()),
-                        resourceBundle.getMessage("dialog.synchronization.unauthorized.title", null, getDefaultLocale()),
+                        localizationService.getMessage("dialog.synchronization.unauthorized.message"),
+                        localizationService.getMessage("dialog.synchronization.unauthorized.title"),
                         JOptionPane.WARNING_MESSAGE);
                 applicationContext.getBean(SynchronizationSettingsAction.class).actionPerformed(null);
             } catch (RestClientException e) {

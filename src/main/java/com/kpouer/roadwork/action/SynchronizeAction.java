@@ -18,6 +18,7 @@ package com.kpouer.roadwork.action;
 import com.kpouer.mapview.MapView;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
+import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.service.SynchronizationService;
 import org.slf4j.Logger;
@@ -42,8 +43,9 @@ public class SynchronizeAction extends AbstractAction {
     public SynchronizeAction(SynchronizationService synchronizationService,
                              Config config,
                              MapView mapView,
-                             SoftwareModel softwareModel) {
-        super("Synchronize");
+                             SoftwareModel softwareModel,
+                             LocalizationService localizationService) {
+        super(localizationService.getMessage("action.synchronize"));
         this.synchronizationService = synchronizationService;
         this.config = config;
         this.mapView = mapView;

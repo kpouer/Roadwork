@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.action;
 
 import com.kpouer.roadwork.configuration.Config;
+import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.dialog.SynchronizationSettingsDialog;
 import org.springframework.context.ApplicationEventPublisher;
@@ -35,8 +36,11 @@ public class SynchronizationSettingsAction extends AbstractAction {
     private final Config config;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public SynchronizationSettingsAction(SoftwareModel softwareModel, Config config, ApplicationEventPublisher applicationEventPublisher) {
-        super("Settings");
+    public SynchronizationSettingsAction(SoftwareModel softwareModel,
+                                         Config config,
+                                         ApplicationEventPublisher applicationEventPublisher,
+                                         LocalizationService localizationService) {
+        super(localizationService.getMessage("action.synchronizationSettings"));
         this.softwareModel = softwareModel;
         this.config = config;
         this.applicationEventPublisher = applicationEventPublisher;

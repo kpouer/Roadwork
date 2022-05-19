@@ -15,6 +15,7 @@
  */
 package com.kpouer.roadwork.action;
 
+import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.about.AboutDialog;
 import org.springframework.lang.Nullable;
@@ -30,8 +31,8 @@ import java.awt.event.ActionEvent;
 public class AboutAction extends AbstractAction {
     private final SoftwareModel softwareModel;
 
-    public AboutAction(SoftwareModel softwareModel) {
-        super("About");
+    public AboutAction(SoftwareModel softwareModel, LocalizationService localizationService) {
+        super(localizationService.getMessage("action.about"));
         this.softwareModel = softwareModel;
     }
 

@@ -21,6 +21,7 @@ import com.kpouer.roadwork.event.OpendataServiceUpdated;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.opendata.OpendataService;
+import com.kpouer.roadwork.service.LocalizationService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
@@ -40,7 +41,8 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
 
     public ToolbarPanel(ApplicationContext applicationContext,
                         Config config,
-                        ApplicationEventPublisher applicationEventPublisher) {
+                        ApplicationEventPublisher applicationEventPublisher,
+                        LocalizationService localizationService) {
         super(new BorderLayout());
         this.config = config;
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
@@ -58,7 +60,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
         synchronizeButton = new JButton(applicationContext.getBean(SynchronizeAction.class));
         synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
         panel.add(synchronizeButton);
-        JCheckBox hideExpired = new JCheckBox("Hide expired");
+        JCheckBox hideExpired = new JCheckBox(localizationService.getMessage("toolbarPanel.hideExpired"));
         hideExpired.addActionListener(e -> {
             config.getUserSettings().setHideExpired(hideExpired.isSelected());
             applicationEventPublisher.publishEvent(new UserSettingsUpdated(this));

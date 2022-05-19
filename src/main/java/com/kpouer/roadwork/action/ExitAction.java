@@ -15,7 +15,7 @@
  */
 package com.kpouer.roadwork.action;
 
-import com.kpouer.roadwork.configuration.Config;
+import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import org.springframework.lang.Nullable;
@@ -33,8 +33,10 @@ public class ExitAction extends AbstractAction {
     private final OpendataServiceManager opendataServiceManager;
     private final SoftwareModel softwareModel;
 
-    public ExitAction(OpendataServiceManager opendataServiceManager, SoftwareModel softwareModel, Config config) {
-        super("Exit");
+    public ExitAction(OpendataServiceManager opendataServiceManager,
+                      SoftwareModel softwareModel,
+                      LocalizationService localizationService) {
+        super(localizationService.getMessage("action.exit"));
         this.opendataServiceManager = opendataServiceManager;
         this.softwareModel = softwareModel;
     }

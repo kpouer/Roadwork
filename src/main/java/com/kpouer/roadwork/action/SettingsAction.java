@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.action;
 
 import com.kpouer.roadwork.configuration.Config;
+import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.dialog.SettingsDialog;
 import org.springframework.context.ApplicationContext;
@@ -36,8 +37,12 @@ public class SettingsAction extends AbstractAction {
     private final ApplicationContext applicationContext;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public SettingsAction(SoftwareModel softwareModel, Config config, ApplicationContext applicationContext, ApplicationEventPublisher applicationEventPublisher) {
-        super("Settings");
+    public SettingsAction(SoftwareModel softwareModel,
+                          Config config,
+                          ApplicationContext applicationContext,
+                          ApplicationEventPublisher applicationEventPublisher,
+                          LocalizationService localizationService) {
+        super(localizationService.getMessage("action.settings"));
         this.softwareModel = softwareModel;
         this.config = config;
         this.applicationContext = applicationContext;

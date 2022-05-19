@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.ui.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpouer.roadwork.service.LocalizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -37,9 +38,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class MenuService {
     private static final Logger logger = LoggerFactory.getLogger(MenuService.class);
     private final ApplicationContext applicationContext;
+    private final LocalizationService localizationService;
 
-    public MenuService(ApplicationContext applicationContext) {
+    public MenuService(ApplicationContext applicationContext, LocalizationService localizationService) {
         this.applicationContext = applicationContext;
+        this.localizationService = localizationService;
     }
 
     public JMenuBar loadMenu(Resource resource) throws IOException {
@@ -58,7 +61,7 @@ public class MenuService {
 
     private JComponent getComponent(MenuElement element) {
         if (element.getChildren() != null) {
-            JMenu menu = new JMenu(element.getName());
+            JMenu menu = new JMenu(localizationService.getMessage("menu." + element.getName()));
             for (MenuElement child : element.getChildren()) {
                 menu.add(getComponent(child));
             }
