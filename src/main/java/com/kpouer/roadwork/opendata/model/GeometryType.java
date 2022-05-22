@@ -21,5 +21,6 @@ package com.kpouer.roadwork.opendata.model;
 public enum GeometryType {
     Polygon,
     Point,
-    MultiPolygon
+    MultiPolygon,
+    LineString
 }
