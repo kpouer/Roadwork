@@ -18,7 +18,9 @@ package com.kpouer.roadwork.action;
 import com.kpouer.mapview.MapView;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
+import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.service.LocalizationService;
+import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.service.SynchronizationService;
 import org.slf4j.Logger;
@@ -39,17 +41,20 @@ public class SynchronizeAction extends AbstractAction {
     private final Config config;
     private final MapView mapView;
     private final SoftwareModel softwareModel;
+    private final OpendataServiceManager opendataServiceManager;
 
     public SynchronizeAction(SynchronizationService synchronizationService,
                              Config config,
                              MapView mapView,
                              SoftwareModel softwareModel,
-                             LocalizationService localizationService) {
+                             LocalizationService localizationService,
+                             OpendataServiceManager opendataServiceManager) {
         super(localizationService.getMessage("action.synchronize"));
         this.synchronizationService = synchronizationService;
         this.config = config;
         this.mapView = mapView;
         this.softwareModel = softwareModel;
+        this.opendataServiceManager = opendataServiceManager;
     }
 
     @Override
@@ -57,7 +62,9 @@ public class SynchronizeAction extends AbstractAction {
         logger.info("synchronize");
         UserSettings userSettings = config.getUserSettings();
         if (userSettings.isSynchronizationEnabled()) {
-            synchronizationService.synchronize(softwareModel.getRoadworkData());
+            RoadworkData roadworkData = softwareModel.getRoadworkData();
+            synchronizationService.synchronize(roadworkData);
+            opendataServiceManager.save(roadworkData);
             mapView.repaint();
         }
     }
