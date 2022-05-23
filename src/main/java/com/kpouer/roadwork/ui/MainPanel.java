@@ -91,7 +91,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             setSize(1024, 768);
         }
         setVisible(true);
-        loadData();
+        EventQueue.invokeLater(this::loadData);
     }
 
     @Override

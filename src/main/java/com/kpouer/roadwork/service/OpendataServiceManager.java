@@ -162,9 +162,9 @@ public class OpendataServiceManager {
         Map<String, RoadworkMigrationService> beansOfType = applicationContext.getBeansOfType(RoadworkMigrationService.class);
         Collection<RoadworkMigrationService> migrationServices = beansOfType.values();
         for (RoadworkMigrationService migrationService : migrationServices) {
-            logger.info("Will try migration service {}", migrationService);
             Optional<RoadworkData> roadworkData = migrationService.migrateData();
             if (roadworkData.isPresent()) {
+                logger.info("Migrating service {}", migrationService);
                 migrationService.archive();
                 save(roadworkData.get());
                 return roadworkData;
