@@ -22,7 +22,6 @@ import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +41,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.swing.*;
 import java.net.ConnectException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,8 +130,8 @@ public class SynchronizationService {
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         String auth = userSettings.getSynchronizationLogin() + ':' + userSettings.getSynchronizationPassword();
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.US_ASCII));
-        String authHeader = "Basic " + new String(encodedAuth);
+        String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.US_ASCII));
+        String authHeader = "Basic " + encodedAuth;
         headers.set("Authorization", authHeader);
         return headers;
     }

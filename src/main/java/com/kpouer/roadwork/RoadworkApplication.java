@@ -15,21 +15,16 @@
  */
 package com.kpouer.roadwork;
 
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import com.kpouer.roadwork.ui.MainPanel;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * @author Matthieu Casanova
  */
-@SpringBootApplication
 public class RoadworkApplication {
 
     public static void main(String[] args) {
-        new SpringApplicationBuilder(RoadworkApplication.class)
-                .headless(false)
-                .web(WebApplicationType.NONE)
-                .run(args);
+        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("com.kpouer");
+        applicationContext.getBean(MainPanel.class);
     }
-
 }
