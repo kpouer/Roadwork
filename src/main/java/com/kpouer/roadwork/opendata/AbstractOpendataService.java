@@ -74,7 +74,7 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
         List<Roadwork> roadworks = opendataResponse.parallelStream()
                 .map(this::getRoadwork)
                 .filter(Objects::nonNull)
-                .filter(roadwork -> roadwork.getEnd() == 0 || roadwork.getEnd() < deadline
+                .filter(roadwork -> roadwork.getEnd() == 0 || roadwork.getEnd() > deadline
                 )
                 .toList();
         return new RoadworkData(getClass().getSimpleName(), roadworks);
