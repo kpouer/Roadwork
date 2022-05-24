@@ -13,15 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.model;
+package com.kpouer.roadwork.opendata.germany.berlin.model;
 
-/**
- * @author Matthieu Casanova
- */
-public enum GeometryType {
-    Polygon,
-    Point,
-    MultiPolygon,
-    LineString,
-    GeometryCollection
+import com.kpouer.roadwork.opendata.OpendataResponse;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
+import java.util.List;
+
+public class BerlinOpendataResponse implements OpendataResponse<Feature> {
+    private List<Feature> features;
+
+    public List<Feature> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(List<Feature> features) {
+        this.features = features;
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Feature> iterator() {
+        return features.iterator();
+    }
 }

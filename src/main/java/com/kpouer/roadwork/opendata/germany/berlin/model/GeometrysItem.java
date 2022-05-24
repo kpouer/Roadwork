@@ -13,15 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.model;
+package com.kpouer.roadwork.opendata.germany.berlin.model;
 
-/**
- * @author Matthieu Casanova
- */
-public enum GeometryType {
-    Polygon,
-    Point,
-    MultiPolygon,
-    LineString,
-    GeometryCollection
+import com.fasterxml.jackson.databind.JsonNode;
+import com.kpouer.roadwork.opendata.model.GeometryType;
+
+public class GeometrysItem {
+    private GeometryType type;
+    private JsonNode coordinates;
+
+    public GeometryType getType() {
+        return type;
+    }
+
+    public void setType(GeometryType type) {
+        this.type = type;
+    }
+
+    public JsonNode getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(JsonNode coordinates) {
+        this.coordinates = coordinates;
+    }
 }

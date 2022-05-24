@@ -13,15 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.model;
+package com.kpouer.roadwork.opendata.germany.berlin.model;
+
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Matthieu Casanova
  */
-public enum GeometryType {
-    Polygon,
-    Point,
-    MultiPolygon,
-    LineString,
-    GeometryCollection
+public class Validity {
+    private String from;
+    private String to;
+
+    public String getFrom() {
+        return from;
+    }
+
+    @Nullable
+    public String getTo() {
+        return to;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
+    }
 }
