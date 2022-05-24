@@ -125,7 +125,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             mapView.removeAllMarkers();
             Optional<RoadworkData> roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);
-            mapView.setCenter(opendataServiceManager.getCenter(), 13);
+            mapView.fitToMarkers();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
