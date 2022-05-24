@@ -21,11 +21,12 @@ import com.kpouer.roadwork.model.RoadworkData;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Matthieu Casanova
@@ -51,7 +52,15 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
     @Override
     public Optional<RoadworkData> getData() {
         logger.info("getData from {} -> {}", url, responseType);
+
+        // because some opendata service do not return Json content type
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
+        messageConverters.add(converter);
+
         RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(messageConverters);
         E response = restTemplate.getForObject(url, responseType);
         if (response == null) {
             return Optional.empty();
@@ -65,7 +74,7 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
         List<Roadwork> roadworks = opendataResponse.parallelStream()
                 .map(this::getRoadwork)
                 .filter(Objects::nonNull)
-                .filter(roadwork -> roadwork.getEnd() < deadline
+                .filter(roadwork -> roadwork.getEnd() == 0 || roadwork.getEnd() < deadline
                 )
                 .toList();
         return new RoadworkData(getClass().getSimpleName(), roadworks);
