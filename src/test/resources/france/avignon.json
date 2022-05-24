@@ -1,0 +1,326 @@
+{
+  "type": "FeatureCollection",
+  "name": "Output",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                4.8054182321,
+                43.9383123581
+              ],
+              [
+                4.8053165567,
+                43.9380762197
+              ],
+              [
+                4.8053150246,
+                43.9380657437
+              ],
+              [
+                4.8053191571,
+                43.9380556414
+              ],
+              [
+                4.805328325,
+                43.9380474508
+              ],
+              [
+                4.8053411327,
+                43.938042419
+              ],
+              [
+                4.8053556303,
+                43.9380413118
+              ],
+              [
+                4.8053696106,
+                43.938044298
+              ],
+              [
+                4.8053809454,
+                43.9380509228
+              ],
+              [
+                4.8053879089,
+                43.9380601777
+              ],
+              [
+                4.8054896152,
+                43.9382963874
+              ],
+              [
+                4.8054896761,
+                43.9382965301
+              ],
+              [
+                4.8056081876,
+                43.9385772325
+              ],
+              [
+                4.8056083927,
+                43.9385777356
+              ],
+              [
+                4.8056923963,
+                43.9387914937
+              ],
+              [
+                4.8056927421,
+                43.9387924384
+              ],
+              [
+                4.8057178205,
+                43.9388663332
+              ],
+              [
+                4.8057184637,
+                43.9388768574
+              ],
+              [
+                4.8057134845,
+                43.9388867583
+              ],
+              [
+                4.8057036408,
+                43.9388945287
+              ],
+              [
+                4.8056904313,
+                43.9388989855
+              ],
+              [
+                4.805675867,
+                43.9388994503
+              ],
+              [
+                4.8056621651,
+                43.9388958524
+              ],
+              [
+                4.8056514117,
+                43.9388887393
+              ],
+              [
+                4.8056452439,
+                43.9388791942
+              ],
+              [
+                4.8056203268,
+                43.938805774
+              ],
+              [
+                4.8055366073,
+                43.9385927383
+              ],
+              [
+                4.8054182321,
+                43.9383123581
+              ]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": 94412,
+        "idemprise": "11525",
+        "idarrete": "850041398",
+        "shorturl": "https://dl.sogelink.fr/?gOE2byH1",
+        "arretesrcid": "20-AT-1274",
+        "collectivitelibelle": "MAIRIE D 'AVIGNON",
+        "collectiviteid": null,
+        "collectiviteagencelibelle": "AVIGNON",
+        "collectiviteagenceid": null,
+        "documenttype": "ARRETE TEMPORAIRE",
+        "arretedebut": "20201211000000",
+        "arretefin": "20201215000000",
+        "empriseno": "1",
+        "emprisetype": "STATIONNEMENT",
+        "emprisedebut": "2020-12-11T00:00:00Z",
+        "emprisefin": "2020-12-15T00:00:00Z",
+        "mesures": "Interdiction de stationnement;Circulation alternée",
+        "localisations": "DU 26 AU 39 AVENUE MONCLAR",
+        "idagence": "86177",
+        "publicationinternet": true,
+        "categoriesmodele": "Travaux",
+        "nommodele": null,
+        "parametresarrete": null,
+        "parametresemprise": null,
+        "parametresmesures": null,
+        "datecreation": "20201209094436.742",
+        "datemodification": "20201209094437.199",
+        "meta_millesime": 2020,
+        "meta_insee": "84007",
+        "meta_siren": "218400075",
+        "meta_licence": "LO",
+        "meta_datmaj": "20220514002258",
+        "arretes_type": "travaux impactant la circulation",
+        "nom_fic": "84007-travauxArretes"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                4.8054182321,
+                43.9383123581
+              ],
+              [
+                4.8053165567,
+                43.9380762197
+              ],
+              [
+                4.8053150246,
+                43.9380657437
+              ],
+              [
+                4.8053191571,
+                43.9380556414
+              ],
+              [
+                4.805328325,
+                43.9380474508
+              ],
+              [
+                4.8053411327,
+                43.938042419
+              ],
+              [
+                4.8053556303,
+                43.9380413118
+              ],
+              [
+                4.8053696106,
+                43.938044298
+              ],
+              [
+                4.8053809454,
+                43.9380509228
+              ],
+              [
+                4.8053879089,
+                43.9380601777
+              ],
+              [
+                4.8054896152,
+                43.9382963874
+              ],
+              [
+                4.8054896761,
+                43.9382965301
+              ],
+              [
+                4.8056081876,
+                43.9385772325
+              ],
+              [
+                4.8056083927,
+                43.9385777356
+              ],
+              [
+                4.8056923963,
+                43.9387914937
+              ],
+              [
+                4.8056927421,
+                43.9387924384
+              ],
+              [
+                4.8057178205,
+                43.9388663332
+              ],
+              [
+                4.8057184637,
+                43.9388768574
+              ],
+              [
+                4.8057134845,
+                43.9388867583
+              ],
+              [
+                4.8057036408,
+                43.9388945287
+              ],
+              [
+                4.8056904313,
+                43.9388989855
+              ],
+              [
+                4.805675867,
+                43.9388994503
+              ],
+              [
+                4.8056621651,
+                43.9388958524
+              ],
+              [
+                4.8056514117,
+                43.9388887393
+              ],
+              [
+                4.8056452439,
+                43.9388791942
+              ],
+              [
+                4.8056203268,
+                43.938805774
+              ],
+              [
+                4.8055366073,
+                43.9385927383
+              ],
+              [
+                4.8054182321,
+                43.9383123581
+              ]
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "id": 90390,
+        "idemprise": "11525",
+        "idarrete": "850041398",
+        "shorturl": "https://dl.sogelink.fr/?gOE2byH1",
+        "arretesrcid": "20-AT-1274",
+        "collectivitelibelle": "MAIRIE D 'AVIGNON",
+        "collectiviteid": null,
+        "collectiviteagencelibelle": "AVIGNON",
+        "collectiviteagenceid": null,
+        "documenttype": "ARRETE TEMPORAIRE",
+        "arretedebut": "20201211000000",
+        "arretefin": "20201215000000",
+        "empriseno": "1",
+        "emprisetype": "STATIONNEMENT",
+        "emprisedebut": "2020-12-11T00:00:00Z",
+        "emprisefin": "2020-12-15T00:00:00Z",
+        "mesures": "Interdiction de stationnement;Circulation alternée",
+        "localisations": "DU 26 AU 39 AVENUE MONCLAR",
+        "idagence": "86177",
+        "publicationinternet": true,
+        "categoriesmodele": "Travaux",
+        "nommodele": null,
+        "parametresarrete": null,
+        "parametresemprise": null,
+        "parametresmesures": null,
+        "datecreation": "20201209094436.742",
+        "datemodification": "20201209094437.199",
+        "meta_millesime": 2020,
+        "meta_insee": "84007",
+        "meta_siren": "218400075",
+        "meta_licence": "LO",
+        "meta_datmaj": "20220514002258",
+        "arretes_type": "travaux impactant la circulation",
+        "nom_fic": "84007-travauxArretes"
+      }
+    }
+  ]
+}
