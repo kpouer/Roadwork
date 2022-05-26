@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,10 @@ public class LocalizationService {
 
     private final MessageSource resourceBundle;
 
-    public LocalizationService(MessageSource resourceBundle) {
+    public LocalizationService() {
+        var resourceBundle = new ResourceBundleMessageSource();
+        resourceBundle.setBasenames("messages");
+        resourceBundle.setUseCodeAsDefaultMessage(true);
         this.resourceBundle = resourceBundle;
     }
 
