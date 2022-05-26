@@ -48,7 +48,8 @@ public class Config {
     private int threadCount = 2;
     private String datePattern = "yyyy-MM-dd";
     private String opendataService = "ParisService";
-    private String dataPath = "data";
+    private String dataPath;
+    private String legacyDataPath = "data";
     private UserSettings userSettings;
     private final SoftwareModel softwareModel;
 
@@ -56,6 +57,13 @@ public class Config {
         this.softwareModel = softwareModel;
         logger.info("Config start");
 
+        String userHome = System.getProperty("user.home");
+        if (userHome == null) {
+            dataPath = "data";
+        } else {
+            dataPath = userHome + "/.roadwork";
+            migrateIfNecessary();
+        }
         Path userSettingsPath = getUserSettingsPath();
         if (Files.exists(userSettingsPath)) {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -67,6 +75,20 @@ public class Config {
             }
         } else {
             userSettings = new UserSettings();
+        }
+    }
+
+    private void migrateIfNecessary() {
+        if (!Files.exists(Path.of(dataPath))) {
+            Path oldData = Path.of("data");
+            if (Files.exists(oldData)) {
+                logger.info("migrate data");
+                try {
+                    Files.move(oldData, Path.of(dataPath));
+                } catch (IOException e) {
+                    logger.error("Unable to migrate data", e);
+                }
+            }
         }
     }
 
