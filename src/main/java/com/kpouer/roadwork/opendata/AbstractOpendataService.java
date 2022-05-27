@@ -62,6 +62,7 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.setMessageConverters(messageConverters);
         E response = restTemplate.getForObject(url, responseType);
+        logger.info("Data retrieved");
         if (response == null) {
             return Optional.empty();
         }
