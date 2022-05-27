@@ -17,9 +17,9 @@ package com.kpouer.roadwork.opendata.germany.berlin.model;
 
 public class Feature {
     private Properties properties;
-    private Geometry geometry;
+    private BerlinGeometry geometry;
 
-    public Geometry getGeometry() {
+    public BerlinGeometry getGeometry() {
         return geometry;
     }
 
@@ -31,7 +31,7 @@ public class Feature {
         this.properties = properties;
     }
 
-    public void setGeometry(Geometry geometry) {
+    public void setGeometry(BerlinGeometry geometry) {
         this.geometry = geometry;
     }
 

@@ -15,6 +15,8 @@
  */
 package com.kpouer.roadwork.opendata.france.bordeaux.model;
 
+import com.kpouer.roadwork.opendata.model.Geometry;
+
 /**
  * @author Matthieu Casanova
  */

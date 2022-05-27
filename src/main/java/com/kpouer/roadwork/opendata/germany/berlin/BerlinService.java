@@ -62,7 +62,7 @@ public class BerlinService extends AbstractOpendataService<Feature, BerlinOpenda
         } catch (Exception e) {
             logger.error("Unable to parse to date {} of feature {}", validity.getTo(), feature);
         }
-        Geometry geometry = feature.getGeometry();
+        BerlinGeometry geometry = feature.getGeometry();
         double[] coordinates = geometry.getCoordinates();
         double latitude;
         double longitude;

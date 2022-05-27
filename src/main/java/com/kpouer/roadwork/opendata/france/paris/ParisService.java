@@ -20,7 +20,7 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.paris.model.Fields;
-import com.kpouer.roadwork.opendata.france.paris.model.Geometry;
+import com.kpouer.roadwork.opendata.model.Geometry;
 import com.kpouer.roadwork.opendata.france.paris.model.ParisOpendataResponse;
 import com.kpouer.roadwork.opendata.france.paris.model.Record;
 import org.slf4j.Logger;

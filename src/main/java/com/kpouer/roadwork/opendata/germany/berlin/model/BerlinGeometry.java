@@ -15,36 +15,18 @@
  */
 package com.kpouer.roadwork.opendata.germany.berlin.model;
 
-import com.kpouer.roadwork.opendata.model.GeometryType;
+import com.kpouer.roadwork.opendata.model.Geometry;
 
 import java.util.List;
 
-public class Geometry {
+public class BerlinGeometry extends Geometry {
     private List<GeometrysItem> geometries;
-    private GeometryType type;
-    private double[] coordinates;
 
     public List<GeometrysItem> getGeometries() {
         return geometries;
     }
 
-    public double[] getCoordinates() {
-        return coordinates;
-    }
-
-    public GeometryType getType() {
-        return type;
-    }
-
-    public void setType(GeometryType type) {
-        this.type = type;
-    }
-
     public void setGeometries(List<GeometrysItem> geometries) {
         this.geometries = geometries;
-    }
-
-    public void setCoordinates(double[] coordinates) {
-        this.coordinates = coordinates;
     }
 }

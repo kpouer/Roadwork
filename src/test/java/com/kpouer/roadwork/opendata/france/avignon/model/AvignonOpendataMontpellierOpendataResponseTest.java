@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.germany.berlin.model;
+package com.kpouer.roadwork.opendata.france.avignon.model;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,13 +25,13 @@ import java.io.InputStream;
 /**
  * @author Matthieu Casanova
  */
-class BerlinOpendataResponseTest {
+class AvignonOpendataMontpellierOpendataResponseTest {
     @Test
     void deserialize() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try (InputStream resourceAsStream = BerlinOpendataResponse.class.getResourceAsStream("/germany/berlin.json")) {
-            BerlinOpendataResponse opendataResponse = objectMapper.readValue(resourceAsStream, BerlinOpendataResponse.class);
+        try (InputStream resourceAsStream = AvignonOpendataResponse.class.getResourceAsStream("/france/avignon.json")) {
+            AvignonOpendataResponse avignonOpendataResponse = objectMapper.readValue(resourceAsStream, AvignonOpendataResponse.class);
         }
     }
 }

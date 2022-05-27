@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.france.toulouse.model;
+package com.kpouer.roadwork.opendata.model;
 
 import com.kpouer.roadwork.opendata.model.GeometryType;
 
