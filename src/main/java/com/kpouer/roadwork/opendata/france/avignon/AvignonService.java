@@ -26,6 +26,7 @@ import com.kpouer.roadwork.opendata.france.avignon.model.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,8 +41,8 @@ public class AvignonService extends AbstractOpendataService<Feature, AvignonOpen
     public static final String SOURCE_URL = "https://trouver.datasud.fr/dataset/avignon-arretes-travaux-avec-impact-circulation";
     private static final String URL = "https://trouver.datasud.fr/dataset/d3055f04-fd52-4e30-b04a-4d485a75355b/resource/72ae99d6-3b1e-4598-b8cb-d3ff463b03d0/download/84007-travauxarretes.geojson";
 
-    public AvignonService() {
-        super(new LatLng(43.94566, 4.80955), URL, AvignonOpendataResponse.class);
+    public AvignonService(RestTemplate restTemplate) {
+        super(new LatLng(43.94566, 4.80955), URL, AvignonOpendataResponse.class, restTemplate);
     }
 
     @Override

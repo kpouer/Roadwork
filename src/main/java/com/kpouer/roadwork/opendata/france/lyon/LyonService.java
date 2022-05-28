@@ -25,6 +25,7 @@ import com.kpouer.roadwork.opendata.france.lyon.model.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,8 +38,8 @@ public class LyonService extends AbstractOpendataService<Features, LyonOpendataR
     private static final Logger logger = LoggerFactory.getLogger(LyonService.class);
     private static final String URL = "https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=pvo_patrimoine_voirie.pvochantierperturbant&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:4171&startIndex=0&count=1000";
 
-    public LyonService() {
-        super(new LatLng(45.75627, 4.85115), URL, LyonOpendataResponse.class);
+    public LyonService(RestTemplate restTemplate) {
+        super(new LatLng(45.75627, 4.85115), URL, LyonOpendataResponse.class, restTemplate);
     }
 
     @Override

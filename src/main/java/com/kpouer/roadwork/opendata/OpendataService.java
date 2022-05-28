@@ -17,15 +17,15 @@ package com.kpouer.roadwork.opendata;
 
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.RoadworkData;
+import org.springframework.web.client.RestClientException;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
  * @author Matthieu Casanova
  */
 public interface OpendataService {
-    Optional<RoadworkData> getData() throws IOException;
+    Optional<RoadworkData> getData() throws RestClientException;
 
     LatLng getCenter();
 }

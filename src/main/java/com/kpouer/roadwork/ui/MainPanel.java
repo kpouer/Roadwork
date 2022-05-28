@@ -28,12 +28,15 @@ import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,6 +52,8 @@ import java.util.Optional;
  */
 @Service
 public class MainPanel extends JFrame implements GenericApplicationListener {
+    private static final Logger logger = LoggerFactory.getLogger(MainPanel.class);
+
     private final MapView mapView;
     private final DetailPanel detailPanel;
     private final OpendataServiceManager opendataServiceManager;
@@ -128,6 +133,9 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             mapView.fitToMarkers();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (RestClientException e) {
+            logger.error("Error retrieving data", e);
+            EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
         }
     }
 

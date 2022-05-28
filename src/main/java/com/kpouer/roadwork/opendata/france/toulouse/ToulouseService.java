@@ -26,6 +26,7 @@ import com.kpouer.roadwork.opendata.model.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,8 +39,8 @@ public class ToulouseService extends AbstractOpendataService<Record, ToulouseOpe
     private static final Logger logger = LoggerFactory.getLogger(ToulouseService.class);
     private static final String URL = "https://data.toulouse-metropole.fr/api/records/1.0/search/?dataset=chantiers-en-cours&q=&rows=1000&facet=voie&facet=commune&facet=pole&facet=declarant&facet=entreprise&facet=datedebut&facet=datefin";
 
-    public ToulouseService() {
-        super(new LatLng(43.60072, 1.44118), URL, ToulouseOpendataResponse.class);
+    public ToulouseService(RestTemplate restTemplate) {
+        super(new LatLng(43.60072, 1.44118), URL, ToulouseOpendataResponse.class, restTemplate);
     }
 
     @Override

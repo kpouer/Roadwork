@@ -26,6 +26,7 @@ import com.kpouer.roadwork.opendata.france.rennes.model.RennesOpendataResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,8 +41,8 @@ public class RennesService extends AbstractOpendataService<FeaturesItem, RennesO
     private static final String SOURCE_URL = "http://travaux.data.rennesmetropole.fr/#roadwork-info";
     private static final String URL = "http://travaux.data.rennesmetropole.fr/api/roadworks?epsg=4326";
 
-    public RennesService() {
-        super(new LatLng(48.10881, -1.67018), URL, RennesOpendataResponse.class);
+    public RennesService(RestTemplate restTemplate) {
+        super(new LatLng(48.10881, -1.67018), URL, RennesOpendataResponse.class, restTemplate);
     }
 
     @Override

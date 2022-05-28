@@ -27,7 +27,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PreDestroy;
 import java.awt.*;
@@ -52,6 +54,9 @@ public class Config {
     private String legacyDataPath = "data";
     private UserSettings userSettings;
     private final SoftwareModel softwareModel;
+    private int connectTimeout = 1000;
+    private int connectionRequestTimeout = 1000;
+    private int readTimeout = 300000;
 
     public Config(SoftwareModel softwareModel) {
         this.softwareModel = softwareModel;
@@ -115,6 +120,30 @@ public class Config {
         } catch (IOException e) {
             logger.error("Error while saving settings", e);
         }
+    }
+
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public void setConnectTimeout(int connectTimeout) {
+        this.connectTimeout = connectTimeout;
+    }
+
+    public int getConnectionRequestTimeout() {
+        return connectionRequestTimeout;
+    }
+
+    public void setConnectionRequestTimeout(int connectionRequestTimeout) {
+        this.connectionRequestTimeout = connectionRequestTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
     }
 
     public int getTilesSize() {
@@ -209,5 +238,15 @@ public class Config {
                 "https://worldtiles1.waze.com/tiles/${z}/${x}/${y}.png",
                 "https://worldtiles2.waze.com/tiles/${z}/${x}/${y}.png",
                 "https://worldtiles3.waze.com/tiles/${z}/${x}/${y}.png");
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpRequestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
+        httpRequestFactory.setConnectTimeout(connectTimeout);
+        httpRequestFactory.setReadTimeout(readTimeout);
+
+        return new RestTemplate(httpRequestFactory);
     }
 }

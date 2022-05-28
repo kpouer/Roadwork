@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -37,11 +38,13 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
     private final LatLng location;
     private final String url;
     private final Class<E> responseType;
+    private final RestTemplate restTemplate;
 
-    protected AbstractOpendataService(LatLng location, String url, Class<E> responseType) {
+    protected AbstractOpendataService(LatLng location, String url, Class<E> responseType, RestTemplate restTemplate) {
         this.location = location;
         this.url = url;
         this.responseType = responseType;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -50,7 +53,7 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
     }
 
     @Override
-    public Optional<RoadworkData> getData() {
+    public Optional<RoadworkData> getData() throws RestClientException {
         logger.info("getData from {} -> {}", url, responseType);
 
         // because some opendata service do not return Json content type
@@ -59,13 +62,13 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
         messageConverters.add(converter);
 
-        RestTemplate restTemplate = new RestTemplate();
         restTemplate.setMessageConverters(messageConverters);
         E response = restTemplate.getForObject(url, responseType);
-        logger.info("Data retrieved");
         if (response == null) {
+            logger.debug("No data");
             return Optional.empty();
         }
+        logger.info("Data retrieved");
         return Optional.of(getRoadworkData(response));
     }
 

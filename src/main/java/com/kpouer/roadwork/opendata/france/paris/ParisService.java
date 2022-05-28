@@ -26,6 +26,7 @@ import com.kpouer.roadwork.opendata.france.paris.model.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,8 +39,8 @@ public class ParisService extends AbstractOpendataService<Record, ParisOpendataR
     private static final Logger logger = LoggerFactory.getLogger(ParisService.class);
     private static final String URL = "https://opendata.paris.fr/api/records/1.0/search/?dataset=chantiers-perturbants&q=&rows=1000&facet=cp_arrondissement&facet=typologie&facet=maitre_ouvrage&facet=objet&facet=impact_circulation&facet=niveau_perturbation&facet=statut&exclude.statut=5";
 
-    public ParisService() {
-        super(new LatLng(48.85337, 2.34847), URL, ParisOpendataResponse.class);
+    public ParisService(RestTemplate restTemplate) {
+        super(new LatLng(48.85337, 2.34847), URL, ParisOpendataResponse.class, restTemplate);
     }
 
     @Override

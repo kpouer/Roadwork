@@ -25,6 +25,7 @@ import com.kpouer.roadwork.opendata.model.GeometryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -39,8 +40,8 @@ public class BerlinService extends AbstractOpendataService<Feature, BerlinOpenda
     private static final String SOURCE_URL = "https://daten.berlin.de/datensaetze/baustellen-sperrungen-und-sonstige-st%C3%B6rungen-von-besonderem-verkehrlichem-interesse";
     private static final String URL = "https://api.viz.berlin.de/daten/baustellen_sperrungen.json";
 
-    public BerlinService() {
-        super(new LatLng(52.51935, 13.41156), URL, BerlinOpendataResponse.class);
+    public BerlinService(RestTemplate restTemplate) {
+        super(new LatLng(52.51935, 13.41156), URL, BerlinOpendataResponse.class, restTemplate);
     }
 
     @Override

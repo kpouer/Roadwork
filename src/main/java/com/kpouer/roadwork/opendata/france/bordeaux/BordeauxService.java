@@ -26,6 +26,7 @@ import com.kpouer.roadwork.opendata.model.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,8 +39,8 @@ public class BordeauxService extends AbstractOpendataService<Record, BordeauxOpe
     private static final Logger logger = LoggerFactory.getLogger(BordeauxService.class);
     private static final String URL = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=ci_chantier&q=&rows=1000&facet=alias_nature_n1&facet=alias_nature_n2&facet=geo_shape_type";
 
-    public BordeauxService() {
-        super(new LatLng(44.84492, -0.57352), URL, BordeauxOpendataResponse.class);
+    public BordeauxService(RestTemplate restTemplate) {
+        super(new LatLng(44.84492, -0.57352), URL, BordeauxOpendataResponse.class, restTemplate);
     }
 
     @Override

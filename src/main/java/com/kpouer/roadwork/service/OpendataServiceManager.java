@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,7 +55,7 @@ public class OpendataServiceManager {
         this.synchronizationService = synchronizationService;
     }
 
-    public Optional<RoadworkData> getData() throws IOException {
+    public Optional<RoadworkData> getData() throws RestClientException, IOException {
         Optional<RoadworkData> roadworks = getRoadworks();
         roadworks.ifPresent(roadworkData -> {
             applyFinishedStatus(roadworkData);
@@ -90,10 +91,10 @@ public class OpendataServiceManager {
      * If
      *
      * @return an optional that should contains Roadwork data
-     * @throws IOException if an exception happens
+     * @throws RestClientException if a RestClientException happens
      */
     @NotNull
-    private Optional<RoadworkData> getRoadworks() throws IOException {
+    private Optional<RoadworkData> getRoadworks() throws RestClientException, IOException {
         Path currentPath = getPath(config.getOpendataService());
         logger.info("getData {}", currentPath);
         Optional<RoadworkData> cachedDataOptional = loadCache(currentPath);
