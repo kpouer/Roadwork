@@ -22,6 +22,7 @@ import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.service.LocalizationService;
+import com.kpouer.roadwork.service.OpendataServiceManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
@@ -42,12 +43,13 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
     public ToolbarPanel(ApplicationContext applicationContext,
                         Config config,
                         ApplicationEventPublisher applicationEventPublisher,
-                        LocalizationService localizationService) {
+                        LocalizationService localizationService,
+                        OpendataServiceManager opendataServiceManager) {
         super(new BorderLayout());
         this.config = config;
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        String[] opendataServices = applicationContext.getBeanNamesForType(OpendataService.class);
-        JComboBox<String> opendataServiceComboBox = new JComboBox<>(opendataServices);
+        String[] serviceNames = opendataServiceManager.getServices().toArray(new String[0]);
+        JComboBox<String> opendataServiceComboBox = new JComboBox<>(serviceNames);
         opendataServiceComboBox.setSelectedItem(config.getOpendataService());
         opendataServiceComboBox.addActionListener(e -> {
             String selectedItem = (String) opendataServiceComboBox.getSelectedItem();

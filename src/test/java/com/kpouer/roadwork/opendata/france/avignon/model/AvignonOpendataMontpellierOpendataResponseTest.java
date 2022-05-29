@@ -30,7 +30,7 @@ class AvignonOpendataMontpellierOpendataResponseTest {
     void deserialize() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try (InputStream resourceAsStream = AvignonOpendataResponse.class.getResourceAsStream("/france/avignon.json")) {
+        try (InputStream resourceAsStream = AvignonOpendataResponse.class.getResourceAsStream("/sample/france/avignon.json")) {
             AvignonOpendataResponse avignonOpendataResponse = objectMapper.readValue(resourceAsStream, AvignonOpendataResponse.class);
         }
     }

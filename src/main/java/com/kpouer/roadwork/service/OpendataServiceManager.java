@@ -23,19 +23,21 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.opendata.OpendataService;
+import com.kpouer.roadwork.opendata.json.DefaultJsonService;
+import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Matthieu Casanova
@@ -45,14 +47,35 @@ public class OpendataServiceManager {
     private static final Logger logger = LoggerFactory.getLogger(OpendataServiceManager.class);
     private static final String VERSION = "2";
 
+    private final RestTemplate restTemplate;
     private final Config config;
     private final ApplicationContext applicationContext;
     private final SynchronizationService synchronizationService;
 
-    public OpendataServiceManager(Config config, ApplicationContext applicationContext, SynchronizationService synchronizationService) {
+    public OpendataServiceManager(RestTemplate restTemplate,
+                                  Config config,
+                                  ApplicationContext applicationContext,
+                                  SynchronizationService synchronizationService) {
+        this.restTemplate = restTemplate;
         this.config = config;
         this.applicationContext = applicationContext;
         this.synchronizationService = synchronizationService;
+    }
+
+    public List<String> getServices() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        List<String> services = new ArrayList<>();
+        Collections.addAll(services, applicationContext.getBeanNamesForType(OpendataService.class));
+        try {
+            Files.list(Path.of("opendata"))
+                    .map(Path::toFile)
+                    .map(File::getName)
+                    .forEach(services::add);
+        } catch (IOException e) {
+            logger.error("Unable to read opendata services", e);
+        }
+        return services;
     }
 
     public Optional<RoadworkData> getData() throws RestClientException, IOException {
@@ -132,7 +155,19 @@ public class OpendataServiceManager {
 
     @NotNull
     private OpendataService getOpendataService() {
-        return applicationContext.getBean(config.getOpendataService(), OpendataService.class);
+        String opendataService = config.getOpendataService();
+        if (opendataService.endsWith(".json")) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            try {
+                ServiceDescriptor serviceDescriptor = objectMapper.readValue(new File(new File("opendata"), opendataService), ServiceDescriptor.class);
+                return new DefaultJsonService(restTemplate, serviceDescriptor);
+            } catch (IOException e) {
+                logger.error("Unable to load service " + opendataService, e);
+                throw new RuntimeException(e);
+            }
+        }
+        return applicationContext.getBean(opendataService, OpendataService.class);
     }
 
     @NotNull

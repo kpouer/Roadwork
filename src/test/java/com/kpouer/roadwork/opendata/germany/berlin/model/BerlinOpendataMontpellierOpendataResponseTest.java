@@ -30,7 +30,7 @@ class BerlinOpendataMontpellierOpendataResponseTest {
     void deserialize() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try (InputStream resourceAsStream = BerlinOpendataResponse.class.getResourceAsStream("/germany/berlin.json")) {
+        try (InputStream resourceAsStream = BerlinOpendataResponse.class.getResourceAsStream("/sample/germany/berlin.json")) {
             BerlinOpendataResponse opendataResponse = objectMapper.readValue(resourceAsStream, BerlinOpendataResponse.class);
         }
     }
