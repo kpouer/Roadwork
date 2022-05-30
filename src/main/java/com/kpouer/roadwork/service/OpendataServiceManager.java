@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * @author Matthieu Casanova
@@ -67,8 +68,8 @@ public class OpendataServiceManager {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         List<String> services = new ArrayList<>();
         Collections.addAll(services, applicationContext.getBeanNamesForType(OpendataService.class));
-        try {
-            Files.list(Path.of("opendata"))
+        try (Stream<Path> files = Files.list(Path.of("opendata/json"))) {
+            files
                     .map(Path::toFile)
                     .map(File::getName)
                     .forEach(services::add);
