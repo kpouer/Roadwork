@@ -161,7 +161,7 @@ public class OpendataServiceManager {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
-                ServiceDescriptor serviceDescriptor = objectMapper.readValue(new File(new File("opendata"), opendataService), ServiceDescriptor.class);
+                ServiceDescriptor serviceDescriptor = objectMapper.readValue(Path.of("opendata", "json", opendataService).toFile(), ServiceDescriptor.class);
                 return new DefaultJsonService(restTemplate, serviceDescriptor);
             } catch (IOException e) {
                 logger.error("Unable to load service " + opendataService, e);

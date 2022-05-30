@@ -5,6 +5,11 @@
     "url": "https://github.com/FasterXML/jackson-databind"
   },
   {
+    "name": "json-path",
+    "licence": "Apache-2.0",
+    "url": "https://github.com/json-path/JsonPath"
+  },
+  {
     "name": "k-mapview",
     "licence": "Apache-2.0",
     "url": "https://github.com/kpouer/KMapView"

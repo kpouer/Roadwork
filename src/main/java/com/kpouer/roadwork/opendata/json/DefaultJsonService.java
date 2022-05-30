@@ -1,8 +1,7 @@
 package com.kpouer.roadwork.opendata.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.JsonPath;
 import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.DateRange;
 import com.kpouer.roadwork.model.Roadwork;
@@ -12,16 +11,15 @@ import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.model.DateParser;
 import com.kpouer.roadwork.opendata.json.model.DateResult;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class DefaultJsonService implements OpendataService {
@@ -37,62 +35,22 @@ public class DefaultJsonService implements OpendataService {
 
     @Override
     public Optional<RoadworkData> getData() throws RestClientException {
-        ObjectNode json = restTemplate.getForObject(serviceDescriptor.getUrl(), ObjectNode.class);
-        Optional<ArrayNode> roadworkArray = getRoadworkArray(json);
-        return roadworkArray.map(this::getRoadworkData);
+        String json = restTemplate.getForObject(serviceDescriptor.getUrl(), String.class);
+        Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
+        List<?> roadworkArray = JsonPath.read(document, serviceDescriptor.getRoadworkArray());
+        List<Roadwork> roadworks = roadworkArray
+                .parallelStream()
+                .map(this::buildRoadwork)
+                .filter(Objects::nonNull)
+                .toList();
+        return Optional.of(new RoadworkData(serviceDescriptor.getName(), roadworks));
     }
 
-    private Optional<ArrayNode> getRoadworkArray(ObjectNode json) {
-        String roadworkArrayPath = serviceDescriptor.getRoadworkArray();
-        return getNode(json, roadworkArrayPath);
-    }
-
-    private <T extends JsonNode> Optional<T> getNode(JsonNode json, String path) {
-        String[] tokens = path.split("\\.");
-        JsonNode objectNode = json;
-        for (String token : tokens) {
-            objectNode = objectNode.get(token);
-            if (objectNode == null) {
-                return Optional.empty();
-            }
-        }
-        return Optional.of((T) objectNode);
-    }
-
-    @Nullable
-    private String getNodeAsString(JsonNode jsonNode, String path) {
-        if (path == null) {
-            return null;
-        }
-        Optional<JsonNode> node = getNode(jsonNode, path);
-        return node.map(JsonNode::asText).orElse(null);
-    }
-
-    private double getNodeAsDouble(JsonNode jsonNode, String path) {
-        Optional<JsonNode> node = getNode(jsonNode, path);
-        return node.map(JsonNode::asDouble).orElse(0.0);
-    }
-
-    private RoadworkData getRoadworkData(ArrayNode array) {
-        List<Roadwork> roadworks = new ArrayList<>(array.size());
-        for (JsonNode jsonNode : array) {
-            Roadwork roadwork = buildRoadwork(jsonNode);
-            if (roadwork == null ||
-                    roadwork.getId() == null ||
-                    roadwork.getLatitude() == 0 || roadwork.getLongitude() == 0) {
-                logger.warn("Invalid roadwork {}", array);
-            } else {
-                roadworks.add(roadwork);
-            }
-        }
-        return new RoadworkData(serviceDescriptor.getName(), roadworks);
-    }
-
-    private DateRange getDateRange(JsonNode jsonNode) throws ParseException {
+    private DateRange getDateRange(Object node) throws ParseException {
         DateParser startDateParser = serviceDescriptor.getFrom();
         DateParser endDateParser = serviceDescriptor.getTo();
-        DateResult start = startDateParser.parse(getNodeAsString(jsonNode, startDateParser.getPath()), serviceDescriptor.getLocale());
-        DateResult end = startDateParser.parse(getNodeAsString(jsonNode, endDateParser.getPath()), serviceDescriptor.getLocale());
+        DateResult start = startDateParser.parse(getPath(node, startDateParser.getPath()), serviceDescriptor.getLocale());
+        DateResult end = startDateParser.parse(getPath(node, endDateParser.getPath()), serviceDescriptor.getLocale());
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
         if (start.getParser().isResetHour()) {
@@ -128,26 +86,66 @@ public class DefaultJsonService implements OpendataService {
         return calendar.getTimeInMillis();
     }
 
-    private Roadwork buildRoadwork(JsonNode jsonNode) {
+    private Roadwork buildRoadwork(Object node) {
         try {
             RoadworkBuilder roadworkBuilder = RoadworkBuilder.aRoadwork();
-            roadworkBuilder.withId(getNodeAsString(jsonNode, serviceDescriptor.getId()));
-            roadworkBuilder.withLatitude(getNodeAsDouble(jsonNode, serviceDescriptor.getLatitude()));
-            roadworkBuilder.withLongitude(getNodeAsDouble(jsonNode, serviceDescriptor.getLongitude()));
-            roadworkBuilder.withRoad(getNodeAsString(jsonNode, serviceDescriptor.getRoad()));
-            roadworkBuilder.withDescription(getNodeAsString(jsonNode, serviceDescriptor.getDescription()));
-            roadworkBuilder.withLocationDetails(getNodeAsString(jsonNode, serviceDescriptor.getLocationDetails()));
-            DateRange dateRange = getDateRange(jsonNode);
+            roadworkBuilder.withId(getPath(node, serviceDescriptor.getId()));
+            try {
+                roadworkBuilder.withLatitude(getPathAsDouble(node, serviceDescriptor.getLatitude()));
+            } catch (ParseException e) {
+                logger.error("Unable to get latitude from {}", node);
+            }
+            try {
+                roadworkBuilder.withLongitude(getPathAsDouble(node, serviceDescriptor.getLongitude()));
+            } catch (ParseException e) {
+                logger.error("Unable to get longitude from {}", node);
+            }
+            if (serviceDescriptor.getRoad() != null) {
+                roadworkBuilder.withRoad(getPath(node, serviceDescriptor.getRoad()));
+            }
+            if (serviceDescriptor.getDescription() != null) {
+                roadworkBuilder.withDescription(getPath(node, serviceDescriptor.getDescription()));
+            }
+            if (serviceDescriptor.getLocationDetails() != null) {
+                roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
+            }
+            DateRange dateRange = getDateRange(node);
             roadworkBuilder.withStart(dateRange.getFrom());
             roadworkBuilder.withEnd(dateRange.getTo());
-            roadworkBuilder.withImpactCirculationDetail(getNodeAsString(jsonNode, serviceDescriptor.getImpactCirculationDetail()));
-            roadworkBuilder.withLocationDetails(getNodeAsString(jsonNode, serviceDescriptor.getLocationDetails()));
-            roadworkBuilder.withUrl(getNodeAsString(jsonNode, serviceDescriptor.getUrl()));
+            if (serviceDescriptor.getImpactCirculationDetail() != null) {
+                roadworkBuilder.withImpactCirculationDetail(getPath(node, serviceDescriptor.getImpactCirculationDetail()));
+            }
+            if (serviceDescriptor.getLocationDetails() != null) {
+                roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
+            }
+            if (serviceDescriptor.getUrl() != null) {
+                roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getUrl()));
+            }
             return roadworkBuilder.build();
         } catch (ParseException e) {
-            logger.error("Unable to parse " + jsonNode, e);
+            logger.error("Unable to parse " + node, e);
             return null;
         }
+    }
+
+    private static String getPath(Object node, String serviceDescriptor) {
+        try {
+            return JsonPath.read(node, serviceDescriptor);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static double getPathAsDouble(Object node, String serviceDescriptor) throws ParseException {
+        try {
+            String read = JsonPath.read(node, serviceDescriptor);
+            if (read != null) {
+                return Double.parseDouble(read);
+            }
+        } catch (Exception e) {
+            logger.error("Error parsing double");
+        }
+        throw new ParseException("Unable to parse", 0);
     }
 
     @Override

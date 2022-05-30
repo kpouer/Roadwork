@@ -3,21 +3,21 @@
   "name": "Issy-les-Moulineaux",
   "source_url": "https://data.issy.com/explore/dataset/travaux-voirie/information/?disjunctive.etat_travaux&disjunctive.mesure_titre&sort=-etat_travaux&rows=10",
   "url": "https://data.issy.com/api/records/1.0/search/?dataset=travaux-voirie&q=&rows=1000&sort=-etat_travaux&facet=etat_travaux&facet=type_travaux&facet=nature_titre&facet=impact_circulation&facet=mesure_titre&facet=rue_principal&facet=petitionnaire&facet=date_debut&facet=date_fin",
-  "roadworkArray": "records",
+  "roadworkArray": "$.records",
   "center": [
     48.82202,
     2.26586
   ],
-  "id": "fields.reference",
-  "latitude": "fields.lattitude",
-  "longitude": "fields.longitude",
-  "road": "fields.rue_principal",
-  "description": "fields.description",
-  "locationDetails": "fields.complemnt_localisation",
-  "impactCirculationDetail": "fields.impact_circulation",
   "locale": "fr_FR",
+  "id": "@.fields.reference",
+  "latitude": "@.fields.lattitude",
+  "longitude": "@.fields.longitude",
+  "road": "@.fields.rue_principal",
+  "description": "@.fields.description",
+  "locationDetails": "@.fields.complemnt_localisation",
+  "impactCirculationDetail": "@.fields.impact_circulation",
   "from": {
-    "path": "fields.date_debut",
+    "path": "@.fields.date_debut",
     "parsers": [
       {
         "matcher": ".*",
@@ -26,7 +26,7 @@
     ]
   },
   "to": {
-    "path": "fields.date_fin",
+    "path": "@.fields.date_fin",
     "parsers": [
       {
         "matcher": ".*",
