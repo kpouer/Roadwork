@@ -42,8 +42,17 @@ public class DefaultJsonService implements OpendataService {
                 .parallelStream()
                 .map(this::buildRoadwork)
                 .filter(Objects::nonNull)
+                .filter(DefaultJsonService::isValid)
                 .toList();
         return Optional.of(new RoadworkData(serviceDescriptor.getName(), roadworks));
+    }
+
+    private static boolean isValid(Roadwork roadwork) {
+        if (roadwork.getLongitude() == 0 && roadwork.getLatitude() == 0) {
+            logger.warn("{} is invalid because it has no location", roadwork);
+            return false;
+        }
+        return true;
     }
 
     private DateRange getDateRange(Object node) throws ParseException {
