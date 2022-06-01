@@ -21,8 +21,6 @@ import org.jetbrains.annotations.Nls;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 /**
  * @author Matthieu Casanova
@@ -31,11 +29,9 @@ public class OpensourceTableModel implements TableModel {
     private final Oss[] data;
 
     public OpensourceTableModel() {
-        try (Reader reader = new InputStreamReader(OpensourceTableModel.class.getResourceAsStream("/com/kpouer/ui/oss.json"))) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            data = objectMapper.readValue(reader, Oss[].class);
-
-
+        try {
+            var objectMapper = new ObjectMapper();
+            data = objectMapper.readValue(OpensourceTableModel.class.getResource("/com/kpouer/ui/oss.json"), Oss[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,7 +48,7 @@ public class OpensourceTableModel implements TableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
     }
 
     @Nls
@@ -73,14 +69,13 @@ public class OpensourceTableModel implements TableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Oss oss = data[rowIndex];
-        switch (columnIndex) {
-            case 0:
-                return oss.name();
-            case 1:
-                return oss.licence();
-        }
-        return null;
+        var oss = data[rowIndex];
+        return switch (columnIndex) {
+            case 0 -> oss.name();
+            case 1 -> oss.licence();
+            case 2 -> oss.url();
+            default -> null;
+        };
     }
 
     @Override

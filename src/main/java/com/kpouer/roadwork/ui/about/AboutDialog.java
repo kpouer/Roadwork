@@ -34,7 +34,7 @@ public class AboutDialog extends JDialog {
         super(softwareModel.getMainFrame());
         getContentPane().setLayout(new MigLayout());
         JLabel roadworkTitle = new JLabel("Roadwork");
-        roadworkTitle.setFont(roadworkTitle.getFont().deriveFont((float) 20.0));
+        roadworkTitle.setFont(roadworkTitle.getFont().deriveFont(20.0f));
 
         getContentPane().add(roadworkTitle, "wrap");
         getContentPane().add(new JLabel("Open source software"), "wrap");
@@ -44,17 +44,16 @@ public class AboutDialog extends JDialog {
         ossTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
+                int column = ossTable.columnAtPoint(e.getPoint());
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE) && column == 2) {
                     int row = ossTable.rowAtPoint(e.getPoint());
-                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                        try {
-                            String url = ossModel.get(row).url();
-                            Desktop.getDesktop().browse(new URI(url));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        } catch (URISyntaxException ex) {
-                            throw new RuntimeException(ex);
-                        }
+                    try {
+                        String url = ossModel.get(row).url();
+                        Desktop.getDesktop().browse(new URI(url));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (URISyntaxException ex) {
+                        throw new RuntimeException(ex);
                     }
                 }
 
