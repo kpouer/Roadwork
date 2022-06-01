@@ -38,7 +38,7 @@ public class AboutAction extends AbstractAction {
 
     @Override
     public void actionPerformed(@Nullable ActionEvent e) {
-        AboutDialog dialog = new AboutDialog(softwareModel);
+        AboutDialog dialog = new AboutDialog(softwareModel.getMainFrame());
         dialog.setLocationRelativeTo(softwareModel.getMainFrame());
         dialog.setVisible(true);
     }

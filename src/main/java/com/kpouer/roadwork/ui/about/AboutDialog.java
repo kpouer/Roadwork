@@ -15,7 +15,6 @@
  */
 package com.kpouer.roadwork.ui.about;
 
-import com.kpouer.roadwork.service.SoftwareModel;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -30,8 +29,8 @@ import java.net.URISyntaxException;
  * @author Matthieu Casanova
  */
 public class AboutDialog extends JDialog {
-    public AboutDialog(SoftwareModel softwareModel) {
-        super(softwareModel.getMainFrame());
+    public AboutDialog(JFrame mainFrame) {
+        super(mainFrame);
         getContentPane().setLayout(new MigLayout());
         JLabel roadworkTitle = new JLabel("Roadwork");
         roadworkTitle.setFont(roadworkTitle.getFont().deriveFont(20.0f));
