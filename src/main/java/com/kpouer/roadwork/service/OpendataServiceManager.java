@@ -70,12 +70,14 @@ public class OpendataServiceManager {
         Collections.addAll(services, applicationContext.getBeanNamesForType(OpendataService.class));
         try (Stream<Path> files = Files.list(Path.of("opendata/json"))) {
             files
+                    .filter(path -> path.endsWith(".json"))
                     .map(Path::toFile)
                     .map(File::getName)
                     .forEach(services::add);
         } catch (IOException e) {
             logger.error("Unable to read opendata services", e);
         }
+        Collections.sort(services);
         return services;
     }
 
@@ -107,7 +109,7 @@ public class OpendataServiceManager {
      * @return some coordinates
      */
     public LatLng getCenter() {
-        return getOpendataService().getCenter();
+        return getOpendataService().getMetadata().getCenter();
     }
 
     /**
@@ -157,6 +159,11 @@ public class OpendataServiceManager {
     @NotNull
     private OpendataService getOpendataService() {
         String opendataService = config.getOpendataService();
+        return getOpendataService(opendataService);
+    }
+
+    @NotNull
+    public OpendataService getOpendataService(String opendataService) {
         if (opendataService.endsWith(".json")) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

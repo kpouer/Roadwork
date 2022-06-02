@@ -17,7 +17,6 @@ package com.kpouer.roadwork.opendata.json;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
-import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.DateRange;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
@@ -25,6 +24,7 @@ import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.model.DateParser;
 import com.kpouer.roadwork.opendata.json.model.DateResult;
+import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +49,13 @@ public class DefaultJsonService implements OpendataService {
     }
 
     @Override
+    public Metadata getMetadata() {
+        return serviceDescriptor.getMetadata();
+    }
+
+    @Override
     public Optional<RoadworkData> getData() throws RestClientException {
-        String json = restTemplate.getForObject(serviceDescriptor.getUrl(), String.class);
+        String json = restTemplate.getForObject(serviceDescriptor.getMetadata().getUrl(), String.class);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         List<?> roadworkArray = JsonPath.read(document, serviceDescriptor.getRoadworkArray());
         List<Roadwork> roadworks = roadworkArray
@@ -59,7 +64,7 @@ public class DefaultJsonService implements OpendataService {
                 .filter(Objects::nonNull)
                 .filter(DefaultJsonService::isValid)
                 .toList();
-        return Optional.of(new RoadworkData(serviceDescriptor.getName(), roadworks));
+        return Optional.of(new RoadworkData(serviceDescriptor.getMetadata().getName(), roadworks));
     }
 
     private static boolean isValid(Roadwork roadwork) {
@@ -142,8 +147,8 @@ public class DefaultJsonService implements OpendataService {
             if (serviceDescriptor.getLocationDetails() != null) {
                 roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
             }
-            if (serviceDescriptor.getUrl() != null) {
-                roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getUrl()));
+            if (serviceDescriptor.getMetadata().getUrl() != null) {
+                roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getMetadata().getUrl()));
             }
             return roadworkBuilder.build();
         } catch (ParseException e) {
@@ -170,10 +175,5 @@ public class DefaultJsonService implements OpendataService {
             logger.error("Error parsing double");
         }
         throw new ParseException("Unable to parse", 0);
-    }
-
-    @Override
-    public LatLng getCenter() {
-        return serviceDescriptor.getCenter();
     }
 }

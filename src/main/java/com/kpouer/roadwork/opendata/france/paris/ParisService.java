@@ -20,6 +20,7 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.paris.model.Fields;
+import com.kpouer.roadwork.opendata.json.model.MetadataBuilder;
 import com.kpouer.roadwork.opendata.model.Geometry;
 import com.kpouer.roadwork.opendata.france.paris.model.ParisOpendataResponse;
 import com.kpouer.roadwork.opendata.france.paris.model.Record;
@@ -37,10 +38,22 @@ import java.text.SimpleDateFormat;
 @Service("ParisService")
 public class ParisService extends AbstractOpendataService<Record, ParisOpendataResponse> {
     private static final Logger logger = LoggerFactory.getLogger(ParisService.class);
+    private static final String SOURCE_URL = "https://opendata.paris.fr/explore/dataset/chantiers-perturbants/information/?disjunctive.cp_arrondissement&disjunctive.maitre_ouvrage&disjunctive.objet&disjunctive.impact_circulation&disjunctive.niveau_perturbation&disjunctive.statut";
     private static final String URL = "https://opendata.paris.fr/api/records/1.0/search/?dataset=chantiers-perturbants&q=&rows=1000&facet=cp_arrondissement&facet=typologie&facet=maitre_ouvrage&facet=objet&facet=impact_circulation&facet=niveau_perturbation&facet=statut&exclude.statut=5";
 
     public ParisService(RestTemplate restTemplate) {
-        super(new LatLng(48.85337, 2.34847), URL, ParisOpendataResponse.class, restTemplate);
+        super(MetadataBuilder
+                .aMetadata()
+                .withCenter(48.85337, 2.34847)
+                .withCountry("France")
+                .withName("Paris")
+                .withProducer("Direction de la Voirie et des Déplacements - Ville de Paris")
+                .withLicenceName("Open Database License (ODbL)")
+                .withLicenceUrl("https://opendatacommons.org/licenses/odbl/")
+                .withUrl(URL)
+                .withSource_url(SOURCE_URL)
+                .build(),
+                ParisOpendataResponse.class, restTemplate);
     }
 
     @Override

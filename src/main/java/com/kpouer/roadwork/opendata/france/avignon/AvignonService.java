@@ -15,7 +15,6 @@
  */
 package com.kpouer.roadwork.opendata.france.avignon;
 
-import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
@@ -23,6 +22,7 @@ import com.kpouer.roadwork.opendata.france.avignon.model.AvignonOpendataResponse
 import com.kpouer.roadwork.opendata.france.avignon.model.Feature;
 import com.kpouer.roadwork.opendata.france.avignon.model.Geometry;
 import com.kpouer.roadwork.opendata.france.avignon.model.Properties;
+import com.kpouer.roadwork.opendata.json.model.MetadataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,17 @@ public class AvignonService extends AbstractOpendataService<Feature, AvignonOpen
     private static final String URL = "https://trouver.datasud.fr/dataset/d3055f04-fd52-4e30-b04a-4d485a75355b/resource/72ae99d6-3b1e-4598-b8cb-d3ff463b03d0/download/84007-travauxarretes.geojson";
 
     public AvignonService(RestTemplate restTemplate) {
-        super(new LatLng(43.94566, 4.80955), URL, AvignonOpendataResponse.class, restTemplate);
+        super(MetadataBuilder
+                .aMetadata()
+                .withCenter(43.94566, 4.80955)
+                .withCountry("France")
+                .withName("Avignon")
+                .withProducer("Avignon")
+                .withLicenceName("Licence Ouverte Version 2.0")
+                .withLicenceUrl("https://www.etalab.gouv.fr/licence-ouverte-open-licence/")
+                .withUrl(URL)
+                .withSource_url(SOURCE_URL)
+                .build(), AvignonOpendataResponse.class, restTemplate);
     }
 
     @Override

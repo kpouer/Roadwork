@@ -15,13 +15,13 @@
  */
 package com.kpouer.roadwork.opendata.france.bordeaux;
 
-import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.bordeaux.model.BordeauxOpendataResponse;
 import com.kpouer.roadwork.opendata.france.bordeaux.model.Fields;
 import com.kpouer.roadwork.opendata.france.bordeaux.model.Record;
+import com.kpouer.roadwork.opendata.json.model.MetadataBuilder;
 import com.kpouer.roadwork.opendata.model.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +37,22 @@ import java.text.SimpleDateFormat;
 @Service("BordeauxService")
 public class BordeauxService extends AbstractOpendataService<Record, BordeauxOpendataResponse> {
     private static final Logger logger = LoggerFactory.getLogger(BordeauxService.class);
+    private static final String SOURCE_URL = "https://opendata.bordeaux-metropole.fr/explore/dataset/ci_chantier/information/";
     private static final String URL = "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=ci_chantier&q=&rows=1000&facet=alias_nature_n1&facet=alias_nature_n2&facet=geo_shape_type";
 
     public BordeauxService(RestTemplate restTemplate) {
-        super(new LatLng(44.84492, -0.57352), URL, BordeauxOpendataResponse.class, restTemplate);
+        super(MetadataBuilder
+                .aMetadata()
+                .withCenter(44.84492, -0.57352)
+                .withCountry("France")
+                .withName("Bordeaux")
+                .withProducer("Ville de Bordeaux")
+                .withLicenceName("Licence Ouverte")
+                .withLicenceUrl("https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf")
+                .withUrl(URL)
+                .withSource_url(SOURCE_URL)
+                .build(),
+                BordeauxOpendataResponse.class, restTemplate);
     }
 
     @Override

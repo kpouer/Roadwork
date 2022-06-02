@@ -21,6 +21,7 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.germany.berlin.model.*;
+import com.kpouer.roadwork.opendata.json.model.MetadataBuilder;
 import com.kpouer.roadwork.opendata.model.GeometryType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,17 @@ public class BerlinService extends AbstractOpendataService<Feature, BerlinOpenda
     private static final String URL = "https://api.viz.berlin.de/daten/baustellen_sperrungen.json";
 
     public BerlinService(RestTemplate restTemplate) {
-        super(new LatLng(52.51935, 13.41156), URL, BerlinOpendataResponse.class, restTemplate);
+        super(MetadataBuilder
+                .aMetadata()
+                .withCenter(52.51935, 13.41156)
+                .withCountry("Germany")
+                .withName("Berlin")
+                .withLicenceName("Datenlizenz Deutschland – Namensnennung – Version 2.0")
+                .withLicenceUrl("https://www.govdata.de/dl-de/by-2-0")
+                .withUrl(URL)
+                .withSource_url(SOURCE_URL)
+                .build(),
+                BerlinOpendataResponse.class, restTemplate);
     }
 
     @Override

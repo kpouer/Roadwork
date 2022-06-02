@@ -1,17 +1,19 @@
 {
-  "country": "France",
-  "name": "Issy-les-Moulineaux",
-  "producer": "Ville d'Issy-les-Moulineaux",
-  "licenceName": "Licence Ouverte v2.0 (Etalab)",
-  "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf",
-  "source_url": "https://data.issy.com/explore/dataset/travaux-voirie/information/?disjunctive.etat_travaux&disjunctive.mesure_titre&sort=-etat_travaux&rows=10",
-  "url": "https://data.issy.com/api/records/1.0/search/?dataset=travaux-voirie&q=&rows=1000&sort=-etat_travaux&facet=etat_travaux&facet=type_travaux&facet=nature_titre&facet=impact_circulation&facet=mesure_titre&facet=rue_principal&facet=petitionnaire&facet=date_debut&facet=date_fin",
+  "metadata": {
+    "country": "France",
+    "name": "Issy-les-Moulineaux",
+    "producer": "Ville d'Issy-les-Moulineaux",
+    "licenceName": "Licence Ouverte v2.0 (Etalab)",
+    "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf",
+    "source_url": "https://data.issy.com/explore/dataset/travaux-voirie/information/?disjunctive.etat_travaux&disjunctive.mesure_titre&sort=-etat_travaux&rows=10",
+    "url": "https://data.issy.com/api/records/1.0/search/?dataset=travaux-voirie&q=&rows=1000&sort=-etat_travaux&facet=etat_travaux&facet=type_travaux&facet=nature_titre&facet=impact_circulation&facet=mesure_titre&facet=rue_principal&facet=petitionnaire&facet=date_debut&facet=date_fin",
+    "center": [
+      48.82202,
+      2.26586
+    ],
+    "locale": "fr_FR"
+  },
   "roadworkArray": "$.records",
-  "center": [
-    48.82202,
-    2.26586
-  ],
-  "locale": "fr_FR",
   "id": "@.fields.reference",
   "latitude": "@.fields.lattitude",
   "longitude": "@.fields.longitude",

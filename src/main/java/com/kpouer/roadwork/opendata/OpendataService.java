@@ -15,8 +15,8 @@
  */
 package com.kpouer.roadwork.opendata;
 
-import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.RoadworkData;
+import com.kpouer.roadwork.opendata.json.model.Metadata;
 import org.springframework.web.client.RestClientException;
 
 import java.util.Optional;
@@ -27,5 +27,5 @@ import java.util.Optional;
 public interface OpendataService {
     Optional<RoadworkData> getData() throws RestClientException;
 
-    LatLng getCenter();
+    Metadata getMetadata();
 }

@@ -22,6 +22,7 @@ import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.lyon.model.Features;
 import com.kpouer.roadwork.opendata.france.lyon.model.LyonOpendataResponse;
 import com.kpouer.roadwork.opendata.france.lyon.model.Properties;
+import com.kpouer.roadwork.opendata.json.model.MetadataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,10 +37,22 @@ import java.text.SimpleDateFormat;
 @Service("LyonService")
 public class LyonService extends AbstractOpendataService<Features, LyonOpendataResponse> {
     private static final Logger logger = LoggerFactory.getLogger(LyonService.class);
+    private static final String SOURCE_URL = "https://data.grandlyon.com/jeux-de-donnees/chantiers-perturbants-metropole-lyon/info";
     private static final String URL = "https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=pvo_patrimoine_voirie.pvochantierperturbant&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:4171&startIndex=0&count=1000";
 
     public LyonService(RestTemplate restTemplate) {
-        super(new LatLng(45.75627, 4.85115), URL, LyonOpendataResponse.class, restTemplate);
+        super(MetadataBuilder
+                .aMetadata()
+                .withCenter(45.75627, 4.85115)
+                .withCountry("France")
+                .withName("Lyon")
+                .withProducer("Métropole de Lyon")
+                .withLicenceName("Licence Ouverte")
+                .withLicenceUrl("https://download.data.grandlyon.com/licences/ETALAB-Licence-Ouverte-v2.0.pdf")
+                .withUrl(URL)
+                .withSource_url(SOURCE_URL)
+                .build(),
+                LyonOpendataResponse.class, restTemplate);
     }
 
     @Override

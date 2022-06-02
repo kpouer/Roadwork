@@ -15,9 +15,9 @@
  */
 package com.kpouer.roadwork.opendata;
 
-import com.kpouer.mapview.LatLng;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
+import com.kpouer.roadwork.opendata.json.model.Metadata;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,26 +35,24 @@ import java.util.*;
 public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> implements OpendataService {
     private static final Logger logger = LoggerFactory.getLogger(AbstractOpendataService.class);
 
-    private final LatLng location;
-    private final String url;
     private final Class<E> responseType;
     private final RestTemplate restTemplate;
+    private final Metadata metadata;
 
-    protected AbstractOpendataService(LatLng location, String url, Class<E> responseType, RestTemplate restTemplate) {
-        this.location = location;
-        this.url = url;
+    protected AbstractOpendataService(Metadata metadata, Class<E> responseType, RestTemplate restTemplate) {
+        this.metadata = metadata;
         this.responseType = responseType;
         this.restTemplate = restTemplate;
     }
 
     @Override
-    public LatLng getCenter() {
-        return location;
+    public Metadata getMetadata() {
+        return metadata;
     }
 
     @Override
     public Optional<RoadworkData> getData() throws RestClientException {
-        logger.info("getData from {} -> {}", url, responseType);
+        logger.info("getData from {} -> {}", metadata.getUrl(), responseType);
 
         // because some opendata service do not return Json content type
         List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
@@ -63,7 +61,7 @@ public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> 
         messageConverters.add(converter);
 
         restTemplate.setMessageConverters(messageConverters);
-        E response = restTemplate.getForObject(url, responseType);
+        E response = restTemplate.getForObject(metadata.getUrl(), responseType);
         if (response == null) {
             logger.debug("No data");
             return Optional.empty();

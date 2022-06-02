@@ -1,0 +1,765 @@
+{
+  "type": "FeatureCollection",
+  "name": "MMM_MMM_chantiers_genants_points",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8666716683,
+          43.6103339236
+        ]
+      },
+      "properties": {
+        "numero": "180011-34000",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220301",
+        "datefin": "20230731",
+        "ch_type": "Aménagement de voirie",
+        "ch_nature": "Voirie",
+        "intervenant": "3M - DST - Pôle Territorial Montpellier",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8664106236,
+          43.6400377148
+        ]
+      },
+      "properties": {
+        "numero": "190026-34000",
+        "ch_etape": "Ouvert",
+        "datedebut": "20190701",
+        "datefin": "20231231",
+        "ch_type": "Création ligne tram",
+        "ch_nature": "Tramway",
+        "intervenant": "TaM",
+        "incidence_station": "Les deux",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8520748994,
+          43.5975505395
+        ]
+      },
+      "properties": {
+        "numero": "190102-34000",
+        "ch_etape": "Ouvert",
+        "datedebut": "20210104",
+        "datefin": "20251231",
+        "ch_type": "Création ligne tram",
+        "ch_nature": "Tramway",
+        "intervenant": "TaM",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Deviation",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8711329665,
+          43.6248448427
+        ]
+      },
+      "properties": {
+        "numero": "21-0044",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220301",
+        "datefin": "20241231",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "A.E.P.",
+        "intervenant": "3M - Régie des Eaux",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8547770259,
+          43.607924051
+        ]
+      },
+      "properties": {
+        "numero": "21-0369",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220301",
+        "datefin": "20221231",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "A.E.P.",
+        "intervenant": "3M - Régie des Eaux",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.0138235269,
+          43.660563824
+        ]
+      },
+      "properties": {
+        "numero": "22-0011",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220201",
+        "datefin": "20221130",
+        "ch_type": "Réfection chaussée",
+        "ch_nature": "Voirie",
+        "intervenant": "3M - DST - Pôle Cadoule et Bérange",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8270767504,
+          43.5745022981
+        ]
+      },
+      "properties": {
+        "numero": "21-1789",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220307",
+        "datefin": "20220430",
+        "ch_type": "Aménagement de voirie",
+        "ch_nature": "Voirie",
+        "intervenant": "3M - DST - Pôle Plaine Ouest",
+        "incidence_station": "Aucun impact",
+        "incidence_circu": "Deviation",
+        "programmation": "Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8411336505,
+          43.6348977355
+        ]
+      },
+      "properties": {
+        "numero": "22-0049",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220117",
+        "datefin": "20220701",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "Réseau électrique",
+        "intervenant": "ENEDIS Groupe Structure",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat par feux",
+        "programmation": "Non Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8239386482,
+          43.5929862352
+        ]
+      },
+      "properties": {
+        "numero": "22-0064",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220103",
+        "datefin": "20220630",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "Gaz",
+        "intervenant": "GRDF ATG Ingénierie",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Prévisible PV",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.9228690444,
+          43.620021056
+        ]
+      },
+      "properties": {
+        "numero": "21-3865",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220331",
+        "datefin": "20220527",
+        "ch_type": "Extension réseau",
+        "ch_nature": "Réseau électrique",
+        "intervenant": "ENEDIS Agence Ingénierie",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Non Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8344334774,
+          43.5784459657
+        ]
+      },
+      "properties": {
+        "numero": "21-4043",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220209",
+        "datefin": "20220430",
+        "ch_type": "Réparation linéaire",
+        "ch_nature": "E.U.",
+        "intervenant": "3M - Direction Eau et Assainissement",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Deviation",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.0190693949,
+          43.6662785491
+        ]
+      },
+      "properties": {
+        "numero": "23-0022",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220311",
+        "datefin": "20221215",
+        "ch_type": "Aménagement de voirie",
+        "ch_nature": "Voirie",
+        "intervenant": "3M - DST - Pôle Cadoule et Bérange",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat par feux",
+        "programmation": "Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8651899884,
+          43.5951355887
+        ]
+      },
+      "properties": {
+        "numero": "22-0222",
+        "ch_etape": "Ouvert",
+        "datedebut": "20211213",
+        "datefin": "20220513",
+        "ch_type": "Extension réseau",
+        "ch_nature": "Réseaux Urbain",
+        "intervenant": "SERM RMCF",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Deviation",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8677845903,
+          43.6068614018
+        ]
+      },
+      "properties": {
+        "numero": "22-0236",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220103",
+        "datefin": "20220531",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "Gaz",
+        "intervenant": "GRDF ATG Ingénierie",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7071457034,
+          43.5477775141
+        ]
+      },
+      "properties": {
+        "numero": "22-0526",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220221",
+        "datefin": "20220531",
+        "ch_type": "Branchement linéaire",
+        "ch_nature": "A.E.P.",
+        "intervenant": "SUEZ Eau France",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.9432231101,
+          43.5707601142
+        ]
+      },
+      "properties": {
+        "numero": "22-0532",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220301",
+        "datefin": "20220430",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "A.E.P.",
+        "intervenant": "3M - Régie des Eaux",
+        "incidence_station": "Aucun impact",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.9426354252,
+          43.5715077276
+        ]
+      },
+      "properties": {
+        "numero": "22-0540",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220228",
+        "datefin": "20220429",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "Gaz",
+        "intervenant": "GRDF ATG Ingénierie",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat par feux",
+        "programmation": "Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8023835924,
+          43.6467720094
+        ]
+      },
+      "properties": {
+        "numero": "22-0689",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220404",
+        "datefin": "20220429",
+        "ch_type": "Aménagement de voirie",
+        "ch_nature": "Voirie",
+        "intervenant": "3M - DMO - Exploitation des Services de Déplacements",
+        "incidence_station": "Aucun impact",
+        "incidence_circu": "Alternat par feux",
+        "programmation": "Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8047401391,
+          43.58495793
+        ]
+      },
+      "properties": {
+        "numero": "22-0700",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220228",
+        "datefin": "20220527",
+        "ch_type": "Branchement linéaire",
+        "ch_nature": "A.E.P.",
+        "intervenant": "SUEZ Eau France",
+        "incidence_station": "Aucun impact",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.868225809,
+          43.6011998407
+        ]
+      },
+      "properties": {
+        "numero": "22-0713",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220404",
+        "datefin": "20220729",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "Telecom",
+        "intervenant": "ORANGE Ingénierie Gestion Affaires",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Prévisible PV",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7982175523,
+          43.5588500859
+        ]
+      },
+      "properties": {
+        "numero": "22-0817",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220331",
+        "datefin": "20220429",
+        "ch_type": "Réparation ponctuelle",
+        "ch_nature": "E.U.",
+        "intervenant": "SAUR",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat par feux",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8072320235,
+          43.5849615311
+        ]
+      },
+      "properties": {
+        "numero": "22-0998",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220425",
+        "datefin": "20220509",
+        "ch_type": "Branchement ponctuel",
+        "ch_nature": "Réseau électrique",
+        "intervenant": "ENEDIS ARE",
+        "incidence_station": "Aucun impact",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7217959715,
+          43.5577617265
+        ]
+      },
+      "properties": {
+        "numero": "22-1246",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220425",
+        "datefin": "20220506",
+        "ch_type": "Branchement linéaire",
+        "ch_nature": "A.E.P.",
+        "intervenant": "SUEZ Eau France",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8534449043,
+          43.5324408285
+        ]
+      },
+      "properties": {
+        "numero": "22-1336",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220425",
+        "datefin": "20220831",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "E.U.",
+        "intervenant": "3M - Direction Eau et Assainissement",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8846083186,
+          43.6031165768
+        ]
+      },
+      "properties": {
+        "numero": "22-1339",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220516",
+        "datefin": "20220729",
+        "ch_type": "Aménagement de voirie",
+        "ch_nature": "Voirie",
+        "intervenant": "3M - DST - Pôle Territorial Montpellier",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Non Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8876316858,
+          43.6033067457
+        ]
+      },
+      "properties": {
+        "numero": "22-1346",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220411",
+        "datefin": "20221014",
+        "ch_type": "Aménagement de voirie",
+        "ch_nature": "Voirie",
+        "intervenant": "3M - DST - Pôle Territorial Montpellier",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Non Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7831234999,
+          43.5511862996
+        ]
+      },
+      "properties": {
+        "numero": "22-1544",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220425",
+        "datefin": "20220505",
+        "ch_type": "Extension réseau",
+        "ch_nature": "Réseau électrique",
+        "intervenant": "ENEDIS Agence Ingénierie",
+        "incidence_station": "Aucun impact",
+        "incidence_circu": "Réduction voirie",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8503513542,
+          43.6254638071
+        ]
+      },
+      "properties": {
+        "numero": "20-0087",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220411",
+        "datefin": "20220513",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "A.E.P.",
+        "intervenant": "3M - Direction Eau et Assainissement",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7489798327,
+          43.5377328924
+        ]
+      },
+      "properties": {
+        "numero": "22-0096",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220214",
+        "datefin": "20220430",
+        "ch_type": "Extension réseau",
+        "ch_nature": "Telecom",
+        "intervenant": "FREE Infrastructure",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Fermeture",
+        "programmation": "Prévisible PV",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7164028115,
+          43.5502746656
+        ]
+      },
+      "properties": {
+        "numero": "21-2604",
+        "ch_etape": "Autorisé",
+        "datedebut": "20210705",
+        "datefin": "20221005",
+        "ch_type": "Extension réseau",
+        "ch_nature": "Gaz",
+        "intervenant": "GRDF ATG Ingénierie",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat par feux",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8710751064,
+          43.6115622672
+        ]
+      },
+      "properties": {
+        "numero": "22-1132",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220502",
+        "datefin": "20221230",
+        "ch_type": "Aménagement de voirie",
+        "ch_nature": "Voirie",
+        "intervenant": null,
+        "incidence_station": "Aucun impact",
+        "incidence_circu": "Deviation",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7199262424,
+          43.5586570607
+        ]
+      },
+      "properties": {
+        "numero": "22-1563",
+        "ch_etape": "Ouvert",
+        "datedebut": "20220509",
+        "datefin": "20220729",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "A.E.P.",
+        "intervenant": "Syndicat du Bas Languedoc",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Deviation",
+        "programmation": "Non Prévisible PV (hors télécom)",
+        "ch_genant": "1"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8250465146,
+          43.5923080431
+        ]
+      },
+      "properties": {
+        "numero": "22-0130",
+        "ch_etape": "Autorisé",
+        "datedebut": "20220103",
+        "datefin": "20220630",
+        "ch_type": "Renouvellement réseau",
+        "ch_nature": "Réseau électrique",
+        "intervenant": "ENEDIS Agence Ingénierie",
+        "incidence_station": "Pair et impair",
+        "incidence_circu": "Alternat par feux",
+        "programmation": "Prévisible AT",
+        "ch_genant": "1"
+      }
+    }
+  ]
+}

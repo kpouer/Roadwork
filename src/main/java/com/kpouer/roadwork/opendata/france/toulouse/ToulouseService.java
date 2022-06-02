@@ -22,6 +22,7 @@ import com.kpouer.roadwork.opendata.AbstractOpendataService;
 import com.kpouer.roadwork.opendata.france.toulouse.model.Fields;
 import com.kpouer.roadwork.opendata.france.toulouse.model.Record;
 import com.kpouer.roadwork.opendata.france.toulouse.model.ToulouseOpendataResponse;
+import com.kpouer.roadwork.opendata.json.model.MetadataBuilder;
 import com.kpouer.roadwork.opendata.model.Geometry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +38,22 @@ import java.text.SimpleDateFormat;
 @Service("ToulouseService")
 public class ToulouseService extends AbstractOpendataService<Record, ToulouseOpendataResponse> {
     private static final Logger logger = LoggerFactory.getLogger(ToulouseService.class);
+    private static final String SOURCE_URL = "https://data.toulouse-metropole.fr/explore/dataset/chantiers-en-cours/information/";
     private static final String URL = "https://data.toulouse-metropole.fr/api/records/1.0/search/?dataset=chantiers-en-cours&q=&rows=1000&facet=voie&facet=commune&facet=pole&facet=declarant&facet=entreprise&facet=datedebut&facet=datefin";
 
     public ToulouseService(RestTemplate restTemplate) {
-        super(new LatLng(43.60072, 1.44118), URL, ToulouseOpendataResponse.class, restTemplate);
+        super(MetadataBuilder
+                .aMetadata()
+                .withCenter(43.60072, 1.44118)
+                .withCountry("France")
+                .withName("Toulouse")
+                .withProducer("Toulouse Métropole")
+                .withLicenceName("Licence Ouverte v2.0 (Etalab)")
+                .withLicenceUrl("https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf")
+                .withUrl(URL)
+                .withSource_url(SOURCE_URL)
+                .build(),
+                ToulouseOpendataResponse.class, restTemplate);
     }
 
     @Override

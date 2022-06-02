@@ -15,19 +15,10 @@
  */
 package com.kpouer.roadwork.opendata.json.model;
 
-import com.kpouer.mapview.LatLng;
-
 import java.util.Locale;
 
 public class ServiceDescriptor {
-    private String country;
-    private double[] center;
-    private String source_url;
-    private String url;
-    private String name;
-    private String producer;
-    private String licenceName;
-    private String licenceUrl;
+    private Metadata metadata;
     private String id;
     private String latitude;
     private String longitude;
@@ -40,68 +31,20 @@ public class ServiceDescriptor {
     private DateParser to;
     private String roadworkArray;
 
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+    }
+
     public Locale getLocale() {
         return locale;
     }
 
     public void setLocale(Locale locale) {
         this.locale = locale;
-    }
-
-    public LatLng getCenter() {
-        return new LatLng(center[0], center[1]);
-    }
-
-    public void setCenter(double[] center) {
-        this.center = center;
-    }
-
-    public String getSource_url() {
-        return source_url;
-    }
-
-    public void setSource_url(String source_url) {
-        this.source_url = source_url;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
-    public void setProducer(String producer) {
-        this.producer = producer;
-    }
-
-    public String getLicenceName() {
-        return licenceName;
-    }
-
-    public void setLicenceName(String licenceName) {
-        this.licenceName = licenceName;
-    }
-
-    public String getLicenceUrl() {
-        return licenceUrl;
-    }
-
-    public void setLicenceUrl(String licenceUrl) {
-        this.licenceUrl = licenceUrl;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getId() {
@@ -176,13 +119,6 @@ public class ServiceDescriptor {
         this.to = to;
     }
 
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
 
     public String getRoadworkArray() {
         return roadworkArray;
@@ -195,8 +131,8 @@ public class ServiceDescriptor {
     @Override
     public String toString() {
         return "ServiceDescriptor{" +
-                "country='" + country + '\'' +
-                ", name='" + name + '\'' +
+                "country='" + metadata.getCountry() + '\'' +
+                ", name='" + metadata.getName() + '\'' +
                 '}';
     }
 }

@@ -23,6 +23,7 @@ import com.kpouer.roadwork.opendata.france.rennes.model.FeaturesItem;
 import com.kpouer.roadwork.opendata.france.rennes.model.Geometry;
 import com.kpouer.roadwork.opendata.france.rennes.model.Properties;
 import com.kpouer.roadwork.opendata.france.rennes.model.RennesOpendataResponse;
+import com.kpouer.roadwork.opendata.json.model.MetadataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,16 @@ public class RennesService extends AbstractOpendataService<FeaturesItem, RennesO
     private static final String URL = "http://travaux.data.rennesmetropole.fr/api/roadworks?epsg=4326";
 
     public RennesService(RestTemplate restTemplate) {
-        super(new LatLng(48.10881, -1.67018), URL, RennesOpendataResponse.class, restTemplate);
+        super(MetadataBuilder
+                .aMetadata()
+                .withCenter(48.10881, -1.67018)
+                .withCountry("France")
+                .withName("Rennes")
+                .withProducer("Rennes Métropole")
+                .withUrl(URL)
+                .withSource_url(SOURCE_URL)
+                .build(),
+                RennesOpendataResponse.class, restTemplate);
     }
 
     @Override
