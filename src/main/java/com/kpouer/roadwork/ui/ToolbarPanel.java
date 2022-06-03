@@ -15,12 +15,12 @@
  */
 package com.kpouer.roadwork.ui;
 
+import com.kpouer.roadwork.action.ReloadAction;
 import com.kpouer.roadwork.action.SynchronizeAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.event.OpendataServiceUpdated;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.event.UserSettingsUpdated;
-import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import org.springframework.context.ApplicationContext;
@@ -74,6 +74,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
         panel.add(opendataServiceComboBox);
         synchronizeButton = new JButton(applicationContext.getBean(SynchronizeAction.class));
         synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
+        panel.add(new JButton(applicationContext.getBean(ReloadAction.class)));
         panel.add(synchronizeButton);
         JCheckBox hideExpired = new JCheckBox(localizationService.getMessage("toolbarPanel.hideExpired"));
         hideExpired.addActionListener(e -> {

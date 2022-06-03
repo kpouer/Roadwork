@@ -226,4 +226,14 @@ public class OpendataServiceManager {
                 .map(Roadwork::getSyncData)
                 .forEach(syncData -> syncData.setStatus(Status.Finished));
     }
+
+    public void deleteCache() {
+        logger.info("deleteCache {}", config.getOpendataService());
+        Path currentPath = getPath(config.getOpendataService());
+        try {
+            Files.deleteIfExists(currentPath);
+        } catch (IOException e) {
+            logger.error("Error deleting cache", e);
+        }
+    }
 }
