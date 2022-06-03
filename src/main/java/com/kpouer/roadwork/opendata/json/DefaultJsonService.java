@@ -157,22 +157,29 @@ public class DefaultJsonService implements OpendataService {
         }
     }
 
-    private static String getPath(Object node, String serviceDescriptor) {
+    private static String getPath(Object node, String path) {
         try {
-            return JsonPath.read(node, serviceDescriptor);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static double getPathAsDouble(Object node, String serviceDescriptor) throws ParseException {
-        try {
-            String read = JsonPath.read(node, serviceDescriptor);
-            if (read != null) {
-                return Double.parseDouble(read);
+            Object value = JsonPath.read(node, path);
+            if (value != null) {
+                return String.valueOf(value);
             }
         } catch (Exception e) {
-            logger.error("Error parsing double");
+        }
+        return null;
+    }
+
+    private static double getPathAsDouble(Object node, String path) throws ParseException {
+        try {
+            Object value = JsonPath.read(node, path);
+
+            if (value != null) {
+                if (value instanceof Double) {
+                    return (double) value;
+                }
+                return Double.parseDouble(String.valueOf(value));
+            }
+        } catch (Exception e) {
+            logger.error("Error parsing double", e);
         }
         throw new ParseException("Unable to parse", 0);
     }
