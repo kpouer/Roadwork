@@ -15,8 +15,6 @@
  */
 package com.kpouer.roadwork.opendata.json.model;
 
-import java.util.Locale;
-
 public class ServiceDescriptor {
     private Metadata metadata;
     private String id;
@@ -26,7 +24,6 @@ public class ServiceDescriptor {
     private String description;
     private String locationDetails;
     private String impactCirculationDetail;
-    private Locale locale;
     private DateParser from;
     private DateParser to;
     private String roadworkArray;
@@ -37,14 +34,6 @@ public class ServiceDescriptor {
 
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
     }
 
     public String getId() {

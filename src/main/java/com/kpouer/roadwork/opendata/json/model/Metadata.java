@@ -17,6 +17,8 @@ package com.kpouer.roadwork.opendata.json.model;
 
 import com.kpouer.mapview.LatLng;
 
+import java.util.Locale;
+
 public class Metadata {
     private String country;
     private double[] center;
@@ -26,6 +28,7 @@ public class Metadata {
     private String producer;
     private String licenceName;
     private String licenceUrl;
+    private Locale locale;
 
     public String getCountry() {
         return country;
@@ -89,6 +92,14 @@ public class Metadata {
 
     public void setLicenceUrl(String licenceUrl) {
         this.licenceUrl = licenceUrl;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 
     @Override

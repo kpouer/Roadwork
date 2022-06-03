@@ -78,8 +78,8 @@ public class DefaultJsonService implements OpendataService {
     private DateRange getDateRange(Object node) throws ParseException {
         DateParser startDateParser = serviceDescriptor.getFrom();
         DateParser endDateParser = serviceDescriptor.getTo();
-        DateResult start = startDateParser.parse(getPath(node, startDateParser.getPath()), serviceDescriptor.getLocale());
-        DateResult end = startDateParser.parse(getPath(node, endDateParser.getPath()), serviceDescriptor.getLocale());
+        DateResult start = startDateParser.parse(getPath(node, startDateParser.getPath()), serviceDescriptor.getMetadata().getLocale());
+        DateResult end = startDateParser.parse(getPath(node, endDateParser.getPath()), serviceDescriptor.getMetadata().getLocale());
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
         if (start.getParser().isResetHour()) {
