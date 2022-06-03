@@ -70,7 +70,7 @@ public class OpendataServiceManager {
         Collections.addAll(services, applicationContext.getBeanNamesForType(OpendataService.class));
         try (Stream<Path> files = Files.list(Path.of("opendata/json"))) {
             files
-                    .filter(path -> path.endsWith(".json"))
+                    .filter(path -> path.toString().endsWith(".json"))
                     .map(Path::toFile)
                     .map(File::getName)
                     .forEach(services::add);
