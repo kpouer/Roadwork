@@ -50,6 +50,19 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         String[] serviceNames = opendataServiceManager.getServices().toArray(new String[0]);
         JComboBox<String> opendataServiceComboBox = new JComboBox<>(serviceNames);
+        opendataServiceComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                java.awt.Component listCellRendererComponent = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                String serviceName = String.valueOf(value);
+                if (serviceName.endsWith("Service")) {
+                    setText(serviceName.substring(0, serviceName.length() - "Service".length()));
+                } else {
+                    setText(localizationService.getMessage("opendataService." + value));
+                }
+                return listCellRendererComponent;
+            }
+        });
         opendataServiceComboBox.setSelectedItem(config.getOpendataService());
         opendataServiceComboBox.addActionListener(e -> {
             String selectedItem = (String) opendataServiceComboBox.getSelectedItem();
