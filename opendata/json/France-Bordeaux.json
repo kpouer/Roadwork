@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "country": "France",
+    "name": "Bordeaux",
+    "producer": "Ville de Bordeaux",
+    "licenceName": "Licence Ouverte",
+    "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf",
+    "source_url": "https://opendata.bordeaux-metropole.fr/explore/dataset/ci_chantier/information/",
+    "url": "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=ci_chantier&q=&rows=1000&facet=alias_nature_n1&facet=alias_nature_n2&facet=geo_shape_type",
+    "center": [
+      44.84492,
+      -0.57352
+    ],
+    "locale": "fr_FR"
+  },
+  "roadworkArray": "$.records",
+  "id": "@.recordid",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "road": "@.fields.localisation",
+  "description": "@.fields.localisation_emprise",
+  "impactCirculationDetail": "@.fields.libelle",
+  "from": {
+    "path": "@.fields.date_debut",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.fields.date_fin",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  }
+}

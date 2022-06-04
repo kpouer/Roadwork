@@ -40,10 +40,12 @@ import java.util.Optional;
 public class DefaultJsonService implements OpendataService {
     private static final Logger logger = LoggerFactory.getLogger(DefaultJsonService.class);
 
+    private final String serviceName;
     private final RestTemplate restTemplate;
     private final ServiceDescriptor serviceDescriptor;
 
-    public DefaultJsonService(RestTemplate restTemplate, ServiceDescriptor serviceDescriptor) {
+    public DefaultJsonService(String serviceName, RestTemplate restTemplate, ServiceDescriptor serviceDescriptor) {
+        this.serviceName = serviceName;
         this.restTemplate = restTemplate;
         this.serviceDescriptor = serviceDescriptor;
     }
@@ -64,7 +66,7 @@ public class DefaultJsonService implements OpendataService {
                 .filter(Objects::nonNull)
                 .filter(DefaultJsonService::isValid)
                 .toList();
-        return Optional.of(new RoadworkData(serviceDescriptor.getMetadata().getName(), roadworks));
+        return Optional.of(new RoadworkData(serviceName, roadworks));
     }
 
     private static boolean isValid(Roadwork roadwork) {

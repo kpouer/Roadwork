@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultJsonServiceTest {
@@ -49,6 +52,9 @@ class DefaultJsonServiceTest {
     void testAvignon() throws IOException, URISyntaxException {
         DefaultJsonService serviceDescriptor = getServiceDescriptor("opendata/json/France-Avignon.json", "/sample/france/avignon.json");
         Optional<RoadworkData> data = serviceDescriptor.getData();
+        RoadworkData roadworkData = data.get();
+        Roadwork roadwork = roadworkData.getRoadworks().get("850041398");
+        assertEquals("850041398", roadwork.getId());
     }
 
     private DefaultJsonService getServiceDescriptor(String pathname, String samplePath) throws IOException, URISyntaxException {
@@ -57,6 +63,6 @@ class DefaultJsonServiceTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         ServiceDescriptor serviceDescriptor = objectMapper.readValue(new File(pathname), ServiceDescriptor.class);
-        return new DefaultJsonService(restTemplate, serviceDescriptor);
+        return new DefaultJsonService(pathname, restTemplate, serviceDescriptor);
     }
 }

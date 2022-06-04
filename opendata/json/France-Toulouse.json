@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "country": "France",
+    "name": "Toulouse",
+    "producer": "Toulouse Métropole",
+    "licenceName": "Licence Ouverte v2.0 (Etalab)",
+    "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf",
+    "source_url": "https://data.toulouse-metropole.fr/explore/dataset/chantiers-en-cours/information/",
+    "url": "https://data.toulouse-metropole.fr/api/records/1.0/search/?dataset=chantiers-en-cours&q=&rows=1000&facet=voie&facet=commune&facet=pole&facet=declarant&facet=entreprise&facet=datedebut&facet=datefin",
+    "center": [
+      43.60072,
+      1.44118
+    ],
+    "locale": "fr_FR"
+  },
+  "roadworkArray": "$.records",
+  "id": "@.recordid",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "road": "@.fields.voie",
+  "locationDetails": "@.fields.libelle",
+  "impactCirculationDetail": "@.fields.circulation",
+  "from": {
+    "path": "@.fields.datedebut",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.fields.datefin",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  }
+}

@@ -55,10 +55,18 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
             public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 java.awt.Component listCellRendererComponent = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 String serviceName = String.valueOf(value);
-                if (serviceName.endsWith("Service")) {
-                    setText(serviceName.substring(0, serviceName.length() - "Service".length()));
+                String key = "opendataService." + value;
+                String localizedText = localizationService.getMessage(key);
+                if (localizedText != key) {
+                    setText(localizedText);
                 } else {
-                    setText(localizationService.getMessage("opendataService." + value));
+                    if (serviceName.endsWith("Service")) {
+                        setText(serviceName.substring(0, serviceName.length() - "Service".length()));
+                    } else {
+                        int minusIndex = serviceName.indexOf('-');
+                        serviceName = serviceName.substring(minusIndex + 1, serviceName.length() - ".json".length());
+                        setText(serviceName);
+                    }
                 }
                 return listCellRendererComponent;
             }

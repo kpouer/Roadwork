@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "country": "France",
+    "name": "Rennes",
+    "producer": "Rennes Métropole",
+    "source_url": "http://travaux.data.rennesmetropole.fr/#roadwork-info",
+    "url": "http://travaux.data.rennesmetropole.fr/api/roadworks?epsg=4326",
+    "center": [
+      48.10881,
+      -1.67018
+    ],
+    "locale": "fr_FR"
+  },
+  "roadworkArray": "$.features",
+  "id": "@.properties.id",
+  "latitude": "@.geometry.coordinates[0][1]",
+  "longitude": "@.geometry.coordinates[0][0]",
+  "road": "@.properties.localisation",
+  "description": "@.properties.libelle",
+  "impactCirculationDetail": "@.properties.type",
+  "from": {
+    "path": "@.properties.date_deb",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd 00:00:00"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.properties.date_fin",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd 00:00:00"
+      }
+    ]
+  }
+}

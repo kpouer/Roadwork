@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "country": "Germany",
+    "name": "Berlin",
+    "licenceName": "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+    "licenceUrl": "https://www.govdata.de/dl-de/by-2-0",
+    "source_url": "https://daten.berlin.de/datensaetze/baustellen-sperrungen-und-sonstige-st%C3%B6rungen-von-besonderem-verkehrlichem-interesse",
+    "url": "https://api.viz.berlin.de/daten/baustellen_sperrungen.json",
+    "center": [
+      52.51935,
+      13.41156
+    ],
+    "locale": "de_DE"
+  },
+  "roadworkArray": "$.features",
+  "id": "@.properties.id",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "road": "@.properties.street",
+  "locationDetails": "@.properties.section",
+  "impactCirculationDetail": "@.properties.content",
+  "from": {
+    "path": "@.properties.validity.from",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "dd.MM.yyyy HH:mm"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.properties.validity.from",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "dd.MM.yyyy HH:mm"
+      }
+    ]
+  }
+}

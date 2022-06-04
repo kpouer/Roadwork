@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "country": "France",
+    "name": "Paris",
+    "producer": "Direction de la Voirie et des Déplacements - Ville de Paris",
+    "licenceName": "Open Database License (ODbL)",
+    "licenceUrl": "https://opendatacommons.org/licenses/odbl/",
+    "source_url": "https://opendata.paris.fr/explore/dataset/chantiers-perturbants/information/?disjunctive.cp_arrondissement&disjunctive.maitre_ouvrage&disjunctive.objet&disjunctive.impact_circulation&disjunctive.niveau_perturbation&disjunctive.statut",
+    "url": "https://opendata.paris.fr/api/records/1.0/search/?dataset=chantiers-perturbants&q=&rows=1000&facet=cp_arrondissement&facet=typologie&facet=maitre_ouvrage&facet=objet&facet=impact_circulation&facet=niveau_perturbation&facet=statut&exclude.statut=5",
+    "center": [
+      48.85337,
+      2.34847
+    ],
+    "locale": "fr_FR"
+  },
+  "roadworkArray": "$.records",
+  "id": "@.recordid",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "road": "@.fields.voie",
+  "locationDetails": "@.fields.precision_localisation",
+  "impactCirculationDetail": "@.fields.impact_circulation_detail",
+  "from": {
+    "path": "@.fields.date_debut",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.fields.date_fin",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  }
+}

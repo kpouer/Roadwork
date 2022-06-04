@@ -17,8 +17,8 @@
   "id": "@.properties.idarrete",
   "latitude": "@.geometry.coordinates[0][0][0][1]",
   "longitude": "@.geometry.coordinates[0][0][0][0]",
-  "road": "@.properties.road",
-  "description": "@.properties.mesures",
+  "road": "@.properties.localisations",
+  "impactCirculationDetail": "@.properties.mesures",
   "url": "@.properties.shorturl",
   "from": {
     "path": "@.properties.arretedebut",
