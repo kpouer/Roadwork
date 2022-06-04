@@ -3,7 +3,7 @@
     "country": "France",
     "name": "Rennes",
     "producer": "Rennes Métropole",
-    "source_url": "http://travaux.data.rennesmetropole.fr/#roadwork-info",
+    "sourceUrl": "http://travaux.data.rennesmetropole.fr/#roadwork-info",
     "url": "http://travaux.data.rennesmetropole.fr/api/roadworks?epsg=4326",
     "center": [
       48.10881,

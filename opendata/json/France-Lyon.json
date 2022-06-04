@@ -5,7 +5,7 @@
     "producer": "Métropole de Lyon",
     "licenceName": "Licence Ouverte",
     "licenceUrl": "https://download.data.grandlyon.com/licences/ETALAB-Licence-Ouverte-v2.0.pdf",
-    "source_url": "https://data.grandlyon.com/jeux-de-donnees/chantiers-perturbants-metropole-lyon/info",
+    "sourceUrl": "https://data.grandlyon.com/jeux-de-donnees/chantiers-perturbants-metropole-lyon/info",
     "url": "https://download.data.grandlyon.com/wfs/grandlyon?SERVICE=WFS&VERSION=2.0.0&request=GetFeature&typename=pvo_patrimoine_voirie.pvochantierperturbant&outputFormat=application/json; subtype=geojson&SRSNAME=EPSG:4171&startIndex=0&count=1000",
     "center": [
       45.75627,

@@ -76,7 +76,7 @@ public class MetadataBuilder {
         Metadata metadata = new Metadata();
         metadata.setCountry(country);
         metadata.setCenter(center);
-        metadata.setSource_url(source_url);
+        metadata.setSourceUrl(source_url);
         metadata.setUrl(url);
         metadata.setName(name);
         metadata.setProducer(producer);

@@ -22,7 +22,7 @@ import java.util.Locale;
 public class Metadata {
     private String country;
     private double[] center;
-    private String source_url;
+    private String sourceUrl;
     private String url;
     private String name;
     private String producer;
@@ -46,12 +46,12 @@ public class Metadata {
         this.center = center;
     }
 
-    public String getSource_url() {
-        return source_url;
+    public String getSourceUrl() {
+        return sourceUrl;
     }
 
-    public void setSource_url(String source_url) {
-        this.source_url = source_url;
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 
     public String getUrl() {

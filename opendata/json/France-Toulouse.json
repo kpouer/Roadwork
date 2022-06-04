@@ -5,7 +5,7 @@
     "producer": "Toulouse Métropole",
     "licenceName": "Licence Ouverte v2.0 (Etalab)",
     "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf",
-    "source_url": "https://data.toulouse-metropole.fr/explore/dataset/chantiers-en-cours/information/",
+    "sourceUrl": "https://data.toulouse-metropole.fr/explore/dataset/chantiers-en-cours/information/",
     "url": "https://data.toulouse-metropole.fr/api/records/1.0/search/?dataset=chantiers-en-cours&q=&rows=1000&facet=voie&facet=commune&facet=pole&facet=declarant&facet=entreprise&facet=datedebut&facet=datefin",
     "center": [
       43.60072,

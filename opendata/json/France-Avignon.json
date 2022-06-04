@@ -5,7 +5,7 @@
     "producer": "Ville d'Issy-les-Moulineaux",
     "licenceName": "Licence Ouverte Version 2.0",
     "licenceUrl": "https://www.etalab.gouv.fr/licence-ouverte-open-licence/",
-    "source_url": "https://trouver.datasud.fr/dataset/avignon-arretes-travaux-avec-impact-circulation",
+    "sourceUrl": "https://trouver.datasud.fr/dataset/avignon-arretes-travaux-avec-impact-circulation",
     "url": "https://trouver.datasud.fr/dataset/d3055f04-fd52-4e30-b04a-4d485a75355b/resource/72ae99d6-3b1e-4598-b8cb-d3ff463b03d0/download/84007-travauxarretes.geojson",
     "center": [
       43.94566,

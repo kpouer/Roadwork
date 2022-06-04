@@ -5,7 +5,7 @@
     "producer": "Ville de Bordeaux",
     "licenceName": "Licence Ouverte",
     "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2014/05/Licence_Ouverte.pdf",
-    "source_url": "https://opendata.bordeaux-metropole.fr/explore/dataset/ci_chantier/information/",
+    "sourceUrl": "https://opendata.bordeaux-metropole.fr/explore/dataset/ci_chantier/information/",
     "url": "https://opendata.bordeaux-metropole.fr/api/records/1.0/search/?dataset=ci_chantier&q=&rows=1000&facet=alias_nature_n1&facet=alias_nature_n2&facet=geo_shape_type",
     "center": [
       44.84492,

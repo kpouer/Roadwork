@@ -28,9 +28,9 @@ public class OpendataInformationPanel extends JPanel {
     }
 
     public void setMetadata(Metadata metadata) {
-        sourceUrl.setText(metadata.getSource_url());
+        sourceUrl.setText(metadata.getSourceUrl());
         sourceUrl.setCaretPosition(0);
-        url.setText(metadata.getSource_url());
+        url.setText(metadata.getSourceUrl());
         url.setCaretPosition(0);
         producer.setText(metadata.getProducer());
         licenceName.setText(metadata.getLicenceName());
