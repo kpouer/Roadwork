@@ -37,18 +37,64 @@ So far most supported services are French, but there is no restriction to includ
 This app depends on a library [Roadwork-lib](https://github.com/kpouer/Roadwork-lib)
  that is intended to share data with the [Roadwork-server](https://github.com/kpouer/Roadwork-server)
 
-## Adding Opendata service
+# Adding Opendata service
 
 It is possible to add a new service by adding *code* (the initial method), or using the *json opendata descriptor*
 
-### code
+## code
 
 to be documented
 
-### json opendata descriptor
+## json opendata descriptor
 
-A json file describing the opendata service in order to include new opendata services without adding any code.
-Still in development, to be documented
+If an opendata service provides a json, then it should be possible to describe it with a **json opendata descriptor**
+Those descriptors must be added to the *opendata/json* folder.
+Their naming convention is *country-city.json*. For example *France-Paris.json*
+
+A descriptor contains a first object called **metadata** that contains all information about the Opendata service
+
+| field                   | mandatory | example                            | description                                     |
+|-------------------------|-----------|------------------------------------|-------------------------------------------------|
+| metadata                | yes       | A metadata structure               | see next chapter                                |
+| roadworkArray           | yes       | $.records                          | The path of the roadwork array                  |
+| id                      | yes       | @.recordid                         | The path of the id field within a roadwork item |
+| latitude                | yes       | @.geometry.coordinates[1]          | The path of the latitude                        |
+| longitude               | yes       | @.geometry.coordinates[0]          | The path of the longitude                       |
+| road                    | no        | @.fields.voie                      | The path of the road information                |
+| impactCirculationDetail | no        | @.fields.impact_circulation_detail | The path for circulation impact                 |
+| description             | no        | @.fields.description               | The path of the description                     |
+| locationDetails         | no        | @.fields.precision_localisation    | The path for more location information          |
+| url                     | no        | https://xxxx                       | An url for that exact roadwork item             |
+| from                    | yes       | A date parser structure            |                                                 |
+| to                      | yes       | A date parser structure            |                                                 |
+
+
+### metadata
+
+| field       | mandatory | example          | description                                   |
+|-------------|-----------|------------------|-----------------------------------------------|
+| country     | yes       | France           | The country of the service                    |
+| name        | yes       | Paris            | The city (or region or anything)              |
+| producer    | no        | Ville de Paris   | The owner/producer of the service             |
+| licenceName | no        | Creative Commons | The name of the licence                       |
+| licenceUrl  | no        | https://xxxx     | The url of the licence                        |
+| sourceUrl   | no        | https://xxxx     | The homepage of the service                   |
+| url         | yes       | https://xxxx     | The url that will be called to retrieve data  |
+| locale      | yes       | fr_FR            | The locale that can be used to parse the date |
+
+### Date parser structure
+
+| field       | mandatory | example                    | description                        |
+|-------------|-----------|----------------------------|------------------------------------|
+| path        | yes       | @.properties.validity.from | the path of the value to be parsed |
+| parsers     | yes       | Array of Parser structure  |                                    |
+
+### Parser structure
+
+| field   | mandatory | example            | description                                                  |
+|---------|-----------|--------------------|--------------------------------------------------------------|
+| matcher | yes       | .*                 | a regexp matcther (it can have a capture group if necessary) |
+| format  | yes       | dd.MM.yyyy HH:mm   | a date pattern                                               |
 
 # How to help
 

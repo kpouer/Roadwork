@@ -4,7 +4,7 @@
     "name": "Berlin",
     "licenceName": "Datenlizenz Deutschland – Namensnennung – Version 2.0",
     "licenceUrl": "https://www.govdata.de/dl-de/by-2-0",
-    "source_url": "https://daten.berlin.de/datensaetze/baustellen-sperrungen-und-sonstige-st%C3%B6rungen-von-besonderem-verkehrlichem-interesse",
+    "sourceUrl": "https://daten.berlin.de/datensaetze/baustellen-sperrungen-und-sonstige-st%C3%B6rungen-von-besonderem-verkehrlichem-interesse",
     "url": "https://api.viz.berlin.de/daten/baustellen_sperrungen.json",
     "center": [
       52.51935,
