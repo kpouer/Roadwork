@@ -26,6 +26,7 @@ import com.kpouer.roadwork.opendata.json.model.DateParser;
 import com.kpouer.roadwork.opendata.json.model.DateResult;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestClientException;
@@ -62,44 +63,80 @@ public class DefaultJsonService implements OpendataService {
         List<?> roadworkArray = JsonPath.read(document, serviceDescriptor.getRoadworkArray());
         List<Roadwork> roadworks = roadworkArray
                 .parallelStream()
-                .map(this::buildRoadwork)
-                .filter(Objects::nonNull)
+                .map(node -> buildRoadwork(serviceDescriptor, node))
                 .filter(DefaultJsonService::isValid)
                 .toList();
         return Optional.of(new RoadworkData(serviceName, roadworks));
     }
 
-    private static boolean isValid(Roadwork roadwork) {
+    public static boolean isValid(Roadwork roadwork) {
         if (roadwork.getLongitude() == 0 && roadwork.getLatitude() == 0) {
             logger.warn("{} is invalid because it has no location", roadwork);
+            return false;
+        }
+        if (roadwork.getStart() == 0) {
+            logger.warn("{} is invalid because it's start date is 0", roadwork);
+            return false;
+        }
+        if (roadwork.getEnd() == 0) {
+            logger.warn("{} is invalid because it's end date is 0", roadwork);
             return false;
         }
         return true;
     }
 
-    private DateRange getDateRange(Object node) throws ParseException {
-        DateParser startDateParser = serviceDescriptor.getFrom();
-        DateParser endDateParser = serviceDescriptor.getTo();
-        DateResult start = startDateParser.parse(getPath(node, startDateParser.getPath()), serviceDescriptor.getMetadata().getLocale());
-        DateResult end = startDateParser.parse(getPath(node, endDateParser.getPath()), serviceDescriptor.getMetadata().getLocale());
-        Calendar calendar = Calendar.getInstance();
+    private static Optional<DateResult> parseDate(Object node, DateParser dateParser, ServiceDescriptor serviceDescriptor) throws ParseException {
+        if (dateParser == null) {
+            logger.debug("Cannot parse date as dateParse is null");
+            return Optional.empty();
+        }
+        var calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
-        if (start.getParser().isResetHour()) {
-            start.setDate(fixTime(calendar, start.getDate()));
+        var value = getPath(node, dateParser.getPath());
+        if (value == null) {
+            return Optional.empty();
         }
-        if (end.getParser().isResetHour()) {
-            end.setDate(fixTime(calendar, end.getDate()));
+        var result = dateParser.parse(value, serviceDescriptor.getMetadata().getLocale());
+        if (result.getParser().isResetHour()) {
+            result.setDate(fixTime(calendar, result.getDate()));
         }
-        if (start.getParser().isAddYear()) {
-            start.setDate(addYear(calendar, currentYear, start.getDate()));
+        if (result.getParser().isAddYear()) {
+            result.setDate(addYear(calendar, currentYear, result.getDate()));
         }
-        if (end.getParser().isAddYear()) {
-            end.setDate(addYear(calendar, currentYear, end.getDate()));
-            if (start.getDate() > end.getDate()) {
-                end.setDate(addYear(calendar, currentYear + 1, end.getDate()));
+        return Optional.of(result);
+    }
+
+    private static DateRange getDateRange(Object node, ServiceDescriptor serviceDescriptor) throws ParseException {
+        var calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        long startTime;
+        try {
+            Optional<DateResult> start = parseDate(node, serviceDescriptor.getFrom(), serviceDescriptor);
+            startTime = start.map(DateResult::getDate).orElse(0L);
+        } catch (Exception e) {
+            logger.error("Error parsing start date", e);
+            startTime = 0L;
+        }
+        long endDate;
+        try {
+            var endOptional = parseDate(node, serviceDescriptor.getTo(), serviceDescriptor);
+            if (endOptional.isPresent()) {
+                var end = endOptional.get();
+                endDate = end.getDate();
+                if (end.getParser().isAddYear()) {
+                    endDate = addYear(calendar, currentYear, endDate);
+                    if (startTime > endDate) {
+                        endDate = addYear(calendar, currentYear + 1, endDate);
+                    }
+                }
+            } else {
+                endDate = 0L;
             }
+        } catch (Exception e) {
+            logger.error("Error parsing end date", e);
+            endDate = 0L;
         }
-        return new DateRange(start.getDate(), end.getDate());
+        return new DateRange(startTime, endDate);
     }
 
     private static long addYear(Calendar calendar, int year, long date) {
@@ -117,46 +154,56 @@ public class DefaultJsonService implements OpendataService {
         return calendar.getTimeInMillis();
     }
 
-    private Roadwork buildRoadwork(Object node) {
+    @NotNull
+    public static Roadwork buildRoadwork(ServiceDescriptor serviceDescriptor, @NotNull Object node) {
+        RoadworkBuilder roadworkBuilder = RoadworkBuilder.aRoadwork();
+        roadworkBuilder.withId(getPath(node, serviceDescriptor.getId()));
         try {
-            RoadworkBuilder roadworkBuilder = RoadworkBuilder.aRoadwork();
-            roadworkBuilder.withId(getPath(node, serviceDescriptor.getId()));
-            try {
-                roadworkBuilder.withLatitude(getPathAsDouble(node, serviceDescriptor.getLatitude()));
-            } catch (ParseException e) {
-                logger.error("Unable to get latitude from {}", node);
+            String latitudePath = serviceDescriptor.getLatitude();
+            if (latitudePath == null || latitudePath.isEmpty()) {
+                logger.warn("Unable to get latitude as it's path is empty");
+            } else {
+                roadworkBuilder.withLatitude(getPathAsDouble(node, latitudePath));
             }
-            try {
-                roadworkBuilder.withLongitude(getPathAsDouble(node, serviceDescriptor.getLongitude()));
-            } catch (ParseException e) {
-                logger.error("Unable to get longitude from {}", node);
+        } catch (Exception e) {
+            logger.warn("Unable to get latitude from {}, {}", node, e.getMessage());
+        }
+        try {
+            String longitudePath = serviceDescriptor.getLongitude();
+            if (longitudePath == null || longitudePath.isEmpty()) {
+                logger.warn("Unable to get longitude as it's path is empty");
+            } else {
+                roadworkBuilder.withLongitude(getPathAsDouble(node, longitudePath));
             }
-            if (serviceDescriptor.getRoad() != null) {
-                roadworkBuilder.withRoad(getPath(node, serviceDescriptor.getRoad()));
-            }
-            if (serviceDescriptor.getDescription() != null) {
-                roadworkBuilder.withDescription(getPath(node, serviceDescriptor.getDescription()));
-            }
-            if (serviceDescriptor.getLocationDetails() != null) {
-                roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
-            }
-            DateRange dateRange = getDateRange(node);
+        } catch (Exception e) {
+            logger.warn("Unable to get longitude from {}, {}", node, e.getMessage());
+        }
+        if (serviceDescriptor.getRoad() != null) {
+            roadworkBuilder.withRoad(getPath(node, serviceDescriptor.getRoad()));
+        }
+        if (serviceDescriptor.getDescription() != null) {
+            roadworkBuilder.withDescription(getPath(node, serviceDescriptor.getDescription()));
+        }
+        if (serviceDescriptor.getLocationDetails() != null) {
+            roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
+        }
+        try {
+            DateRange dateRange = getDateRange(node, serviceDescriptor);
             roadworkBuilder.withStart(dateRange.getFrom());
             roadworkBuilder.withEnd(dateRange.getTo());
-            if (serviceDescriptor.getImpactCirculationDetail() != null) {
-                roadworkBuilder.withImpactCirculationDetail(getPath(node, serviceDescriptor.getImpactCirculationDetail()));
-            }
-            if (serviceDescriptor.getLocationDetails() != null) {
-                roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
-            }
-            if (serviceDescriptor.getMetadata().getUrl() != null) {
-                roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getMetadata().getUrl()));
-            }
-            return roadworkBuilder.build();
         } catch (ParseException e) {
-            logger.error("Unable to parse " + node, e);
-            return null;
+            logger.error("Unable to parse date", e);
         }
+        if (serviceDescriptor.getImpactCirculationDetail() != null) {
+            roadworkBuilder.withImpactCirculationDetail(getPath(node, serviceDescriptor.getImpactCirculationDetail()));
+        }
+        if (serviceDescriptor.getLocationDetails() != null) {
+            roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
+        }
+        if (serviceDescriptor.getMetadata().getUrl() != null) {
+            roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getMetadata().getUrl()));
+        }
+        return roadworkBuilder.build();
     }
 
     private static String getPath(Object node, String path) {
@@ -170,16 +217,15 @@ public class DefaultJsonService implements OpendataService {
         return null;
     }
 
-    private static double getPathAsDouble(Object node, String path) throws ParseException {
+    private static double getPathAsDouble(@NotNull Object node, @NotNull String path) throws ParseException {
         try {
+            Objects.requireNonNull(path);
             Object value = JsonPath.read(node, path);
 
-            if (value != null) {
-                if (value instanceof Double) {
-                    return (double) value;
-                }
-                return Double.parseDouble(String.valueOf(value));
+            if (value instanceof Double) {
+                return (double) value;
             }
+            return Double.parseDouble(String.valueOf(value));
         } catch (Exception e) {
             logger.error("Error parsing double", e);
         }

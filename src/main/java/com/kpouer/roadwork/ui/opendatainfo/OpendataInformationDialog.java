@@ -22,7 +22,6 @@ import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -41,7 +40,7 @@ public class OpendataInformationDialog extends JDialog {
 
     public OpendataInformationDialog(JFrame parent,
                                      OpendataServiceManager opendataServiceManager,
-                                     @Qualifier("WazeTileServer") DefaultTileServer tileServer,
+                                     DefaultTileServer tileServer,
                                      LocalizationService localizationService) {
         super(parent);
         this.opendataServiceManager = opendataServiceManager;

@@ -48,6 +48,11 @@
             <version>1.0.1</version>
         </dependency>
         <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.kpouer</groupId>
             <artifactId>roadwork-lib</artifactId>
             <version>1.0.0</version>

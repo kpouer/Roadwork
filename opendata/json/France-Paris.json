@@ -7,10 +7,10 @@
     "licenceUrl": "https://opendatacommons.org/licenses/odbl/",
     "sourceUrl": "https://opendata.paris.fr/explore/dataset/chantiers-perturbants/information/?disjunctive.cp_arrondissement&disjunctive.maitre_ouvrage&disjunctive.objet&disjunctive.impact_circulation&disjunctive.niveau_perturbation&disjunctive.statut",
     "url": "https://opendata.paris.fr/api/records/1.0/search/?dataset=chantiers-perturbants&q=&rows=1000&facet=cp_arrondissement&facet=typologie&facet=maitre_ouvrage&facet=objet&facet=impact_circulation&facet=niveau_perturbation&facet=statut&exclude.statut=5",
-    "center": [
-      48.85337,
-      2.34847
-    ],
+    "center": {
+      "lat":48.85337,
+      "lon": 2.34847
+    },
     "locale": "fr_FR"
   },
   "roadworkArray": "$.records",

@@ -21,7 +21,7 @@ import java.util.Locale;
 
 public class Metadata {
     private String country;
-    private double[] center;
+    private LatLng center;
     private String sourceUrl;
     private String url;
     private String name;
@@ -39,10 +39,10 @@ public class Metadata {
     }
 
     public LatLng getCenter() {
-        return new LatLng(center[0], center[1]);
+        return center;
     }
 
-    public void setCenter(double[] center) {
+    public void setCenter(LatLng center) {
         this.center = center;
     }
 

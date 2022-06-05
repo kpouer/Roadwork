@@ -5,10 +5,10 @@
     "producer": "Rennes Métropole",
     "sourceUrl": "http://travaux.data.rennesmetropole.fr/#roadwork-info",
     "url": "http://travaux.data.rennesmetropole.fr/api/roadworks?epsg=4326",
-    "center": [
-      48.10881,
-      -1.67018
-    ],
+    "center": {
+     "lat":48.10881,
+     "lon":-1.67018
+    },
     "locale": "fr_FR"
   },
   "roadworkArray": "$.features",
