@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.kpouer</groupId>
             <artifactId>k-mapview</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.kpouer</groupId>
@@ -76,7 +76,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.2.0</version>
+            <version>4.5.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
