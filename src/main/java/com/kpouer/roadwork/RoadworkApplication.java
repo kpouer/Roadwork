@@ -25,6 +25,7 @@ public class RoadworkApplication {
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("com.kpouer");
+        applicationContext.registerShutdownHook();
         applicationContext.getBean(MainPanel.class);
     }
 }
