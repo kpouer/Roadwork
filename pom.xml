@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.kpouer</groupId>
     <artifactId>Roadwork</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <name>Roadwork</name>
     <properties>
         <java.version>17</java.version>
