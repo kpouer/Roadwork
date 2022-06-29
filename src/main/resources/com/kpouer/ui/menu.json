@@ -3,6 +3,10 @@
     "name": "File",
     "children": [
       {
+        "name": "Descriptor helper",
+        "action": "descriptorHelperAction"
+      },
+      {
         "name": "Synchronization settings",
         "action": "synchronizationSettingsAction"
       },

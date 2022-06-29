@@ -48,6 +48,11 @@
             <version>1.0.1</version>
         </dependency>
         <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.kpouer</groupId>
             <artifactId>roadwork-lib</artifactId>
             <version>1.0.0</version>
@@ -76,7 +81,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.5.1</version>
+            <version>4.6.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

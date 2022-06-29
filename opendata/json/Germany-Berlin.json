@@ -6,10 +6,10 @@
     "licenceUrl": "https://www.govdata.de/dl-de/by-2-0",
     "sourceUrl": "https://daten.berlin.de/datensaetze/baustellen-sperrungen-und-sonstige-st%C3%B6rungen-von-besonderem-verkehrlichem-interesse",
     "url": "https://api.viz.berlin.de/daten/baustellen_sperrungen.json",
-    "center": [
-      52.51935,
-      13.41156
-    ],
+    "center": {
+      "lat":52.51935,
+      "lon":13.41156
+    },
     "locale": "de_DE"
   },
   "roadworkArray": "$.features",

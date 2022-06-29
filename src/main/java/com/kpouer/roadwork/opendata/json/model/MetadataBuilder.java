@@ -15,9 +15,11 @@
  */
 package com.kpouer.roadwork.opendata.json.model;
 
+import com.kpouer.mapview.LatLng;
+
 public class MetadataBuilder {
     private String country;
-    private double[] center;
+    private LatLng center;
     private String source_url;
     private String url;
     private String name;
@@ -38,7 +40,7 @@ public class MetadataBuilder {
     }
 
     public MetadataBuilder withCenter(double latitude, double longitude) {
-        this.center = new double[] {latitude, longitude};
+        center = new LatLng(latitude, longitude);
         return this;
     }
 
