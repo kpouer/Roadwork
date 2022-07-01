@@ -38,7 +38,18 @@ public class DateParser {
             var match = parser.match(value);
             if (match.matches()) {
                 var str = match.groupCount() == 1 ? match.group(1) : match.group(0);
-                long timestamp = parseDate(parser.getFormat(), str, locale);
+                var format = parser.getFormat();
+                long timestamp;
+                if (format == null) {
+                    // format is null then it must be a timestamp in seconds or ms
+                    timestamp = Long.parseLong(str);
+                    if (timestamp < 1000000000000L) {
+                        // the timestamp was in second
+                        timestamp *= 1000L;
+                    }
+                } else {
+                    timestamp = parseDate(format, str, locale);
+                }
                 return new DateResult(timestamp, parser);
             }
         }
