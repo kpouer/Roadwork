@@ -26,11 +26,11 @@ import com.kpouer.roadwork.opendata.json.model.DateParser;
 import com.kpouer.roadwork.opendata.json.model.DateResult;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
+import com.kpouer.roadwork.service.HttpService;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -42,12 +42,12 @@ public class DefaultJsonService implements OpendataService {
     private static final Logger logger = LoggerFactory.getLogger(DefaultJsonService.class);
 
     private final String serviceName;
-    private final RestTemplate restTemplate;
+    private final HttpService httpService;
     private final ServiceDescriptor serviceDescriptor;
 
-    public DefaultJsonService(String serviceName, RestTemplate restTemplate, ServiceDescriptor serviceDescriptor) {
+    public DefaultJsonService(String serviceName, HttpService httpService, ServiceDescriptor serviceDescriptor) {
         this.serviceName = serviceName;
-        this.restTemplate = restTemplate;
+        this.httpService = httpService;
         this.serviceDescriptor = serviceDescriptor;
     }
 
@@ -58,7 +58,7 @@ public class DefaultJsonService implements OpendataService {
 
     @Override
     public Optional<RoadworkData> getData() throws RestClientException {
-        String json = restTemplate.getForObject(serviceDescriptor.getMetadata().getUrl(), String.class);
+        String json = httpService.getUrl(serviceDescriptor.getMetadata().getUrl());
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         List<?> roadworkArray = JsonPath.read(document, serviceDescriptor.getRoadworkArray());
         List<Roadwork> roadworks = roadworkArray
@@ -225,7 +225,7 @@ public class DefaultJsonService implements OpendataService {
             if (value instanceof Double) {
                 return (double) value;
             }
-            return Double.parseDouble(String.valueOf(value));
+            return Double.parseDouble(String.valueOf(value).replace(',', '.'));
         } catch (Exception e) {
             logger.error("Error parsing double", e);
         }

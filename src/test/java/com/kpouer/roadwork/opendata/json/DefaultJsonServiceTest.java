@@ -7,6 +7,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
+import com.kpouer.roadwork.service.HttpService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +31,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 class DefaultJsonServiceTest {
     @Mock
-    private RestTemplate restTemplate;
+    private HttpService httpService;
 
     @BeforeEach
     void setUp() {
-        Mockito.reset(restTemplate);
+        Mockito.reset(httpService);
     }
 
     @Test
@@ -59,10 +59,10 @@ class DefaultJsonServiceTest {
 
     private DefaultJsonService getServiceDescriptor(String pathname, String samplePath) throws IOException, URISyntaxException {
         String sample = Files.readString(Paths.get(getClass().getResource(samplePath).toURI()), StandardCharsets.UTF_8);
-        Mockito.when(restTemplate.getForObject(ArgumentCaptor.forClass(String.class).capture(), ArgumentCaptor.forClass(Class.class).capture())).thenReturn(sample);
+        Mockito.when(httpService.getUrl(ArgumentCaptor.forClass(String.class).capture())).thenReturn(sample);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         ServiceDescriptor serviceDescriptor = objectMapper.readValue(new File(pathname), ServiceDescriptor.class);
-        return new DefaultJsonService(pathname, restTemplate, serviceDescriptor);
+        return new DefaultJsonService(pathname, httpService, serviceDescriptor);
     }
 }

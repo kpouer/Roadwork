@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,16 +47,16 @@ public class OpendataServiceManager {
     private static final Logger logger = LoggerFactory.getLogger(OpendataServiceManager.class);
     private static final String VERSION = "2";
 
-    private final RestTemplate restTemplate;
+    private final HttpService httpService;
     private final Config config;
     private final ApplicationContext applicationContext;
     private final SynchronizationService synchronizationService;
 
-    public OpendataServiceManager(RestTemplate restTemplate,
+    public OpendataServiceManager(HttpService httpService,
                                   Config config,
                                   ApplicationContext applicationContext,
                                   SynchronizationService synchronizationService) {
-        this.restTemplate = restTemplate;
+        this.httpService = httpService;
         this.config = config;
         this.applicationContext = applicationContext;
         this.synchronizationService = synchronizationService;
@@ -169,7 +168,7 @@ public class OpendataServiceManager {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
                 ServiceDescriptor serviceDescriptor = objectMapper.readValue(Path.of("opendata", "json", opendataService).toFile(), ServiceDescriptor.class);
-                return new DefaultJsonService(opendataService, restTemplate, serviceDescriptor);
+                return new DefaultJsonService(opendataService, httpService, serviceDescriptor);
             } catch (IOException e) {
                 logger.error("Unable to load service " + opendataService, e);
                 throw new RuntimeException(e);
