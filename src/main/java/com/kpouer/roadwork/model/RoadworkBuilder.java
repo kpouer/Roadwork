@@ -13,7 +13,7 @@ public final class RoadworkBuilder {
     private String impactCirculationDetail;
     private String description;
     private SyncData syncData;
-    private String shortUrl;
+    private String url;
 
     private RoadworkBuilder() {
         syncData = new SyncData();
@@ -73,8 +73,8 @@ public final class RoadworkBuilder {
         return this;
     }
 
-    public RoadworkBuilder withUrl(String shorturl) {
-        this.shortUrl = shorturl;
+    public RoadworkBuilder withUrl(String url) {
+        this.url = url;
         return this;
     }
 
@@ -90,7 +90,7 @@ public final class RoadworkBuilder {
         roadwork.setImpactCirculationDetail(impactCirculationDetail);
         roadwork.setDescription(description);
         roadwork.setSyncData(syncData);
-        roadwork.setShortUrl(shortUrl);
+        roadwork.setUrl(url);
         return roadwork;
     }
 }

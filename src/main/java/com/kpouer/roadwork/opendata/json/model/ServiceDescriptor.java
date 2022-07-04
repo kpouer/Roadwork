@@ -27,6 +27,7 @@ public class ServiceDescriptor {
     private DateParser from;
     private DateParser to;
     private String roadworkArray;
+    private String url;
 
     public Metadata getMetadata() {
         return metadata;
@@ -115,6 +116,14 @@ public class ServiceDescriptor {
 
     public void setRoadworkArray(String roadworkArray) {
         this.roadworkArray = roadworkArray;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

@@ -32,11 +32,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestClientException;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DefaultJsonService implements OpendataService {
     private static final Logger logger = LoggerFactory.getLogger(DefaultJsonService.class);
@@ -58,7 +58,9 @@ public class DefaultJsonService implements OpendataService {
 
     @Override
     public Optional<RoadworkData> getData() throws RestClientException {
-        String json = httpService.getUrl(serviceDescriptor.getMetadata().getUrl());
+        String url = buildUrl();
+        logger.info("getData {}", url);
+        String json = httpService.getUrl(url);
         Object document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         List<?> roadworkArray = JsonPath.read(document, serviceDescriptor.getRoadworkArray());
         List<Roadwork> roadworks = roadworkArray
@@ -67,6 +69,22 @@ public class DefaultJsonService implements OpendataService {
                 .filter(DefaultJsonService::isValid)
                 .toList();
         return Optional.of(new RoadworkData(serviceName, roadworks));
+    }
+
+    private String buildUrl() {
+        Metadata metadata = serviceDescriptor.getMetadata();
+        Map<String, String> urlParams = metadata.getUrlParams();
+        String url = metadata.getUrl();
+        if (urlParams == null) {
+            return url;
+        }
+        String queryString = urlParams
+                .entrySet()
+                .stream()
+                .map(entry -> entry.getKey() + '=' + URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
+                .collect(Collectors.joining("&"));
+        url += url.indexOf('?') != -1 ? '&' + queryString : '?' + queryString;
+        return url;
     }
 
     public static boolean isValid(Roadwork roadwork) {
@@ -200,8 +218,8 @@ public class DefaultJsonService implements OpendataService {
         if (serviceDescriptor.getLocationDetails() != null) {
             roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
         }
-        if (serviceDescriptor.getMetadata().getUrl() != null) {
-            roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getMetadata().getUrl()));
+        if (serviceDescriptor.getUrl() != null) {
+            roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getUrl()));
         }
         return roadworkBuilder.build();
     }

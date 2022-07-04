@@ -38,7 +38,7 @@ public class Roadwork {
     @JsonIgnore
     private Circle marker;
     private SyncData syncData;
-    private String shortUrl;
+    private String url;
 
     public String getId() {
         return id;
@@ -163,11 +163,11 @@ public class Roadwork {
         this.syncData = syncData;
     }
 
-    public void setShortUrl(String shortUrl) {
-        this.shortUrl = shortUrl;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getShortUrl() {
-        return shortUrl;
+    public String getUrl() {
+        return url;
     }
 }

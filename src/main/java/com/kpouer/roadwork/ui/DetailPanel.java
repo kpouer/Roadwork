@@ -28,6 +28,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumMap;
@@ -50,6 +53,7 @@ public class DetailPanel extends JPanel {
     private final MapView mapView;
     private final Map<Status, JRadioButton> statusRadioButtons;
     private Roadwork roadwork;
+    private JButton urlDetails;
 
     public DetailPanel(Config config, MapView mapView, LocalizationService localizationService, WmeAction wmeAction) {
         super(new MigLayout());
@@ -57,8 +61,7 @@ public class DetailPanel extends JPanel {
         this.mapView = mapView;
         add(id = new JTextField(40), "wrap, span 3");
         add(location = new JTextField(40), "span 2");
-        JButton editButton;
-        add(editButton = new JButton(wmeAction), "wrap");
+        add(new JButton(wmeAction), "wrap");
         add(start = new JTextField(40));
         add(stop = new JTextField(40), "wrap, span 3");
         add(road = new JTextField(40), "wrap, span 3");
@@ -67,6 +70,17 @@ public class DetailPanel extends JPanel {
         add(circulationDetailsScroll, "wrap, span 3");
         JScrollPane descriptionScroll = new JScrollPane(description = new JTextArea(3, 40));
         add(descriptionScroll, "wrap, span 3");
+        add(urlDetails = new JButton(localizationService.getMessage("detailPanel.openUrl")), "wrap");
+        urlDetails.setEnabled(false);
+        urlDetails.addActionListener(e -> {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                try {
+                    Desktop.getDesktop().browse(new URI(roadwork.getUrl()));
+                } catch (IOException | URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
         id.setBorder(BorderFactory.createTitledBorder("id"));
         location.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.location")));
         start.setBorder(BorderFactory.createTitledBorder(localizationService.getMessage("detailPanel.start")));
@@ -116,6 +130,7 @@ public class DetailPanel extends JPanel {
         description.setText(roadwork.getDescription());
         description.setWrapStyleWord(true);
         statusRadioButtons.get(roadwork.getSyncData().getStatus()).setSelected(true);
+        urlDetails.setEnabled(roadwork.getUrl() != null);
     }
 
     private class StatusChangeAction implements ActionListener {
