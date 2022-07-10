@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
 import com.kpouer.roadwork.opendata.json.DefaultJsonService;
@@ -67,6 +68,7 @@ public class DescriptorHelperDialog extends JDialog {
     private ServiceDescriptor serviceDescriptor;
     private String currentRoadworkPath;
     private Object currentRoadwork;
+    private Color ERROR_COLOR = new Color(255, 0, 0, 30);
 
     public DescriptorHelperDialog(MainPanel parent, LocalizationService localizationService) {
         super(parent);
@@ -181,13 +183,13 @@ public class DescriptorHelperDialog extends JDialog {
             preview.setCaretPosition(0);
             editor.setBackground(defaultColor);
         } catch (InvalidPathException e) {
-            editor.setBackground(Color.RED);
+            editor.setBackground(ERROR_COLOR);
             logger.warn("Invalid path {}", e.getMessage());
         } catch (JsonProcessingException e) {
-            editor.setBackground(Color.RED);
+            editor.setBackground(ERROR_COLOR);
         } catch (Exception e) {
             logger.error("Error processing", e);
-            editor.setBackground(Color.RED);
+            editor.setBackground(ERROR_COLOR);
         }
     }
 
@@ -198,7 +200,7 @@ public class DescriptorHelperDialog extends JDialog {
         var roadworkArrayPath = serviceDescriptor.getRoadworkArray();
         if (roadworkArrayPath == null || roadworkArrayPath.trim().isEmpty()) {
             logger.debug("Roadwork array path cannot be null or empty");
-            editor.setBackground(Color.RED);
+            editor.setBackground(ERROR_COLOR);
             return Optional.empty();
         }
         try {
@@ -240,11 +242,15 @@ public class DescriptorHelperDialog extends JDialog {
      * A new sample was inserted in the sample textarea.
      */
     private void sampleUpdated() {
-        logger.debug("sampleUpdated");
-        var jsonString = sampleTextArea.getText();
-        sample = Configuration.defaultConfiguration().jsonProvider().parse(jsonString);
-        currentRoadworkPath = null;
-        currentRoadwork = null;
-        updated();
+        try {
+            logger.debug("sampleUpdated");
+            var jsonString = sampleTextArea.getText();
+            sample = Configuration.defaultConfiguration().jsonProvider().parse(jsonString);
+            currentRoadworkPath = null;
+            currentRoadwork = null;
+            updated();
+        } catch (Throwable e) {
+            logger.error("Error", e);
+        }
     }
 }

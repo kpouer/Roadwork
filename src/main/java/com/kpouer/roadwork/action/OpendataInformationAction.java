@@ -40,7 +40,7 @@ public class OpendataInformationAction extends AbstractAction {
     public OpendataInformationAction(SoftwareModel softwareModel,
                                      LocalizationService localizationService,
                                      OpendataServiceManager opendataServiceManager,
-                                     @Qualifier("WazeTileServer") DefaultTileServer tileServer) {
+                                     @Qualifier("WazeINTLTileServer") DefaultTileServer tileServer) {
         super(localizationService.getMessage("action.opendataInformationAction"));
         this.softwareModel = softwareModel;
         this.localizationService = localizationService;

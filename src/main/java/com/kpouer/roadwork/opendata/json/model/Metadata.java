@@ -32,6 +32,7 @@ public class Metadata {
     private String licenceUrl;
     private Locale locale;
     private Map<String, String> urlParams;
+    private String tileServer = "WazeINTL";
 
     public String getCountry() {
         return country;
@@ -111,6 +112,14 @@ public class Metadata {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public String getTileServer() {
+        return tileServer;
+    }
+
+    public void setTileServer(String tileServer) {
+        this.tileServer = tileServer;
     }
 
     @Override

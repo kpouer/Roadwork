@@ -18,6 +18,7 @@ package com.kpouer.roadwork.service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kpouer.mapview.LatLng;
+import com.kpouer.mapview.tile.TileServer;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
@@ -28,6 +29,7 @@ import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -159,6 +161,16 @@ public class OpendataServiceManager {
     private OpendataService getOpendataService() {
         String opendataService = config.getOpendataService();
         return getOpendataService(opendataService);
+    }
+
+    public TileServer getTileServer() {
+        String tileServerName = getOpendataService().getMetadata().getTileServer();
+        try {
+            return applicationContext.getBean(tileServerName + "TileServer", TileServer.class);
+        } catch (BeansException e) {
+            logger.error("Error getting tile server " + tileServerName, e);
+        }
+        return config.getWazeINTLTileServer();
     }
 
     @NotNull
