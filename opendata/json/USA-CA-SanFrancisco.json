@@ -12,7 +12,8 @@
       "lon": -122.4664395
     },
     "locale": "en_US",
-    "tileServer": "WazeNA"
+    "tileServer": "WazeNA",
+    "editorPattern": "https://waze.com/editor?env=usa&lat=${lat}&&lon=${lon}&zoomLevel=19"
   },
   "roadworkArray": "$",
   "id": "@.objectid",

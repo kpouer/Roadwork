@@ -31,7 +31,6 @@ import com.kpouer.roadwork.ui.menu.MenuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
@@ -60,7 +59,6 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     private final OpendataServiceManager opendataServiceManager;
     private final SoftwareModel softwareModel;
     private final Config config;
-    private final ApplicationContext applicationContext;
 
     public MainPanel(@Value("classpath:com/kpouer/ui/menu.json") Resource menu,
                      ExitAction exitAction,
@@ -70,11 +68,9 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
                      OpendataServiceManager opendataServiceManager,
                      ToolbarPanel toolbarPanel,
                      SoftwareModel softwareModel,
-                     Config config,
-                     ApplicationContext applicationContext) throws IOException {
+                     Config config) throws IOException {
         super("Roadwork");
         this.config = config;
-        this.applicationContext = applicationContext;
 
         softwareModel.setMainFrame(this);
         this.opendataServiceManager = opendataServiceManager;
@@ -133,6 +129,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
 
     private void loadData() {
         try {
+            mapView.setTileServer(opendataServiceManager.getTileServer());
             mapView.removeAllMarkers();
             Optional<RoadworkData> roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);

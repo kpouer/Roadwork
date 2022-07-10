@@ -158,7 +158,7 @@ public class OpendataServiceManager {
     }
 
     @NotNull
-    private OpendataService getOpendataService() {
+    public OpendataService getOpendataService() {
         String opendataService = config.getOpendataService();
         return getOpendataService(opendataService);
     }
