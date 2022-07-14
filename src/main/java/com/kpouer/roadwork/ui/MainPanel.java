@@ -130,6 +130,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     private void loadData() {
         try {
             mapView.setTileServer(opendataServiceManager.getTileServer());
+            mapView.setCenter(opendataServiceManager.getCenter());
             mapView.removeAllMarkers();
             Optional<RoadworkData> roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);
