@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "country": "France",
+    "name": "Montpellier",
+    "producer": "Montpellier Mediterranée Métropole",
+    "licenceName": "Open Data Commons Open Database License (ODbL)",
+    "licenceUrl": "http://opendefinition.org/licenses/odc-odbl/",
+    "sourceUrl": "https://data.montpellier3m.fr/dataset/chantiers-genants-et-evenements-de-circulation-de-montpellier-mediterranee-metropole",
+    "url": "https://data.montpellier3m.fr/sites/default/files/ressources/MMM_MMM_chantiers_genants_points.json",
+    "center": {
+      "lat": 43.610073,
+      "lon": 3.8391501
+    },
+    "locale": "fr_FR"
+  },
+  "roadworkArray": "$.features",
+  "id": "@.properties.numero",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "description": "@.properties.ch_type",
+  "locationDetails": "@.properties.incidence_station",
+  "impactCirculationDetail": "@.properties.incidence_circu",
+  "road": null,
+  "from": {
+    "path": "@.properties.datedebut",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyyMMdd"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.properties.datefin",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyyMMdd"
+      }
+    ]
+  }
+}
