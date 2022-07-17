@@ -107,6 +107,8 @@ public class DetailPanel extends JPanel {
                 add(radioButton);
             }
         }
+        circulationDetail.setWrapStyleWord(true);
+        description.setWrapStyleWord(true);
     }
 
     @Override
