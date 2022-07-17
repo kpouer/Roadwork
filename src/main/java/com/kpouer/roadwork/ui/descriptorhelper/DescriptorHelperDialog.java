@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.InvalidJsonException;
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
 import com.kpouer.roadwork.opendata.json.DefaultJsonService;
@@ -186,6 +185,7 @@ public class DescriptorHelperDialog extends JDialog {
             editor.setBackground(ERROR_COLOR);
             logger.warn("Invalid path {}", e.getMessage());
         } catch (JsonProcessingException e) {
+            logger.error("Error processing json", e);
             editor.setBackground(ERROR_COLOR);
         } catch (Exception e) {
             logger.error("Error processing", e);
