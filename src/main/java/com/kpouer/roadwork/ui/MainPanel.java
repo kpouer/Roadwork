@@ -111,6 +111,8 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof OpendataServiceUpdated) {
             mapView.setCenter(opendataServiceManager.getCenter());
+            mapView.setTileServer(opendataServiceManager.getTileServer());
+            mapView.repaint();
             loadData();
         } else if (event instanceof UserSettingsUpdated) {
             UserSettings userSettings = config.getUserSettings();
@@ -127,6 +129,8 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
 
     private void loadData() {
         try {
+            mapView.setTileServer(opendataServiceManager.getTileServer());
+            mapView.setCenter(opendataServiceManager.getCenter());
             mapView.removeAllMarkers();
             Optional<RoadworkData> roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);

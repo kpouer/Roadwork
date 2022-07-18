@@ -32,6 +32,8 @@ public class Metadata {
     private String licenceUrl;
     private Locale locale;
     private Map<String, String> urlParams;
+    private String tileServer = "WazeINTL";
+    private String editorPattern = "https://waze.com/fr/editor?env=row&lat=${lat}&lon=${lon}&zoomLevel=19";
 
     public String getCountry() {
         return country;
@@ -59,6 +61,10 @@ public class Metadata {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getEditorPattern() {
+        return editorPattern;
     }
 
     public Map<String, String> getUrlParams() {
@@ -111,6 +117,14 @@ public class Metadata {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+    }
+
+    public String getTileServer() {
+        return tileServer;
+    }
+
+    public void setTileServer(String tileServer) {
+        this.tileServer = tileServer;
     }
 
     @Override

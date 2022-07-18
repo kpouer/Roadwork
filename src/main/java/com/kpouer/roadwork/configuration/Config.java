@@ -210,34 +210,72 @@ public class Config {
     }
 
     @Bean("mapview")
-    public MapView getMapView(@Qualifier("WazeTileServer") DefaultTileServer tileServer) {
+    public MapView getMapView(@Qualifier("WazeINTLTileServer") DefaultTileServer tileServer) {
         return new MapView(tileServer);
     }
 
     @Bean("OsmTileServer")
     @Lazy
-    public DefaultTileServer getOsmTileServer() throws IOException {
-        return new DefaultTileServer(tilesSize,
-                minZoom,
-                maxZoom,
-                threadCount,
-                new ImageCacheImpl("OSM", Path.of(dataPath, "cache").toString(), 1000),
-                "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-                "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png");
+    public DefaultTileServer getOsmTileServer() {
+        try {
+            return new DefaultTileServer(tilesSize,
+                    minZoom,
+                    maxZoom,
+                    threadCount,
+                    new ImageCacheImpl("OSM", Path.of(dataPath, "cache").toString(), 1000),
+                    "https://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                    "https://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+                    "https://c.tile.openstreetmap.org/${z}/${x}/${y}.png");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Bean("WazeTileServer")
+    @Bean("WazeINTLTileServer")
     @Lazy
-    public DefaultTileServer getWazeTileServer() throws IOException {
-        return new DefaultTileServer(tilesSize,
-                minZoom,
-                maxZoom,
-                threadCount,
-                new ImageCacheImpl("Waze", Path.of(dataPath, "cache").toString(), 1000),
-                "https://worldtiles1.waze.com/tiles/${z}/${x}/${y}.png",
-                "https://worldtiles2.waze.com/tiles/${z}/${x}/${y}.png",
-                "https://worldtiles3.waze.com/tiles/${z}/${x}/${y}.png");
+    public DefaultTileServer getWazeINTLTileServer() {
+        try {
+            return new DefaultTileServer(tilesSize,
+                    minZoom,
+                    maxZoom,
+                    threadCount,
+                    new ImageCacheImpl("Waze", Path.of(dataPath, "cache").toString(), 1000),
+                    "https://worldtiles1.waze.com/tiles/${z}/${x}/${y}.png",
+                    "https://worldtiles2.waze.com/tiles/${z}/${x}/${y}.png",
+                    "https://worldtiles3.waze.com/tiles/${z}/${x}/${y}.png");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Bean("WazeNATileServer")
+    @Lazy
+    public DefaultTileServer getWazeNATileServer() {
+        try {
+            return new DefaultTileServer(tilesSize,
+                    minZoom,
+                    maxZoom,
+                    threadCount,
+                    new ImageCacheImpl("WazeNA", Path.of(dataPath, "cache").toString(), 1000),
+                    "https://livemap-tiles1.waze.com/tiles/${z}/${x}/${y}.png");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Bean("WazeILTileServer")
+    @Lazy
+    public DefaultTileServer getWazeILTileServer() {
+        try {
+            return new DefaultTileServer(tilesSize,
+                    minZoom,
+                    maxZoom,
+                    threadCount,
+                    new ImageCacheImpl("WazeIL", Path.of(dataPath, "cache").toString(), 1000),
+                    "https://il-livemap-tiles1.waze.com/tiles/${z}/${x}/${y}.png");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Bean

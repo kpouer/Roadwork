@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.action;
 
 import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -32,11 +33,16 @@ import java.net.URISyntaxException;
  */
 @Component
 public class WmeAction extends AbstractAction {
-    private final SoftwareModel softwareModel;
+    public static final String DEFAULT_WME_URL = "https://waze.com/fr/editor?env=row&lat=${lat}&&lon=${lon}&zoomLevel=19";
 
-    public WmeAction(SoftwareModel softwareModel) {
+    private final SoftwareModel softwareModel;
+    private final OpendataServiceManager opendataServiceManager;
+
+    public WmeAction(SoftwareModel softwareModel,
+                     OpendataServiceManager opendataServiceManager) {
         super("WME");
         this.softwareModel = softwareModel;
+        this.opendataServiceManager = opendataServiceManager;
     }
 
     @Override
@@ -45,13 +51,21 @@ public class WmeAction extends AbstractAction {
         if (selectedRoadwork != null) {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://waze.com/fr/editor?env=row&lat=" + selectedRoadwork.getLatitude() + "&lon=" + selectedRoadwork.getLongitude() + "&zoomLevel=19"));
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                } catch (URISyntaxException ex) {
+                    Desktop.getDesktop().browse(getWmeUrl(selectedRoadwork));
+                } catch (IOException | URISyntaxException ex) {
                     throw new RuntimeException(ex);
                 }
             }
         }
+    }
+
+    private URI getWmeUrl(Roadwork roadwork) throws URISyntaxException {
+        String url = opendataServiceManager.getOpendataService().getMetadata().getEditorPattern();
+        if (url == null) {
+            url = DEFAULT_WME_URL;
+        }
+        return new URI(url
+                .replace("${lat}", String.valueOf(roadwork.getLatitude()))
+                .replace("${lon}", String.valueOf(roadwork.getLongitude())));
     }
 }
