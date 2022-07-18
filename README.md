@@ -24,6 +24,7 @@ So far most supported services are French, but there is no restriction to includ
 - Bordeaux
 - Issy-les-Moulineaux
 - Lyon
+- Montpellier
 - Paris
 - Rennes
 - Toulouse
@@ -31,6 +32,10 @@ So far most supported services are French, but there is no restriction to includ
 ## Germany
 
 - Berlin
+
+## USA
+
+- San Francisco
 
 # Technical information
 
