@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "country": "France",
+    "name": "Loire Atlantique",
+    "producer": "Direction de la Voirie et des Déplacements - Ville de Paris",
+    "licenceName": "Licence Ouverte v2.0 (Etalab)",
+    "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf",
+    "sourceUrl": "https://data.loire-atlantique.fr/explore/dataset/224400028_info-route-departementale/information/?disjunctive.nature&disjunctive.type&disjunctive.ligne2&disjunctive.ligne6",
+    "url": "https://data.loire-atlantique.fr/api/records/1.0/search/?dataset=224400028_info-route-departementale&q=&rows=1000&facet=nature&facet=type&facet=datepublication&facet=ligne1&facet=ligne2&facet=ligne6",
+    "center": {
+      "lat":47.3481312,
+      "lon": -2.0663705
+    },
+    "locale": "fr_FR"
+  },
+  "roadworkArray": "$.records",
+  "id": "@.recordid",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "road": "@.fields.ligne2",
+  "description": "@.fields.ligne5",
+  "locationDetails": "@.fields.precision_localisation",
+  "impactCirculationDetail": "@.fields.ligne6",
+  "from": {
+    "path": "@.fields.ligne4",
+    "parsers": [
+      {
+        "matcher": "Du (.*) au.*",
+        "format": "dd/MM/yyyy"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.fields.ligne4",
+    "parsers": [
+      {
+        "matcher": ".* au (.*)",
+        "format": "dd/MM/yyyy"
+      }
+    ]
+  }
+}
