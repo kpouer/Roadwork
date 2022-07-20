@@ -23,6 +23,7 @@ So far most supported services are French, but there is no restriction to includ
 - Avignon
 - Bordeaux
 - Issy-les-Moulineaux
+- Loire Atlantique (state)
 - Lyon
 - Montpellier
 - Paris
