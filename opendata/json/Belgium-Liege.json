@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "country": "Belgium",
+    "name": "Liège",
+    "producer": "Direction de la Voirie et des Déplacements - Ville de Paris",
+    "licenceName": "Open Database License (ODbL)",
+    "licenceUrl": "https://opendatacommons.org/licenses/odbl/",
+    "sourceUrl": "https://opendata.liege.be/explore/dataset/infos-travaux/information/?disjunctive.categories",
+    "url": "https://opendata.liege.be/api/records/1.0/search/?dataset=infos-travaux&q=&rows=1000&facet=categories&facet=start_date&facet=tentative_end_date",
+    "center": {
+      "lat": 50.6246894,
+      "lon": 5.5292386
+    },
+    "locale": "fr_BE"
+  },
+  "roadworkArray": "$.records",
+  "id": "@.recordid",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "road": "@.fields.voie",
+  "locationDetails": "@.fields.precision_localisation",
+  "impactCirculationDetail": "@.fields.impact_circulation_detail",
+  "description": "@.fields.description",
+  "url": "@.fields.url",
+  "from": {
+    "path": "@.fields.start_date",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.fields.tentative_end_date",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "dd/MM/yyyy"
+      }
+    ]
+  }
+}

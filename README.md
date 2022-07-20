@@ -18,6 +18,10 @@ in a local cache.
 
 So far most supported services are French, but there is no restriction to include other countries.
 
+## Belgium
+
+- Liège
+
 ## France
 
 - Avignon
