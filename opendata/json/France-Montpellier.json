@@ -6,7 +6,7 @@
     "licenceName": "Open Data Commons Open Database License (ODbL)",
     "licenceUrl": "http://opendefinition.org/licenses/odc-odbl/",
     "sourceUrl": "https://data.montpellier3m.fr/dataset/chantiers-genants-et-evenements-de-circulation-de-montpellier-mediterranee-metropole",
-    "url": "https://data.montpellier3m.fr/sites/default/files/ressources/MMM_MMM_chantiers_genants_points.json",
+    "url": "https://data.montpellier3m.fr/sites/default/files/ressources/MMM_MMM_ChantiersGenantsPoints.json",
     "center": {
       "lat": 43.610073,
       "lon": 3.8391501
