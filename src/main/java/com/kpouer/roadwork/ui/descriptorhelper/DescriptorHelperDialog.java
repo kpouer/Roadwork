@@ -137,7 +137,7 @@ public class DescriptorHelperDialog extends JDialog {
         urlTextField.addActionListener(e -> callUrl());
     }
 
-    private ServiceDescriptor createDefaultServiceDescriptor() {
+    private static ServiceDescriptor createDefaultServiceDescriptor() {
         var serviceDescriptor = new ServiceDescriptor();
         serviceDescriptor.setMetadata(new Metadata());
         serviceDescriptor.setRoadworkArray("$.records");
