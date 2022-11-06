@@ -92,14 +92,14 @@ public class DefaultJsonService implements OpendataService {
             logger.warn("{} is invalid because it has no location", roadwork);
             return false;
         }
-        if (roadwork.getStart() == 0) {
-            logger.warn("{} is invalid because it's start date is 0", roadwork);
-            return false;
-        }
-        if (roadwork.getEnd() == 0) {
-            logger.warn("{} is invalid because it's end date is 0", roadwork);
-            return false;
-        }
+//        if (roadwork.getStart() == 0) {
+//            logger.warn("{} is invalid because it's start date is 0", roadwork);
+//            return false;
+//        }
+//        if (roadwork.getEnd() == 0) {
+//            logger.warn("{} is invalid because it's end date is 0", roadwork);
+//            return false;
+//        }
         return true;
     }
 

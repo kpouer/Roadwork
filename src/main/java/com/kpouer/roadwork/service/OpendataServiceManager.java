@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * @author Matthieu Casanova
@@ -48,6 +47,8 @@ import java.util.stream.Stream;
 public class OpendataServiceManager {
     private static final Logger logger = LoggerFactory.getLogger(OpendataServiceManager.class);
     private static final String VERSION = "2";
+    public static final String OPENDATA_JSON = "opendata/json";
+    public static final String THIRDPARTY = "thirdparty";
 
     private final HttpService httpService;
     private final Config config;
@@ -64,12 +65,37 @@ public class OpendataServiceManager {
         this.synchronizationService = synchronizationService;
     }
 
+    /**
+     * Retrieve service names
+     *
+     * @return a list of service names (json file names)
+     */
     public List<String> getServices() {
+        var services = getDefaultServices();
+        services.addAll(getThirdPartyServices());
+        return services;
+    }
+
+    public List<String> getDefaultServices() {
+        return getServices(OPENDATA_JSON);
+    }
+
+    public List<String> getThirdPartyServices() {
+        return getServices(THIRDPARTY);
+    }
+
+    /**
+     * Retrieve service names
+     *
+     * @return a list of service names (json file names)
+     * @param folder the folder where the services descriptor are stored
+     */
+    private List<String> getServices(String folder) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         List<String> services = new ArrayList<>();
         Collections.addAll(services, applicationContext.getBeanNamesForType(OpendataService.class));
-        try (Stream<Path> files = Files.list(Path.of("opendata/json"))) {
+        try (var files = Files.list(Path.of(folder))) {
             files
                     .filter(path -> path.toString().endsWith(".json"))
                     .map(Path::toFile)
@@ -176,10 +202,11 @@ public class OpendataServiceManager {
     @NotNull
     public OpendataService getOpendataService(String opendataService) {
         if (opendataService.endsWith(".json")) {
-            ObjectMapper objectMapper = new ObjectMapper();
+            var objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
-                ServiceDescriptor serviceDescriptor = objectMapper.readValue(Path.of("opendata", "json", opendataService).toFile(), ServiceDescriptor.class);
+                var serviceDescriptor = objectMapper
+                        .readValue(getOpendataServicePath(opendataService).toFile(), ServiceDescriptor.class);
                 return new DefaultJsonService(opendataService, httpService, serviceDescriptor);
             } catch (IOException e) {
                 logger.error("Unable to load service " + opendataService, e);
@@ -187,6 +214,21 @@ public class OpendataServiceManager {
             }
         }
         return applicationContext.getBean(opendataService, OpendataService.class);
+    }
+
+    /**
+     * Returns the opendata service path by it's name.
+     * It will search in third party folder first then if not found in the official services path.
+     * @param opendataService the opendata service name
+     * @return the path of the opendata service
+     */
+    @NotNull
+    private static Path getOpendataServicePath(String opendataService) {
+        var path = Path.of(THIRDPARTY, opendataService);
+        if (!Files.exists(path)) {
+            path = Path.of(OPENDATA_JSON, opendataService);
+        }
+        return path;
     }
 
     @NotNull
