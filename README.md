@@ -44,6 +44,7 @@ So far most supported services are French, but there is no restriction to includ
 
 ## USA
 
+- Chicago
 - San Francisco
 
 # Technical information
