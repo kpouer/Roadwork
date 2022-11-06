@@ -71,7 +71,7 @@ public class OpendataInformationDialog extends JDialog {
     }
 
     private JTree buildLicenceTree() {
-        var services = opendataServiceManager.getServices();
+        var services = opendataServiceManager.getDefaultServices();
         var root = new DefaultMutableTreeNode();
         Map<String, DefaultMutableTreeNode> countryNodes = new HashMap<>();
 

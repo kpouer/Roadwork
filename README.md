@@ -24,15 +24,19 @@ So far most supported services are French, but there is no restriction to includ
 
 ## France
 
+### Cities
 - Avignon
 - Bordeaux
 - Issy-les-Moulineaux
-- Loire Atlantique (state)
 - Lyon
 - Montpellier
 - Paris
 - Rennes
 - Toulouse
+
+### States
+- Loire Atlantique (44)
+- Sarthe (72)
 
 ## Germany
 
@@ -40,6 +44,7 @@ So far most supported services are French, but there is no restriction to includ
 
 ## USA
 
+- Chicago
 - San Francisco
 
 # Technical information

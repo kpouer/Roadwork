@@ -16,7 +16,6 @@
 package com.kpouer.roadwork.ui.dialog;
 
 import com.kpouer.roadwork.configuration.Config;
-import com.kpouer.roadwork.configuration.UserSettings;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.service.SoftwareModel;
 import net.miginfocom.swing.MigLayout;
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * @author Matthieu Casanova
@@ -37,17 +35,17 @@ public class SynchronizationSettingsDialog extends JDialog {
                                          Config config,
                                          ApplicationEventPublisher applicationEventPublisher) {
         super(softwareModel.getMainFrame(), "Synchronization settings", true);
-        Container contentPane = getContentPane();
+        var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout());
-        UserSettings userSettings = config.getUserSettings();
+        var userSettings = config.getUserSettings();
 
-        JCheckBox enableSynchronization = new JCheckBox("enable synchronization");
-        JTextField urlField = new JTextField(40);
-        JTextField teamField = new JTextField(40);
-        JTextField loginField = new JTextField(40);
-        JTextField passwordField = new JTextField(40);
+        var enableSynchronization = new JCheckBox("enable synchronization");
+        var urlField = new JTextField(40);
+        var teamField = new JTextField(40);
+        var loginField = new JTextField(40);
+        var passwordField = new JPasswordField(40);
 
-        boolean synchronizationEnabled = userSettings.isSynchronizationEnabled();
+        var synchronizationEnabled = userSettings.isSynchronizationEnabled();
         if (synchronizationEnabled) {
             enableSynchronization.setSelected(true);
         } else {
@@ -78,7 +76,7 @@ public class SynchronizationSettingsDialog extends JDialog {
         contentPane.add(new JLabel("Password :"));
         contentPane.add(passwordField, "wrap");
 
-        JButton ok = new JButton("ok");
+        var ok = new JButton("ok");
         contentPane.add(ok);
 
         ok.addActionListener(e -> {
@@ -92,7 +90,7 @@ public class SynchronizationSettingsDialog extends JDialog {
             applicationEventPublisher.publishEvent(new SynchronizationSettingsUpdated(this));
             dispose();
         });
-        JButton cancel = new JButton("cancel");
+        var cancel = new JButton("cancel");
         cancel.addActionListener(e -> dispose());
         contentPane.add(cancel);
 
