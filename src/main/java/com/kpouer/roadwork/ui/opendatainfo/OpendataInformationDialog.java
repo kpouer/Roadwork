@@ -46,6 +46,7 @@ public class OpendataInformationDialog extends JDialog {
         this.opendataServiceManager = opendataServiceManager;
         mapView = new MapView(tileServer);
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        addThirdParty();
         JTree licenceTree = buildLicenceTree();
         licenceTree.setPreferredSize(new Dimension(150, 0));
         opendataInformationPanel = new OpendataInformationPanel(localizationService);
@@ -68,6 +69,17 @@ public class OpendataInformationDialog extends JDialog {
         getContentPane().add(splitPane);
         mapView.setZoom(3);
         setSize(800, 480);
+    }
+
+    private void addThirdParty() {
+        opendataServiceManager.getThirdPartyServices()
+                .stream()
+                .map(opendataServiceManager::getOpendataService)
+                .map(OpendataService::getMetadata)
+                .map(metadata -> new Circle(metadata.getCenter().getLat(),
+                        metadata.getCenter().getLon(), 5, Color.BLUE))
+                .forEach(mapView::addMarker);
+
     }
 
     private JTree buildLicenceTree() {
