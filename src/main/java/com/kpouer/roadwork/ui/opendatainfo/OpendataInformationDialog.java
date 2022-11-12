@@ -45,9 +45,9 @@ public class OpendataInformationDialog extends JDialog {
         super(parent);
         this.opendataServiceManager = opendataServiceManager;
         mapView = new MapView(tileServer);
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        var splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         addThirdParty();
-        JTree licenceTree = buildLicenceTree();
+        var licenceTree = buildLicenceTree();
         licenceTree.setPreferredSize(new Dimension(150, 0));
         opendataInformationPanel = new OpendataInformationPanel(localizationService);
         opendataInformationPanel.setPreferredSize(new Dimension(150, 0));
@@ -61,7 +61,7 @@ public class OpendataInformationDialog extends JDialog {
             }
         });
         splitPane.setLeftComponent(new JScrollPane(licenceTree));
-        JSplitPane rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        var rightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         rightSplit.setLeftComponent(opendataInformationPanel);
         rightSplit.setRightComponent(mapView);
         splitPane.setRightComponent(rightSplit);
@@ -76,10 +76,8 @@ public class OpendataInformationDialog extends JDialog {
                 .stream()
                 .map(opendataServiceManager::getOpendataService)
                 .map(OpendataService::getMetadata)
-                .map(metadata -> new Circle(metadata.getCenter().getLat(),
-                        metadata.getCenter().getLon(), 5, Color.BLUE))
+                .map(metadata -> buildCircle(metadata, Color.BLUE))
                 .forEach(mapView::addMarker);
-
     }
 
     private JTree buildLicenceTree() {
@@ -96,10 +94,9 @@ public class OpendataInformationDialog extends JDialog {
 
         for (var node : nodes) {
             var metadata = (Metadata) node.getUserObject();
-            mapView.addMarker(new Circle(metadata.getCenter().getLat(),
-                    metadata.getCenter().getLon(), 5, Color.RED));
+            mapView.addMarker(buildCircle(metadata, Color.RED));
 
-            String country = metadata.getCountry();
+            var country = metadata.getCountry();
             var countryNode = countryNodes.get(country);
             if (countryNode == null) {
                 countryNode = new DefaultMutableTreeNode(country);
@@ -111,5 +108,9 @@ public class OpendataInformationDialog extends JDialog {
                 .map(countryNodes::get)
                 .forEach(root::add);
         return new JTree(root);
+    }
+
+    private static Circle buildCircle(Metadata metadata, Color color) {
+        return new Circle(metadata.getCenter().getLat(), metadata.getCenter().getLon(), 5, color);
     }
 }
