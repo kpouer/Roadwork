@@ -31,6 +31,7 @@ So far most supported services are French, but there is no restriction to includ
 - Lyon
 - Montpellier
 - Paris
+- Pornichet
 - Rennes
 - Toulouse
 

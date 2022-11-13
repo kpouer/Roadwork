@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "country": "France",
+    "name": "Pornichet",
+    "producer": "CARENE",
+    "licenceName": "Licence Ouverte v2.0 (Etalab)",
+    "licenceUrl": "https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf",
+    "sourceUrl": "http://travaux.data.rennesmetropole.fr/#roadwork-info",
+    "url": "https://data.loire-atlantique.fr/explore/dataset/214401325_information_travaux@carene-loireatlantique/download/?format=geojson&timezone=Europe/Berlin&lang=fr",
+    "center": {
+      "lat":47.259895,
+      "lon":-2.3574624
+    },
+    "locale": "fr_FR"
+  },
+  "roadworkArray": "$.features",
+  "id": "@.properties.id",
+  "latitude": "@.geometry.coordinates[1]",
+  "longitude": "@.geometry.coordinates[0]",
+  "road": "@.properties.adresse_des_travaux",
+  "description": "@.properties.intitule_du_chantier",
+  "impactCirculationDetail": "@.properties.impact_circulation",
+  "from": {
+    "path": "@.properties.date_de_debut_des_travaux",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  },
+  "to": {
+    "path": "@.date_de_fin_des_travaux",
+    "parsers": [
+      {
+        "matcher": ".*",
+        "format": "yyyy-MM-dd"
+      }
+    ]
+  }
+}
