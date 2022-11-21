@@ -67,6 +67,9 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
                      SoftwareModel softwareModel,
                      Config config) throws IOException {
         super("Roadwork");
+        if ("Mac OS X".equals(System.getProperty("os.name"))) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
         this.config = config;
 
         softwareModel.setMainFrame(this);
