@@ -16,10 +16,8 @@
 package com.kpouer.roadwork.ui;
 
 import com.kpouer.mapview.MapView;
-import com.kpouer.mapview.marker.Marker;
 import com.kpouer.roadwork.action.ExitAction;
 import com.kpouer.roadwork.configuration.Config;
-import com.kpouer.roadwork.configuration.UserSettings;
 import com.kpouer.roadwork.event.OpendataServiceUpdated;
 import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.model.Roadwork;
@@ -28,8 +26,8 @@ import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.GenericApplicationListener;
@@ -45,14 +43,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * @author Matthieu Casanova
  */
+@Slf4j
 @Service
 public class MainPanel extends JFrame implements GenericApplicationListener {
-    private static final Logger logger = LoggerFactory.getLogger(MainPanel.class);
 
     private final MapView mapView;
     private final DetailPanel detailPanel;
@@ -86,10 +83,10 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
         setJMenuBar(menuService.loadMenu(menu));
         getContentPane().add(toolbarPanel, BorderLayout.PAGE_START);
         this.detailPanel = detailPanel;
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.detailPanel, mapView);
+        var split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.detailPanel, mapView);
         getContentPane().add(split);
         this.mapView = mapView;
-        UserSettings userSettings = config.getUserSettings();
+        var userSettings = config.getUserSettings();
         if (userSettings.getFrameWidth() != 0 && userSettings.getFrameHeight() != 0) {
             setBounds(userSettings.getFrameX(), userSettings.getFrameY(), userSettings.getFrameWidth(), userSettings.getFrameHeight());
         } else {
@@ -101,24 +98,24 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
 
     @Override
     public boolean supportsEventType(ResolvableType eventType) {
-        Class<?> rawClass = eventType.getRawClass();
+        var rawClass = eventType.getRawClass();
         return rawClass != null &&
                 (rawClass.isAssignableFrom(OpendataServiceUpdated.class) ||
                         rawClass.isAssignableFrom(UserSettingsUpdated.class));
     }
 
     @Override
-    public void onApplicationEvent(ApplicationEvent event) {
+    public void onApplicationEvent(@NotNull ApplicationEvent event) {
         if (event instanceof OpendataServiceUpdated) {
             mapView.setCenter(opendataServiceManager.getCenter());
             mapView.setTileServer(opendataServiceManager.getTileServer());
             mapView.repaint();
             loadData();
         } else if (event instanceof UserSettingsUpdated) {
-            UserSettings userSettings = config.getUserSettings();
+            var userSettings = config.getUserSettings();
             mapView.removeAllMarkers();
-            RoadworkData roadworkData = softwareModel.getRoadworkData();
-            for (Roadwork roadwork : roadworkData) {
+            var roadworkData = softwareModel.getRoadworkData();
+            for (var roadwork : roadworkData) {
                 if (!userSettings.isHideExpired() || roadwork.getSyncData().getStatus() != Status.Finished) {
                     mapView.addMarker(roadwork.getMarker());
                 }
@@ -132,13 +129,13 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             mapView.setTileServer(opendataServiceManager.getTileServer());
             mapView.setCenter(opendataServiceManager.getCenter());
             mapView.removeAllMarkers();
-            Optional<RoadworkData> roadworkDataOptional = opendataServiceManager.getData();
+            var roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);
             mapView.fitToMarkers();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (RestClientException e) {
-            logger.error("Error retrieving data", e);
+            log.error("Error retrieving data", e);
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
         }
     }
@@ -150,7 +147,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     }
 
     private void addMarker(Roadwork roadwork) {
-        Marker marker = roadwork.getMarker();
+        var marker = roadwork.getMarker();
         marker.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

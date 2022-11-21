@@ -20,15 +20,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kpouer.mapview.LatLng;
 import com.kpouer.mapview.tile.TileServer;
 import com.kpouer.roadwork.configuration.Config;
-import com.kpouer.roadwork.model.Roadwork;
-import com.kpouer.roadwork.model.RoadworkData;
+import com.kpouer.roadwork.model.*;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.DefaultJsonService;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -36,34 +35,28 @@ import org.springframework.web.client.RestClientException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.*;
 import java.util.*;
 
 /**
  * @author Matthieu Casanova
  */
+@AllArgsConstructor
+@Slf4j
 @Service
 public class OpendataServiceManager {
-    private static final Logger logger = LoggerFactory.getLogger(OpendataServiceManager.class);
     private static final String VERSION = "2";
-    public static final String OPENDATA_JSON = "opendata/json";
+    public static final String OPENDATA_JSON = "opendata/json/";
     public static final String THIRDPARTY = "thirdparty";
 
     private final HttpService httpService;
     private final Config config;
     private final ApplicationContext applicationContext;
     private final SynchronizationService synchronizationService;
-
-    public OpendataServiceManager(HttpService httpService,
-                                  Config config,
-                                  ApplicationContext applicationContext,
-                                  SynchronizationService synchronizationService) {
-        this.httpService = httpService;
-        this.config = config;
-        this.applicationContext = applicationContext;
-        this.synchronizationService = synchronizationService;
-    }
+    private final ResourceService resourceService;
 
     /**
      * Retrieve service names
@@ -77,7 +70,21 @@ public class OpendataServiceManager {
     }
 
     public List<String> getDefaultServices() {
-        return getServices(OPENDATA_JSON);
+        var services = new ArrayList<String>();
+        String[] serviceNames = applicationContext.getBeanNamesForType(OpendataService.class);
+        Collections.addAll(services, serviceNames);
+        try {
+            var serviceList = resourceService.listFilesFromClasspath("opendata/json/");
+            serviceList
+                    .stream()
+                    .filter(servicePath -> servicePath.endsWith(".json"))
+                    .forEach(services::add);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        return services;
     }
 
     public List<String> getThirdPartyServices() {
@@ -87,25 +94,20 @@ public class OpendataServiceManager {
     /**
      * Retrieve service names
      *
-     * @return a list of service names (json file names)
      * @param folder the folder where the services descriptor are stored
+     * @return a list of service names (json file names)
      */
     private List<String> getServices(String folder) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        List<String> services = new ArrayList<>();
-        Collections.addAll(services, applicationContext.getBeanNamesForType(OpendataService.class));
         try (var files = Files.list(Path.of(folder))) {
-            files
+            return files
                     .filter(path -> path.toString().endsWith(".json"))
                     .map(Path::toFile)
                     .map(File::getName)
-                    .forEach(services::add);
+                    .toList();
         } catch (IOException e) {
-            logger.error("Unable to read opendata services", e);
+            log.error("Unable to read opendata services", e);
         }
-        Collections.sort(services);
-        return services;
+        return Collections.emptyList();
     }
 
     public Optional<RoadworkData> getData() throws RestClientException, IOException {
@@ -118,7 +120,7 @@ public class OpendataServiceManager {
     }
 
     public void save(RoadworkData roadworkData) {
-        logger.info("save {}", roadworkData.getSource());
+        log.info("save {}", roadworkData.getSource());
         ObjectMapper objectMapper = new ObjectMapper();
 
         Path savePath = getPath(roadworkData.getSource());
@@ -126,7 +128,7 @@ public class OpendataServiceManager {
             Files.createDirectories(savePath.getParent());
             Files.write(savePath, objectMapper.writeValueAsBytes(roadworkData));
         } catch (IOException e) {
-            logger.error("Unable to save cache to {}", savePath);
+            log.error("Unable to save cache to {}", savePath);
         }
     }
 
@@ -149,10 +151,10 @@ public class OpendataServiceManager {
     @NotNull
     private Optional<RoadworkData> getRoadworks() throws RestClientException, IOException {
         Path currentPath = getPath(config.getOpendataService());
-        logger.info("getData {}", currentPath);
+        log.info("getData {}", currentPath);
         Optional<RoadworkData> cachedDataOptional = loadCache(currentPath);
         if (cachedDataOptional.isEmpty()) {
-            logger.info("There is no cached data");
+            log.info("There is no cached data");
             Optional<RoadworkData> newData = getOpendataService().getData();
             newData.ifPresent(this::save);
             return newData;
@@ -160,17 +162,17 @@ public class OpendataServiceManager {
 
         RoadworkData cachedRoadworkData = cachedDataOptional.get();
         if (cachedRoadworkData.getCreated() + 86400000 < System.currentTimeMillis()) {
-            logger.info("Cache is obsolete {}", currentPath);
+            log.info("Cache is obsolete {}", currentPath);
             Files.delete(currentPath);
             Optional<RoadworkData> newDataOptional = getOpendataService().getData();
             if (newDataOptional.isPresent()) {
                 RoadworkData newData = newDataOptional.get();
                 Map<String, Roadwork> newRoadworks = newData.getRoadworks();
-                logger.info("reloaded {} new roadworks", newRoadworks.size());
+                log.info("reloaded {} new roadworks", newRoadworks.size());
                 for (Roadwork existingRoadwork : cachedRoadworkData) {
                     Roadwork newRoadwork = newRoadworks.get(existingRoadwork.getId());
                     if (newRoadwork != null) {
-                        logger.info("Roadwork {} -> status {}", existingRoadwork.getId(), existingRoadwork.getSyncData().getStatus());
+                        log.info("Roadwork {} -> status {}", existingRoadwork.getId(), existingRoadwork.getSyncData().getStatus());
                         newRoadwork.getSyncData().copy(existingRoadwork.getSyncData());
                         existingRoadwork.updateMarker();
                     }
@@ -194,41 +196,58 @@ public class OpendataServiceManager {
         try {
             return applicationContext.getBean(tileServerName + "TileServer", TileServer.class);
         } catch (BeansException e) {
-            logger.error("Error getting tile server " + tileServerName, e);
+            log.error("Error getting tile server " + tileServerName, e);
         }
         return config.getWazeINTLTileServer();
     }
 
+    /**
+     * Returns the OpendataService for that name.
+     * If it is json, it comes from the jar or third party,
+     * Otherwise it is a hardcoded class.
+     *
+     * @param opendataService the service name
+     * @return an instance of OpendataService
+     */
     @NotNull
     public OpendataService getOpendataService(String opendataService) {
+        log.info("getOpendataService {}", opendataService);
         if (opendataService.endsWith(".json")) {
-            var objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            try {
-                var serviceDescriptor = objectMapper
-                        .readValue(getOpendataServicePath(opendataService).toFile(), ServiceDescriptor.class);
-                return new DefaultJsonService(opendataService, httpService, serviceDescriptor);
-            } catch (IOException e) {
-                logger.error("Unable to load service " + opendataService, e);
-                throw new RuntimeException(e);
-            }
+            return getJsonService(opendataService);
         }
         return applicationContext.getBean(opendataService, OpendataService.class);
+    }
+
+    @NotNull
+    private DefaultJsonService getJsonService(String opendataService) {
+        var objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try {
+            var opendataServicePath = getOpendataServicePath(opendataService);
+            var serviceDescriptor = objectMapper
+                    .readValue(opendataServicePath, ServiceDescriptor.class);
+            return new DefaultJsonService(opendataService, httpService, serviceDescriptor);
+        } catch (IOException e) {
+            log.error("Unable to load service " + opendataService, e);
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Returns the opendata service path by it's name.
      * It will search in third party folder first then if not found in the official services path.
+     *
      * @param opendataService the opendata service name
      * @return the path of the opendata service
      */
     @NotNull
-    private static Path getOpendataServicePath(String opendataService) {
+    private static URL getOpendataServicePath(String opendataService) throws MalformedURLException {
+        var url = OpendataServiceManager.class.getClassLoader().getResource(OPENDATA_JSON + opendataService);
+        if (url != null)
+            return url;
+
         var path = Path.of(THIRDPARTY, opendataService);
-        if (!Files.exists(path)) {
-            path = Path.of(OPENDATA_JSON, opendataService);
-        }
-        return path;
+        return path.toFile().toURI().toURL();
     }
 
     @NotNull
@@ -242,10 +261,10 @@ public class OpendataServiceManager {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
                 RoadworkData roadworkData = objectMapper.readValue(cachePath.toFile(), RoadworkData.class);
-                logger.info("Cache loaded");
+                log.info("Cache loaded");
                 return Optional.of(roadworkData);
             } catch (IOException e) {
-                logger.error("Unable to load cache {} {}", cachePath, e);
+                log.error("Unable to load cache {} {}", cachePath, e);
             }
         } else {
             return getMigratedData();
@@ -255,13 +274,13 @@ public class OpendataServiceManager {
     }
 
     private Optional<RoadworkData> getMigratedData() {
-        logger.info("There is no cache, checking if there is old data");
+        log.info("There is no cache, checking if there is old data");
         Map<String, RoadworkMigrationService> beansOfType = applicationContext.getBeansOfType(RoadworkMigrationService.class);
         Collection<RoadworkMigrationService> migrationServices = beansOfType.values();
         for (RoadworkMigrationService migrationService : migrationServices) {
             Optional<RoadworkData> roadworkData = migrationService.migrateData();
             if (roadworkData.isPresent()) {
-                logger.info("Migrating service {}", migrationService);
+                log.info("Migrating service {}", migrationService);
                 migrationService.archive();
                 save(roadworkData.get());
                 return roadworkData;
@@ -281,12 +300,12 @@ public class OpendataServiceManager {
     }
 
     public void deleteCache() {
-        logger.info("deleteCache {}", config.getOpendataService());
+        log.info("deleteCache {}", config.getOpendataService());
         Path currentPath = getPath(config.getOpendataService());
         try {
             Files.deleteIfExists(currentPath);
         } catch (IOException e) {
-            logger.error("Error deleting cache", e);
+            log.error("Error deleting cache", e);
         }
     }
 }

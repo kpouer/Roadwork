@@ -15,19 +15,23 @@
  */
 package com.kpouer.roadwork.ui;
 
+import com.kpouer.roadwork.action.LogsPanelAction;
 import com.kpouer.roadwork.action.ReloadAction;
 import com.kpouer.roadwork.action.SynchronizeAction;
 import com.kpouer.roadwork.configuration.Config;
+import com.kpouer.roadwork.event.ExceptionEvent;
 import com.kpouer.roadwork.event.OpendataServiceUpdated;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 
@@ -35,10 +39,14 @@ import java.awt.*;
  * @author Matthieu Casanova
  */
 @Component
-public class ToolbarPanel extends JPanel implements ApplicationListener<SynchronizationSettingsUpdated> {
+public class ToolbarPanel extends JPanel implements ApplicationListener<ApplicationEvent> {
 
     private final JButton synchronizeButton;
     private final Config config;
+    private final OpendataServiceManager opendataServiceManager;
+    private final JButton logsPanelButton;
+    private final Color defaultBackground;
+    private final JComboBox<Object> opendataServiceComboBox;
 
     public ToolbarPanel(ApplicationContext applicationContext,
                         Config config,
@@ -47,16 +55,16 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
                         OpendataServiceManager opendataServiceManager) {
         super(new BorderLayout());
         this.config = config;
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-        String[] serviceNames = opendataServiceManager.getServices().toArray(new String[0]);
-        JComboBox<String> opendataServiceComboBox = new JComboBox<>(serviceNames);
+        this.opendataServiceManager = opendataServiceManager;
+        var panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+        opendataServiceComboBox = new JComboBox<>();
         opendataServiceComboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
             public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                java.awt.Component listCellRendererComponent = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                String serviceName = String.valueOf(value);
-                String key = "opendataService." + value;
-                String localizedText = localizationService.getMessage(key);
+                var listCellRendererComponent = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                var serviceName = String.valueOf(value);
+                var key = "opendataService." + value;
+                var localizedText = localizationService.getMessage(key);
                 if (localizedText != key) {
                     setText(localizedText);
                 } else {
@@ -71,11 +79,10 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
                 return listCellRendererComponent;
             }
         });
-        opendataServiceComboBox.setSelectedItem(config.getOpendataService());
         opendataServiceComboBox.addActionListener(e -> {
-            String selectedItem = (String) opendataServiceComboBox.getSelectedItem();
+            var selectedItem = (String) opendataServiceComboBox.getSelectedItem();
             assert selectedItem != null;
-            OpendataServiceUpdated event = new OpendataServiceUpdated(this, config.getOpendataService(), selectedItem);
+            var event = new OpendataServiceUpdated(this, config.getOpendataService(), selectedItem);
             config.setOpendataService(selectedItem);
             applicationEventPublisher.publishEvent(event);
         });
@@ -84,17 +91,31 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Synchron
         synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
         panel.add(new JButton(applicationContext.getBean(ReloadAction.class)));
         panel.add(synchronizeButton);
-        JCheckBox hideExpired = new JCheckBox(localizationService.getMessage("toolbarPanel.hideExpired"));
+        var hideExpired = new JCheckBox(localizationService.getMessage("toolbarPanel.hideExpired"));
         hideExpired.addActionListener(e -> {
             config.getUserSettings().setHideExpired(hideExpired.isSelected());
             applicationEventPublisher.publishEvent(new UserSettingsUpdated(this));
         });
         panel.add(hideExpired);
+        logsPanelButton = new JButton(applicationContext.getBean(LogsPanelAction.class));
+        defaultBackground = logsPanelButton.getBackground();
+        logsPanelButton.addActionListener(e -> logsPanelButton.setBackground(defaultBackground));
+        panel.add(logsPanelButton);
         add(panel);
     }
 
+    @PostConstruct
+    public void init() {
+        var serviceNames = opendataServiceManager.getServices().toArray(new String[0]);
+        opendataServiceComboBox.setModel(new DefaultComboBoxModel<>(serviceNames));
+    }
+
     @Override
-    public void onApplicationEvent(SynchronizationSettingsUpdated event) {
-        synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
+    public void onApplicationEvent(ApplicationEvent event) {
+        if (event instanceof SynchronizationSettingsUpdated) {
+            synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
+        } else if (event instanceof ExceptionEvent) {
+            logsPanelButton.setBackground(Color.RED);
+        }
     }
 }
