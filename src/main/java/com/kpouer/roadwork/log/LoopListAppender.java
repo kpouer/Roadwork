@@ -16,26 +16,39 @@
 package com.kpouer.roadwork.log;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.testUtil.StringListAppender;
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Layout;
 import com.kpouer.roadwork.event.ExceptionEvent;
 import org.springframework.context.ApplicationEventPublisher;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Matthieu Casanova
  */
-public class LoopListAppender extends StringListAppender<ILoggingEvent> {
+public class LoopListAppender extends AppenderBase<ILoggingEvent> {
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final List<String> list;
+    private final Layout<ILoggingEvent> layout;
 
-    public LoopListAppender(ApplicationEventPublisher applicationEventPublisher) {
+    public LoopListAppender(Layout<ILoggingEvent> layout, ApplicationEventPublisher applicationEventPublisher) {
+        this.layout = layout;
         this.applicationEventPublisher = applicationEventPublisher;
-        strList = new LoopList<>(1000);
+        list = new LoopList<>(1000);
     }
 
     @Override
     protected void append(ILoggingEvent eventObject) {
-        super.append(eventObject);
+        var res = layout.doLayout(eventObject);
+        String[] tokens = res.split("\n");
+        list.addAll(Arrays.asList(tokens));
         if (eventObject.getThrowableProxy() != null) {
             applicationEventPublisher.publishEvent(new ExceptionEvent(eventObject));
         }
+    }
+
+    public List<String> getList() {
+        return list;
     }
 }

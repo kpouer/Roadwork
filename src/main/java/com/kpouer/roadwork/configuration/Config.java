@@ -48,7 +48,7 @@ import java.util.List;
 @Configuration
 @Slf4j
 public class Config {
-    private final List<String> logs;
+    private List<String> logs;
     private int tilesSize = 256;
     private int minZoom = 1;
     private int maxZoom = 18;
@@ -65,16 +65,7 @@ public class Config {
 
     public Config(SoftwareModel softwareModel, ApplicationEventPublisher applicationEventPublisher) {
         this.softwareModel = softwareModel;
-        var loopListAppender = new LoopListAppender(applicationEventPublisher);
-        logs = loopListAppender.strList;
-        var rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        var layout = new PatternLayout();
-        layout.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
-        layout.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg");
-        layout.start();
-        loopListAppender.setLayout(layout);
-        loopListAppender.start();
-        ((ch.qos.logback.classic.Logger) rootLogger).addAppender(loopListAppender);
+        configureLogger(applicationEventPublisher);
         log.info("Config start");
 
         var userHome = System.getProperty("user.home");
@@ -96,6 +87,18 @@ public class Config {
         } else {
             userSettings = new UserSettings();
         }
+    }
+
+    private void configureLogger(ApplicationEventPublisher applicationEventPublisher) {
+        var layout = new PatternLayout();
+        layout.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+        layout.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg");
+        layout.start();
+        var loopListAppender = new LoopListAppender(layout, applicationEventPublisher);
+        logs = loopListAppender.getList();
+        var rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        loopListAppender.start();
+        ((ch.qos.logback.classic.Logger) rootLogger).addAppender(loopListAppender);
     }
 
     private void migrateIfNecessary() {
