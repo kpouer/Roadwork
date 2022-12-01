@@ -64,12 +64,14 @@ public class OpendataServiceManager {
      * @return a list of service names (json file names)
      */
     public List<String> getServices() {
+        log.info("getServices");
         var services = getDefaultServices();
         services.addAll(getThirdPartyServices());
         return services;
     }
 
     public List<String> getDefaultServices() {
+        log.info("getDefaultServices");
         var services = new ArrayList<String>();
         var serviceNames = applicationContext.getBeanNamesForType(OpendataService.class);
         Collections.addAll(services, serviceNames);
@@ -88,6 +90,7 @@ public class OpendataServiceManager {
     }
 
     public List<String> getThirdPartyServices() {
+        log.info("getThirdPartyServices");
         return getServices(THIRDPARTY);
     }
 
@@ -104,6 +107,7 @@ public class OpendataServiceManager {
                     .map(Path::toFile)
                     .map(File::getName)
                     .toList();
+        } catch (NoSuchFileException ignored) {
         } catch (IOException e) {
             log.error("Unable to read opendata services", e);
         }

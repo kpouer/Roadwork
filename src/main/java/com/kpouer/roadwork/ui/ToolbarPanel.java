@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * @author Matthieu Casanova
@@ -107,6 +108,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
     @PostConstruct
     public void init() {
         var serviceNames = opendataServiceManager.getServices().toArray(new String[0]);
+        Arrays.sort(serviceNames);
         opendataServiceComboBox.setModel(new DefaultComboBoxModel<>(serviceNames));
     }
 

@@ -136,7 +136,10 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             var roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);
             mapView.fitToMarkers();
-        } catch (IOException | RestClientException | OpenDataException e) {
+        } catch (OpenDataException e) {
+            log.error("Opendata exception", e);
+            EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE));
+        } catch (IOException | RestClientException e) {
             log.error("Error retrieving data", e);
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
         }
