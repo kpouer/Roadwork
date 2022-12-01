@@ -21,6 +21,7 @@ import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.service.LocalizationService;
+import com.kpouer.roadwork.service.OpenDataException;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 
 import javax.swing.*;
@@ -28,7 +29,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Matthieu Casanova
@@ -74,20 +75,30 @@ public class OpendataInformationDialog extends JDialog {
     private void addThirdParty() {
         opendataServiceManager.getThirdPartyServices()
                 .stream()
-                .map(opendataServiceManager::getOpendataService)
+                .map(this::getOpendataService)
+                .filter(Objects::nonNull)
                 .map(OpendataService::getMetadata)
                 .map(metadata -> buildCircle(metadata, Color.BLUE))
                 .forEach(mapView::addMarker);
     }
 
+    private OpendataService getOpendataService(String name) {
+        try {
+            return opendataServiceManager.getOpendataService(name);
+        } catch (OpenDataException e) {
+            return null;
+        }
+    }
+
     private JTree buildLicenceTree() {
         var services = opendataServiceManager.getDefaultServices();
         var root = new DefaultMutableTreeNode();
-        Map<String, DefaultMutableTreeNode> countryNodes = new HashMap<>();
+        var countryNodes = new HashMap<String, DefaultMutableTreeNode>();
 
         var nodes = services
                 .parallelStream()
-                .map(opendataServiceManager::getOpendataService)
+                .map(this::getOpendataService)
+                .filter(Objects::nonNull)
                 .map(OpendataService::getMetadata)
                 .map(DefaultMutableTreeNode::new)
                 .toList();

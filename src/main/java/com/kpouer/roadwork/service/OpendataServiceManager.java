@@ -71,7 +71,7 @@ public class OpendataServiceManager {
 
     public List<String> getDefaultServices() {
         var services = new ArrayList<String>();
-        String[] serviceNames = applicationContext.getBeanNamesForType(OpendataService.class);
+        var serviceNames = applicationContext.getBeanNamesForType(OpendataService.class);
         Collections.addAll(services, serviceNames);
         try {
             var serviceList = resourceService.listFilesFromClasspath("opendata/json/");
@@ -110,8 +110,8 @@ public class OpendataServiceManager {
         return Collections.emptyList();
     }
 
-    public Optional<RoadworkData> getData() throws RestClientException, IOException {
-        Optional<RoadworkData> roadworks = getRoadworks();
+    public Optional<RoadworkData> getData() throws RestClientException, IOException, OpenDataException {
+        var roadworks = getRoadworks();
         roadworks.ifPresent(roadworkData -> {
             applyFinishedStatus(roadworkData);
             synchronizationService.synchronize(roadworkData);
@@ -121,9 +121,9 @@ public class OpendataServiceManager {
 
     public void save(RoadworkData roadworkData) {
         log.info("save {}", roadworkData.getSource());
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
 
-        Path savePath = getPath(roadworkData.getSource());
+        var savePath = getPath(roadworkData.getSource());
         try {
             Files.createDirectories(savePath.getParent());
             Files.write(savePath, objectMapper.writeValueAsBytes(roadworkData));
@@ -138,7 +138,11 @@ public class OpendataServiceManager {
      * @return some coordinates
      */
     public LatLng getCenter() {
-        return getOpendataService().getMetadata().getCenter();
+        try {
+            return getOpendataService().getMetadata().getCenter();
+        } catch (OpenDataException e) {
+            return new LatLng(48.85337, 2.34847);
+        }
     }
 
     /**
@@ -149,13 +153,13 @@ public class OpendataServiceManager {
      * @throws RestClientException if a RestClientException happens
      */
     @NotNull
-    private Optional<RoadworkData> getRoadworks() throws RestClientException, IOException {
-        Path currentPath = getPath(config.getOpendataService());
+    private Optional<RoadworkData> getRoadworks() throws RestClientException, IOException, OpenDataException {
+        var currentPath = getPath(config.getOpendataService());
         log.info("getData {}", currentPath);
-        Optional<RoadworkData> cachedDataOptional = loadCache(currentPath);
+        var cachedDataOptional = loadCache(currentPath);
         if (cachedDataOptional.isEmpty()) {
             log.info("There is no cached data");
-            Optional<RoadworkData> newData = getOpendataService().getData();
+            var newData = getOpendataService().getData();
             newData.ifPresent(this::save);
             return newData;
         }
@@ -164,13 +168,13 @@ public class OpendataServiceManager {
         if (cachedRoadworkData.getCreated() + 86400000 < System.currentTimeMillis()) {
             log.info("Cache is obsolete {}", currentPath);
             Files.delete(currentPath);
-            Optional<RoadworkData> newDataOptional = getOpendataService().getData();
+            var newDataOptional = getOpendataService().getData();
             if (newDataOptional.isPresent()) {
-                RoadworkData newData = newDataOptional.get();
-                Map<String, Roadwork> newRoadworks = newData.getRoadworks();
+                var newData = newDataOptional.get();
+                var newRoadworks = newData.getRoadworks();
                 log.info("reloaded {} new roadworks", newRoadworks.size());
-                for (Roadwork existingRoadwork : cachedRoadworkData) {
-                    Roadwork newRoadwork = newRoadworks.get(existingRoadwork.getId());
+                for (var existingRoadwork : cachedRoadworkData) {
+                    var newRoadwork = newRoadworks.get(existingRoadwork.getId());
                     if (newRoadwork != null) {
                         log.info("Roadwork {} -> status {}", existingRoadwork.getId(), existingRoadwork.getSyncData().getStatus());
                         newRoadwork.getSyncData().copy(existingRoadwork.getSyncData());
@@ -186,13 +190,18 @@ public class OpendataServiceManager {
     }
 
     @NotNull
-    public OpendataService getOpendataService() {
-        String opendataService = config.getOpendataService();
+    public OpendataService getOpendataService() throws OpenDataException {
+        var opendataService = config.getOpendataService();
         return getOpendataService(opendataService);
     }
 
     public TileServer getTileServer() {
-        String tileServerName = getOpendataService().getMetadata().getTileServer();
+        String tileServerName;
+        try {
+            tileServerName = getOpendataService().getMetadata().getTileServer();
+        } catch (OpenDataException e) {
+            return config.getWazeINTLTileServer();
+        }
         try {
             return applicationContext.getBean(tileServerName + "TileServer", TileServer.class);
         } catch (BeansException e) {
@@ -210,7 +219,7 @@ public class OpendataServiceManager {
      * @return an instance of OpendataService
      */
     @NotNull
-    public OpendataService getOpendataService(String opendataService) {
+    public OpendataService getOpendataService(String opendataService) throws OpenDataException {
         log.info("getOpendataService {}", opendataService);
         if (opendataService.endsWith(".json")) {
             return getJsonService(opendataService);
@@ -219,7 +228,7 @@ public class OpendataServiceManager {
     }
 
     @NotNull
-    private DefaultJsonService getJsonService(String opendataService) {
+    private DefaultJsonService getJsonService(String opendataService) throws OpenDataException {
         var objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
@@ -229,7 +238,7 @@ public class OpendataServiceManager {
             return new DefaultJsonService(opendataService, httpService, serviceDescriptor);
         } catch (IOException e) {
             log.error("Unable to load service " + opendataService, e);
-            throw new RuntimeException(e);
+            throw new OpenDataException("Unable to find service " + opendataService, e);
         }
     }
 
@@ -242,6 +251,7 @@ public class OpendataServiceManager {
      */
     @NotNull
     private static URL getOpendataServicePath(String opendataService) throws MalformedURLException {
+        log.info("getOpendataServicePath {}", opendataService);
         var url = OpendataServiceManager.class.getClassLoader().getResource(OPENDATA_JSON + opendataService);
         if (url != null)
             return url;
@@ -257,7 +267,7 @@ public class OpendataServiceManager {
 
     private Optional<RoadworkData> loadCache(Path cachePath) {
         if (Files.exists(cachePath)) {
-            ObjectMapper objectMapper = new ObjectMapper();
+            var objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
                 RoadworkData roadworkData = objectMapper.readValue(cachePath.toFile(), RoadworkData.class);
@@ -275,10 +285,10 @@ public class OpendataServiceManager {
 
     private Optional<RoadworkData> getMigratedData() {
         log.info("There is no cache, checking if there is old data");
-        Map<String, RoadworkMigrationService> beansOfType = applicationContext.getBeansOfType(RoadworkMigrationService.class);
-        Collection<RoadworkMigrationService> migrationServices = beansOfType.values();
-        for (RoadworkMigrationService migrationService : migrationServices) {
-            Optional<RoadworkData> roadworkData = migrationService.migrateData();
+        var beansOfType = applicationContext.getBeansOfType(RoadworkMigrationService.class);
+        var migrationServices = beansOfType.values();
+        for (var migrationService : migrationServices) {
+            var roadworkData = migrationService.migrateData();
             if (roadworkData.isPresent()) {
                 log.info("Migrating service {}", migrationService);
                 migrationService.archive();
@@ -301,7 +311,7 @@ public class OpendataServiceManager {
 
     public void deleteCache() {
         log.info("deleteCache {}", config.getOpendataService());
-        Path currentPath = getPath(config.getOpendataService());
+        var currentPath = getPath(config.getOpendataService());
         try {
             Files.deleteIfExists(currentPath);
         } catch (IOException e) {

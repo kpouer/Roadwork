@@ -23,6 +23,7 @@ import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.Status;
+import com.kpouer.roadwork.service.OpenDataException;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
@@ -135,9 +136,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             var roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);
             mapView.fitToMarkers();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (RestClientException e) {
+        } catch (IOException | RestClientException | OpenDataException e) {
             log.error("Error retrieving data", e);
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
         }

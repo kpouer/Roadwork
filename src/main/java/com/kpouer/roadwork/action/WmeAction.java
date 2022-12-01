@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.action;
 
 import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.service.OpenDataException;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import org.springframework.lang.Nullable;
@@ -47,20 +48,20 @@ public class WmeAction extends AbstractAction {
 
     @Override
     public void actionPerformed(@Nullable ActionEvent e) {
-        Roadwork selectedRoadwork = softwareModel.getSelectedRoadwork();
+        var selectedRoadwork = softwareModel.getSelectedRoadwork();
         if (selectedRoadwork != null) {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try {
                     Desktop.getDesktop().browse(getWmeUrl(selectedRoadwork));
-                } catch (IOException | URISyntaxException ex) {
-                    throw new RuntimeException(ex);
+                } catch (IOException | URISyntaxException | OpenDataException ex) {
+                    JOptionPane.showMessageDialog(softwareModel.getMainFrame(), ex.getMessage());
                 }
             }
         }
     }
 
-    private URI getWmeUrl(Roadwork roadwork) throws URISyntaxException {
-        String url = opendataServiceManager.getOpendataService().getMetadata().getEditorPattern();
+    private URI getWmeUrl(Roadwork roadwork) throws URISyntaxException, OpenDataException {
+        var url = opendataServiceManager.getOpendataService().getMetadata().getEditorPattern();
         if (url == null) {
             url = DEFAULT_WME_URL;
         }
