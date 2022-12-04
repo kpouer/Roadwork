@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class DateParser {
     private String path;
@@ -53,7 +54,13 @@ public class DateParser {
                 return new DateResult(timestamp, parser);
             }
         }
-        throw new ParseException("Unable to parse date " + value, 0);
+        throw new ParseException("Unable to parse date '" + value + "' with parsers :" + toStringParsers(), 0);
+    }
+
+    private String toStringParsers() {
+        return parsers.stream()
+                .map(Parser::getFormat)
+                .collect(Collectors.joining("|"));
     }
 
     private long parseDate(String pattern, String value, Locale locale) throws ParseException {
