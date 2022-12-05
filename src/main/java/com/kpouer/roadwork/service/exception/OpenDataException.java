@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.service;
+package com.kpouer.roadwork.service.exception;
 
 /**
  * @author Matthieu Casanova
@@ -21,5 +21,9 @@ package com.kpouer.roadwork.service;
 public class OpenDataException extends Throwable {
     public OpenDataException(String message, Exception cause) {
         super(message, cause);
+    }
+
+    public OpenDataException(String message) {
+        super(message);
     }
 }

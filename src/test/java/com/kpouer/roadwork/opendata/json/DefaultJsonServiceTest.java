@@ -50,7 +50,7 @@ class DefaultJsonServiceTest {
 
     @Test
     void testAvignon() throws IOException, URISyntaxException {
-        DefaultJsonService serviceDescriptor = getServiceDescriptor("opendata/json/France-Avignon.json", "/sample/france/avignon.json");
+        DefaultJsonService serviceDescriptor = getServiceDescriptor("json/France-Avignon.json", "/sample/france/avignon.json");
         Optional<RoadworkData> data = serviceDescriptor.getData();
         RoadworkData roadworkData = data.get();
         Roadwork roadwork = roadworkData.getRoadworks().get("850041398");

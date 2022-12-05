@@ -15,16 +15,11 @@
  */
 package com.kpouer.roadwork.configuration;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * @author Matthieu Casanova
  */
 public class UserSettings {
-    private static final Logger logger = LoggerFactory.getLogger(UserSettings.class);
-
-    private String opendataService = "ParisService";
+    private String opendataService = Config.DEFAULT_OPENDATA_SERVICE;
     private String synchronizationUrl;
     private String synchronizationTeam;
     private int frameX;

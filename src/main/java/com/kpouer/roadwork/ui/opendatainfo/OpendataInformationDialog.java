@@ -21,7 +21,7 @@ import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.service.LocalizationService;
-import com.kpouer.roadwork.service.OpenDataException;
+import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 
 import javax.swing.*;

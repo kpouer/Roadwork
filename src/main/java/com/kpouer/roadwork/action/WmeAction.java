@@ -16,7 +16,7 @@
 package com.kpouer.roadwork.action;
 
 import com.kpouer.roadwork.model.Roadwork;
-import com.kpouer.roadwork.service.OpenDataException;
+import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import org.springframework.lang.Nullable;

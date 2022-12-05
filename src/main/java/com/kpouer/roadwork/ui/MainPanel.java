@@ -23,7 +23,7 @@ import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.Status;
-import com.kpouer.roadwork.service.OpenDataException;
+import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.io.Resource;
@@ -45,6 +46,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
+import static com.kpouer.roadwork.configuration.Config.*;
+
 /**
  * @author Matthieu Casanova
  */
@@ -57,6 +60,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     private final OpendataServiceManager opendataServiceManager;
     private final SoftwareModel softwareModel;
     private final Config config;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public MainPanel(@Value("classpath:com/kpouer/ui/menu.json") Resource menu,
                      ExitAction exitAction,
@@ -66,8 +70,10 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
                      OpendataServiceManager opendataServiceManager,
                      ToolbarPanel toolbarPanel,
                      SoftwareModel softwareModel,
-                     Config config) throws IOException {
+                     Config config,
+                     ApplicationEventPublisher applicationEventPublisher) throws IOException {
         super("Roadwork");
+        this.applicationEventPublisher = applicationEventPublisher;
         if ("Mac OS X".equals(System.getProperty("os.name"))) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         }
@@ -138,10 +144,20 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             mapView.fitToMarkers();
         } catch (OpenDataException e) {
             log.error("Opendata exception", e);
+            resetCurrentOpendataService();
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE));
         } catch (IOException | RestClientException e) {
             log.error("Error retrieving data", e);
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
+        }
+    }
+
+    private void resetCurrentOpendataService() {
+        log.info("resetCurrentOpendataService");
+        if (!DEFAULT_OPENDATA_SERVICE.equals(config.getOpendataService())) {
+            var event = new OpendataServiceUpdated(this, config.getOpendataService(), DEFAULT_OPENDATA_SERVICE);
+            config.setOpendataService(DEFAULT_OPENDATA_SERVICE);
+            applicationEventPublisher.publishEvent(event);
         }
     }
 

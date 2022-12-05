@@ -123,6 +123,9 @@
                                     <generateInstaller>true</generateInstaller>
                                     <administratorRequired>false</administratorRequired>
                                     <organizationName>Matthieu Casanova</organizationName>
+                                    <additionalResources>
+                                        <additionalResource>opendata</additionalResource>
+                                    </additionalResources>
                                     <platform>mac</platform>
 
                                     <!--                            <additionalResources>-->

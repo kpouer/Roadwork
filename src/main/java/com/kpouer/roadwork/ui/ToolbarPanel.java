@@ -25,6 +25,8 @@ import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -40,8 +42,8 @@ import java.util.Arrays;
  * @author Matthieu Casanova
  */
 @Component
+@Slf4j
 public class ToolbarPanel extends JPanel implements ApplicationListener<ApplicationEvent> {
-
     private final JButton synchronizeButton;
     private final Config config;
     private final OpendataServiceManager opendataServiceManager;
@@ -107,17 +109,25 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
 
     @PostConstruct
     public void init() {
+        log.info("init");
         var serviceNames = opendataServiceManager.getServices().toArray(new String[0]);
         Arrays.sort(serviceNames);
-        opendataServiceComboBox.setModel(new DefaultComboBoxModel<>(serviceNames));
+        EventQueue.invokeLater(() -> {
+            opendataServiceComboBox.setModel(new DefaultComboBoxModel<>(serviceNames));
+            opendataServiceComboBox.setSelectedItem(config.getOpendataService());
+        });
     }
 
     @Override
-    public void onApplicationEvent(ApplicationEvent event) {
+    public void onApplicationEvent(@NotNull ApplicationEvent event) {
         if (event instanceof SynchronizationSettingsUpdated) {
             synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
         } else if (event instanceof ExceptionEvent) {
             logsPanelButton.setBackground(Color.RED);
+        } else if (event instanceof OpendataServiceUpdated opendataServiceUpdated) {
+            if (!opendataServiceUpdated.getNewService().equals(opendataServiceComboBox.getSelectedItem())) {
+                opendataServiceComboBox.setSelectedItem(opendataServiceUpdated.getNewService());
+            }
         }
     }
 }

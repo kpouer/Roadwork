@@ -25,21 +25,23 @@ import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.DefaultJsonService;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
+import com.kpouer.roadwork.service.exception.OpenDataException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
+
+import static com.kpouer.roadwork.service.ResourceService.OPENDATA_JSON;
+import static com.kpouer.roadwork.service.ResourceService.THIRDPARTY;
 
 /**
  * @author Matthieu Casanova
@@ -49,8 +51,6 @@ import java.util.*;
 @Service
 public class OpendataServiceManager {
     private static final String VERSION = "2";
-    public static final String OPENDATA_JSON = "opendata/json/";
-    public static final String THIRDPARTY = "thirdparty";
 
     private final HttpService httpService;
     private final Config config;
@@ -66,32 +66,25 @@ public class OpendataServiceManager {
     public List<String> getServices() {
         log.info("getServices");
         var services = getDefaultServices();
-        services.addAll(getThirdPartyServices());
-        return services;
+        var thirdPartyServices = getThirdPartyServices();
+        var allServices = new ArrayList<String>(services.size() + thirdPartyServices.size());
+        allServices.addAll(services);
+        allServices.addAll(thirdPartyServices);
+        return allServices;
     }
 
     public List<String> getDefaultServices() {
         log.info("getDefaultServices");
-        var services = new ArrayList<String>();
-        var serviceNames = applicationContext.getBeanNamesForType(OpendataService.class);
-        Collections.addAll(services, serviceNames);
-        try {
-            var serviceList = resourceService.listFilesFromClasspath("opendata/json/");
-            serviceList
-                    .stream()
-                    .filter(servicePath -> servicePath.endsWith(".json"))
-                    .forEach(services::add);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+        var services = getServicesFromPath(OPENDATA_JSON);
+        services.forEach(service -> log.info("Default service : " + service));
         return services;
     }
 
     public List<String> getThirdPartyServices() {
         log.info("getThirdPartyServices");
-        return getServices(THIRDPARTY);
+        var services = getServicesFromPath(THIRDPARTY);
+        services.forEach(service -> log.info("Third party service : " + service));
+        return services;
     }
 
     /**
@@ -100,14 +93,19 @@ public class OpendataServiceManager {
      * @param folder the folder where the services descriptor are stored
      * @return a list of service names (json file names)
      */
-    private List<String> getServices(String folder) {
-        try (var files = Files.list(Path.of(folder))) {
-            return files
+    private List<String> getServicesFromPath(String folder) {
+        Path pathFolder = Path.of(folder);
+        log.info("getServicesFromPath {}", pathFolder.toAbsolutePath());
+        try (var files = Files.list(pathFolder)) {
+            var services = files
                     .filter(path -> path.toString().endsWith(".json"))
                     .map(Path::toFile)
                     .map(File::getName)
                     .toList();
-        } catch (NoSuchFileException ignored) {
+            services.forEach(service -> log.info("Disk service {}/{}", folder, service));
+            return services;
+        } catch (NoSuchFileException e) {
+            log.info("Path {} do not exist", pathFolder.toAbsolutePath());
         } catch (IOException e) {
             log.error("Unable to read opendata services", e);
         }
@@ -195,6 +193,7 @@ public class OpendataServiceManager {
 
     @NotNull
     public OpendataService getOpendataService() throws OpenDataException {
+        log.debug("getOpendataService");
         var opendataService = config.getOpendataService();
         return getOpendataService(opendataService);
     }
@@ -228,40 +227,28 @@ public class OpendataServiceManager {
         if (opendataService.endsWith(".json")) {
             return getJsonService(opendataService);
         }
-        return applicationContext.getBean(opendataService, OpendataService.class);
+        try {
+            return applicationContext.getBean(opendataService, OpendataService.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            throw new OpenDataException(e.getMessage(), e);
+        }
     }
 
     @NotNull
     private DefaultJsonService getJsonService(String opendataService) throws OpenDataException {
-        var objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        log.info("getJsonService {}", opendataService);
         try {
-            var opendataServicePath = getOpendataServicePath(opendataService);
-            var serviceDescriptor = objectMapper
-                    .readValue(opendataServicePath, ServiceDescriptor.class);
-            return new DefaultJsonService(opendataService, httpService, serviceDescriptor);
+            var objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            var opendataServicePath = resourceService.getResource(opendataService);
+            if (opendataServicePath.isPresent()) {
+                var serviceDescriptor = objectMapper.readValue(opendataServicePath.get(), ServiceDescriptor.class);
+                return new DefaultJsonService(opendataService, httpService, serviceDescriptor);
+            }
         } catch (IOException e) {
-            log.error("Unable to load service " + opendataService, e);
             throw new OpenDataException("Unable to find service " + opendataService, e);
         }
-    }
-
-    /**
-     * Returns the opendata service path by it's name.
-     * It will search in third party folder first then if not found in the official services path.
-     *
-     * @param opendataService the opendata service name
-     * @return the path of the opendata service
-     */
-    @NotNull
-    private static URL getOpendataServicePath(String opendataService) throws MalformedURLException {
-        log.info("getOpendataServicePath {}", opendataService);
-        var url = OpendataServiceManager.class.getClassLoader().getResource(OPENDATA_JSON + opendataService);
-        if (url != null)
-            return url;
-
-        var path = Path.of(THIRDPARTY, opendataService);
-        return path.toFile().toURI().toURL();
+        throw new OpenDataException("Unable to find service " + opendataService);
     }
 
     @NotNull

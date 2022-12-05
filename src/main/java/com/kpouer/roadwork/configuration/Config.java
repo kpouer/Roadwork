@@ -48,13 +48,14 @@ import java.util.List;
 @Configuration
 @Slf4j
 public class Config {
+    public static final String DEFAULT_OPENDATA_SERVICE = "France-Paris.json";
+
     private List<String> logs;
     private int tilesSize = 256;
     private int minZoom = 1;
     private int maxZoom = 18;
     private int threadCount = 2;
     private String datePattern = "yyyy-MM-dd";
-    private String opendataService = "ParisService";
     private String dataPath;
     private String legacyDataPath = "data";
     private UserSettings userSettings;
@@ -208,7 +209,7 @@ public class Config {
         if (StringUtils.hasLength(userSettings.getOpendataService())) {
             return userSettings.getOpendataService();
         }
-        return opendataService;
+        return DEFAULT_OPENDATA_SERVICE;
     }
 
     public void setOpendataService(String opendataService) {
