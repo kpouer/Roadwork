@@ -15,15 +15,20 @@
  */
 package com.kpouer.roadwork.configuration;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.PatternLayout;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kpouer.mapview.MapView;
 import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.mapview.tile.cache.ImageCacheImpl;
+import com.kpouer.roadwork.log.LoopListAppender;
 import com.kpouer.roadwork.service.SoftwareModel;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -32,24 +37,25 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PreDestroy;
-import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * @author Matthieu Casanova
  */
 @Configuration
+@Slf4j
 public class Config {
-    private static final Logger logger = LoggerFactory.getLogger(Config.class);
+    public static final String DEFAULT_OPENDATA_SERVICE = "France-Paris.json";
 
+    private List<String> logs;
     private int tilesSize = 256;
     private int minZoom = 1;
     private int maxZoom = 18;
     private int threadCount = 2;
     private String datePattern = "yyyy-MM-dd";
-    private String opendataService = "ParisService";
     private String dataPath;
     private String legacyDataPath = "data";
     private UserSettings userSettings;
@@ -58,24 +64,25 @@ public class Config {
     private int connectionRequestTimeout = 1000;
     private int readTimeout = 300000;
 
-    public Config(SoftwareModel softwareModel) {
+    public Config(SoftwareModel softwareModel, ApplicationEventPublisher applicationEventPublisher) {
         this.softwareModel = softwareModel;
-        logger.info("Config start");
+        configureLogger(applicationEventPublisher);
+        log.info("Config start");
 
-        String userHome = System.getProperty("user.home");
+        var userHome = System.getProperty("user.home");
         if (userHome == null) {
             dataPath = "data";
         } else {
             dataPath = userHome + "/.roadwork";
             migrateIfNecessary();
         }
-        Path userSettingsPath = getUserSettingsPath();
+        var userSettingsPath = getUserSettingsPath();
         if (Files.exists(userSettingsPath)) {
-            ObjectMapper objectMapper = new ObjectMapper();
+            var objectMapper = new ObjectMapper();
             try {
                 userSettings = objectMapper.readValue(userSettingsPath.toFile(), UserSettings.class);
             } catch (IOException e) {
-                logger.error("Error trying to read user settings");
+                log.error("Error trying to read user settings");
                 userSettings = new UserSettings();
             }
         } else {
@@ -83,15 +90,27 @@ public class Config {
         }
     }
 
+    private void configureLogger(ApplicationEventPublisher applicationEventPublisher) {
+        var layout = new PatternLayout();
+        layout.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+        layout.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg");
+        layout.start();
+        var loopListAppender = new LoopListAppender(layout, applicationEventPublisher);
+        logs = loopListAppender.getList();
+        var rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        loopListAppender.start();
+        ((ch.qos.logback.classic.Logger) rootLogger).addAppender(loopListAppender);
+    }
+
     private void migrateIfNecessary() {
         if (!Files.exists(Path.of(dataPath))) {
-            Path oldData = Path.of("data");
+            var oldData = Path.of("data");
             if (Files.exists(oldData)) {
-                logger.info("migrate data");
+                log.info("migrate data");
                 try {
                     Files.move(oldData, Path.of(dataPath));
                 } catch (IOException e) {
-                    logger.error("Unable to migrate data", e);
+                    log.error("Unable to migrate data", e);
                 }
             }
         }
@@ -104,21 +123,21 @@ public class Config {
 
     @PreDestroy
     public void stop() {
-        logger.info("stop");
+        log.info("stop");
         try {
-            Rectangle bounds = softwareModel.getMainFrame().getBounds();
+            var bounds = softwareModel.getMainFrame().getBounds();
             userSettings.setFrameX(bounds.x);
             userSettings.setFrameY(bounds.y);
             userSettings.setFrameWidth(bounds.width);
             userSettings.setFrameHeight(bounds.height);
-            ObjectMapper objectMapper = new ObjectMapper();
-            Path userSettingsPath = getUserSettingsPath();
+            var objectMapper = new ObjectMapper();
+            var userSettingsPath = getUserSettingsPath();
             if (!Files.exists(userSettingsPath.getParent())) {
                 Files.createDirectory(userSettingsPath.getParent());
             }
             objectMapper.writeValue(userSettingsPath.toFile(), userSettings);
         } catch (IOException e) {
-            logger.error("Error while saving settings", e);
+            log.error("Error while saving settings", e);
         }
     }
 
@@ -190,7 +209,7 @@ public class Config {
         if (StringUtils.hasLength(userSettings.getOpendataService())) {
             return userSettings.getOpendataService();
         }
-        return opendataService;
+        return DEFAULT_OPENDATA_SERVICE;
     }
 
     public void setOpendataService(String opendataService) {
@@ -286,5 +305,10 @@ public class Config {
         httpRequestFactory.setReadTimeout(readTimeout);
 
         return new RestTemplate(httpRequestFactory);
+    }
+
+    @Bean
+    public List<String> logs() {
+        return logs;
     }
 }
