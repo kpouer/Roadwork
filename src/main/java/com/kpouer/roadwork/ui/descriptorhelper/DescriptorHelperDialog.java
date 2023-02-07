@@ -144,6 +144,7 @@ public class DescriptorHelperDialog extends JDialog {
         serviceDescriptor.setId("@.recordid");
         serviceDescriptor.setLatitude("@.geometry.coordinates[1]");
         serviceDescriptor.setLongitude("@.geometry.coordinates[0]");
+        serviceDescriptor.setPolygon("@.geometry.coordinates");
         var from = new DateParser();
         List<Parser> parsers = new ArrayList<>();
         var parser = new Parser();
@@ -161,7 +162,7 @@ public class DescriptorHelperDialog extends JDialog {
         try {
             serviceDescriptor = objectMapper.readValue(editor.getText(), ServiceDescriptor.class);
             var roadworkArray = serviceDescriptor.getRoadworkArray();
-            if (!Objects.equals(roadworkArray, this.currentRoadworkPath)) {
+            if (!Objects.equals(roadworkArray, currentRoadworkPath)) {
                 // if the roadwork array path did not change, do not parse it again
                 currentRoadworkPath = roadworkArray;
                 var nodeOptional = getRoadworkArrayNode();
