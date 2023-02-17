@@ -1,4 +1,0 @@
-[submodule "Roadwork-lib"]
-	path = Roadwork-lib
-	url = https://github.com/kpouer/Roadwork-lib.git
-	branch =  1.0.0

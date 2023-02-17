@@ -6,11 +6,39 @@
     <artifactId>Roadwork</artifactId>
     <version>2.0.0-SNAPSHOT</version>
     <name>Roadwork</name>
+    <url>https://github.com/kpouer/Roadwork</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>/LICENSE</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Matthieu Casanova</name>
+            <email>chocolat.mou@gmail.com</email>
+            <organizationUrl>https://github.com/kpouer/Roadwork.git</organizationUrl>
+        </developer>
+    </developers>
+    <repositories>
+        <repository>
+            <id>sonatype</id>
+            <name>Sonatype</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+    <scm>
+        <connection>https://github.com/kpouer/Roadwork.git</connection>
+        <url>https://github.com/kpouer/Roadwork</url>
+    </scm>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.projectKey>kpouer_Roadwork</sonar.projectKey>
+        <sonar.organization>matthieu-casanova</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>
@@ -46,7 +74,7 @@
         <dependency>
             <groupId>com.kpouer</groupId>
             <artifactId>k-mapview</artifactId>
-            <version>1.1.0</version>
+            <version>1.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fifesoft</groupId>
@@ -56,7 +84,7 @@
         <dependency>
             <groupId>com.kpouer</groupId>
             <artifactId>roadwork-lib</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>

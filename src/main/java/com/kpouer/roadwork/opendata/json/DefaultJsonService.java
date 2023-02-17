@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,17 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.kpouer.roadwork.model.DateRange;
 import com.kpouer.roadwork.model.Roadwork;
-import com.kpouer.roadwork.model.RoadworkBuilder;
 import com.kpouer.roadwork.model.RoadworkData;
+import com.kpouer.roadwork.model.sync.SyncData;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.model.DateParser;
 import com.kpouer.roadwork.opendata.json.model.DateResult;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import com.kpouer.roadwork.service.HttpService;
+import com.kpouer.wkt.shape.Polygon;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.client.RestClientException;
 
@@ -172,14 +174,15 @@ public class DefaultJsonService implements OpendataService {
 
     @NotNull
     public static Roadwork buildRoadwork(ServiceDescriptor serviceDescriptor, @NotNull Object node) {
-        var roadworkBuilder = RoadworkBuilder.aRoadwork();
-        roadworkBuilder.withId(getPath(node, serviceDescriptor.getId()));
+        var roadworkBuilder = Roadwork.builder();
+        roadworkBuilder.syncData(new SyncData());
+        roadworkBuilder.id(getPath(node, serviceDescriptor.getId()));
         try {
             var latitudePath = serviceDescriptor.getLatitude();
             if (latitudePath == null || latitudePath.isEmpty()) {
                 log.warn("Unable to get latitude as it's path is empty");
             } else {
-                roadworkBuilder.withLatitude(getPathAsDouble(node, latitudePath));
+                roadworkBuilder.latitude(getPathAsDouble(node, latitudePath));
             }
         } catch (Exception e) {
             log.warn("Unable to get latitude from {}, {}", node, e.getMessage());
@@ -189,37 +192,83 @@ public class DefaultJsonService implements OpendataService {
             if (longitudePath == null || longitudePath.isEmpty()) {
                 log.warn("Unable to get longitude as it's path is empty");
             } else {
-                roadworkBuilder.withLongitude(getPathAsDouble(node, longitudePath));
+                roadworkBuilder.longitude(getPathAsDouble(node, longitudePath));
             }
         } catch (Exception e) {
             log.warn("Unable to get longitude from {}, {}", node, e.getMessage());
         }
+        var polygonPath = serviceDescriptor.getPolygon();
+        if (polygonPath != null && !polygonPath.isEmpty()) {
+            roadworkBuilder.polygons(getPathAsPolygons(node, polygonPath));
+        }
         if (serviceDescriptor.getRoad() != null) {
-            roadworkBuilder.withRoad(getPath(node, serviceDescriptor.getRoad()));
+            roadworkBuilder.road(getPath(node, serviceDescriptor.getRoad()));
         }
         if (serviceDescriptor.getDescription() != null) {
-            roadworkBuilder.withDescription(getPath(node, serviceDescriptor.getDescription()));
+            roadworkBuilder.description(getPath(node, serviceDescriptor.getDescription()));
         }
         if (serviceDescriptor.getLocationDetails() != null) {
-            roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
+            roadworkBuilder.locationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
         }
         try {
             var dateRange = getDateRange(node, serviceDescriptor);
-            roadworkBuilder.withStart(dateRange.getFrom());
-            roadworkBuilder.withEnd(dateRange.getTo());
+            roadworkBuilder.start(dateRange.getFrom());
+            roadworkBuilder.end(dateRange.getTo());
         } catch (ParseException e) {
             log.error("Unable to parse date", e);
         }
         if (serviceDescriptor.getImpactCirculationDetail() != null) {
-            roadworkBuilder.withImpactCirculationDetail(getPath(node, serviceDescriptor.getImpactCirculationDetail()));
+            roadworkBuilder.impactCirculationDetail(getPath(node, serviceDescriptor.getImpactCirculationDetail()));
         }
         if (serviceDescriptor.getLocationDetails() != null) {
-            roadworkBuilder.withLocationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
+            roadworkBuilder.locationDetails(getPath(node, serviceDescriptor.getLocationDetails()));
         }
         if (serviceDescriptor.getUrl() != null) {
-            roadworkBuilder.withUrl(getPath(node, serviceDescriptor.getUrl()));
+            roadworkBuilder.url(getPath(node, serviceDescriptor.getUrl()));
         }
         return roadworkBuilder.build();
+    }
+
+    private static Polygon[] getPathAsPolygons(Object node, String path) {
+        try {
+            var value = (JSONArray) JsonPath.read(node, path);
+            if (value != null) {
+                if (isMultiPolygon(value)) {
+                    var polygons = new Polygon[value.size()];
+                    for (var i = 0; i < value.size(); i++) {
+                        var polygonArray = (JSONArray) value.get(i);
+                        polygons[i] = getPolygon((JSONArray) polygonArray.get(0));
+                    }
+                    return polygons;
+                } else {
+                    var polygonArray = (JSONArray) value.get(0);
+                    var polygon = getPolygon(polygonArray);
+                    return new Polygon[] {polygon};
+                }
+            }
+        } catch (Exception exception) {
+            log.error("Error parsing polygon", exception);
+        }
+        return null;
+    }
+
+    private static boolean isMultiPolygon(JSONArray value) {
+        var firstLevel = (JSONArray) value.get(0);
+        var secondLevel = (JSONArray) firstLevel.get(0);
+        return secondLevel.get(0) instanceof JSONArray;
+    }
+
+    @NotNull
+    private static Polygon getPolygon(JSONArray polygonArray) {
+        var xpoints = new double[polygonArray.size()];
+        var ypoints = new double[polygonArray.size()];
+        for (var i = 0; i < polygonArray.size(); i++) {
+            var point = (JSONArray) polygonArray.get(i);
+            xpoints[i] = (double) point.get(0);
+            ypoints[i] = (double) point.get(1);
+        }
+        var polygon = new Polygon(xpoints, ypoints);
+        return polygon;
     }
 
     private static String getPath(Object node, String path) {

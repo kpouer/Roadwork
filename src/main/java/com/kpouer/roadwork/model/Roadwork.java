@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,28 @@ package com.kpouer.roadwork.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kpouer.mapview.marker.Circle;
+import com.kpouer.mapview.marker.Marker;
+import com.kpouer.mapview.marker.PolygonMarker;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.model.sync.SyncData;
+import com.kpouer.wkt.shape.Polygon;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.awt.*;
 
 /**
  * @author Matthieu Casanova
  */
+@Data
+@Builder
+@AllArgsConstructor
 public class Roadwork {
     private String id;
     private double latitude;
     private double longitude;
+    private Polygon[] polygons;
     private long start;
     private long end;
     private String road;
@@ -36,81 +46,9 @@ public class Roadwork {
     private String impactCirculationDetail;
     private String description;
     @JsonIgnore
-    private Circle marker;
+    private Marker[] markers;
     private SyncData syncData;
     private String url;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
-    public long getStart() {
-        return start;
-    }
-
-    public void setStart(long start) {
-        this.start = start;
-    }
-
-    public long getEnd() {
-        return end;
-    }
-
-    public void setEnd(long end) {
-        this.end = end;
-    }
-
-    public String getRoad() {
-        return road;
-    }
-
-    public void setRoad(String road) {
-        this.road = road;
-    }
-
-    public String getLocationDetails() {
-        return locationDetails;
-    }
-
-    public void setLocationDetails(String locationDetails) {
-        this.locationDetails = locationDetails;
-    }
-
-    public String getImpactCirculationDetail() {
-        return impactCirculationDetail;
-    }
-
-    public void setImpactCirculationDetail(String impactCirculationDetail) {
-        this.impactCirculationDetail = impactCirculationDetail;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public void updateStatus(Status status) {
         syncData.updateStatus(status);
@@ -118,20 +56,41 @@ public class Roadwork {
     }
 
     public void updateMarker() {
-        if (marker != null) {
-            marker.setColor(getColor());
+        if (markers != null) {
+            for (Marker marker : markers) {
+                Color color = getColor();
+                if (marker instanceof PolygonMarker) {
+                    color = new Color(color.getRed() / 255, color.getGreen() / 255, color.getBlue() / 255, 0.5f);
+                }
+                marker.setColor(color);
+            }
         }
     }
 
-    public Circle getMarker() {
-        if (marker == null) {
-            marker = new Circle(latitude, longitude, 5, getColor());
+    public Marker[] getMarker() {
+        if (markers == null) {
+            if (polygons != null) {
+                markers = new Marker[polygons.length];
+                for (int i = 0; i < polygons.length; i++) {
+                    Polygon polygon = polygons[i];
+                    Color color = getColor();
+                    markers[i] = new PolygonMarker(polygon, 2, color, true);
+                }
+                updateMarker();
+            } else {
+                markers = new Marker[1];
+                markers[0] = new Circle(latitude, longitude, 5, getColor());
+            }
         }
-        return marker;
+        return markers;
+    }
+
+    public SyncData getSyncData() {
+        return syncData;
     }
 
     private Color getColor() {
-        switch (syncData.getStatus()) {
+        switch (getSyncData().getStatus()) {
             case New -> {
                 return Color.RED;
             }
@@ -153,21 +112,5 @@ public class Roadwork {
 
     public boolean isExpired() {
         return end < System.currentTimeMillis();
-    }
-
-    public SyncData getSyncData() {
-        return syncData;
-    }
-
-    public void setSyncData(SyncData syncData) {
-        this.syncData = syncData;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getUrl() {
-        return url;
     }
 }

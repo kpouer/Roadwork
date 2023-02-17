@@ -17,6 +17,7 @@
   "id": "@.recordid",
   "latitude": "@.geometry.coordinates[1]",
   "longitude": "@.geometry.coordinates[0]",
+  "polygon": "@.fields.geo_shape.coordinates",
   "road": "@.fields.voie",
   "locationDetails": "@.fields.precision_localisation",
   "impactCirculationDetail": "@.fields.impact_circulation_detail",

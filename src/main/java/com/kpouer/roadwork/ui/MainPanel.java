@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.ui;
 
 import com.kpouer.mapview.MapView;
+import com.kpouer.mapview.marker.Marker;
 import com.kpouer.roadwork.action.ExitAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.event.OpendataServiceUpdated;
@@ -45,6 +46,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static com.kpouer.roadwork.configuration.Config.*;
 
@@ -127,7 +129,8 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             var roadworkData = softwareModel.getRoadworkData();
             for (var roadwork : roadworkData) {
                 if (!userSettings.isHideExpired() || roadwork.getSyncData().getStatus() != Status.Finished) {
-                    mapView.addMarker(roadwork.getMarker());
+                    Marker[] markers = roadwork.getMarker();
+                    Arrays.stream(markers).forEach(mapView::addMarker);
                 }
             }
             mapView.repaint();
@@ -168,14 +171,18 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     }
 
     private void addMarker(Roadwork roadwork) {
-        var marker = roadwork.getMarker();
-        marker.addMouseListener(new MouseAdapter() {
+        var mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 softwareModel.setSelectedRoadwork(roadwork);
                 detailPanel.setRoadwork(roadwork);
             }
-        });
-        mapView.addMarker(marker);
+        };
+        var markers = roadwork.getMarker();
+        Arrays.stream(markers).forEach(marker -> {
+                    marker.addMouseListener(mouseAdapter);
+                    mapView.addMarker(marker);
+                }
+        );
     }
 }
