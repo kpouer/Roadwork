@@ -60,7 +60,10 @@ public class Roadwork {
             for (Marker marker : markers) {
                 Color color = getColor();
                 if (marker instanceof PolygonMarker) {
-                    color = new Color(color.getRed() / 255, color.getGreen() / 255, color.getBlue() / 255, 0.5f);
+                    color = new Color(color.getRed() / 255.0f,
+                                      color.getGreen() / 255.0f,
+                                      color.getBlue() / 255.0f,
+                                      0.5f);
                 }
                 marker.setColor(color);
             }
