@@ -17,8 +17,8 @@ module com.kpouer.roadwork {
     requires com.fasterxml.jackson.databind;
     requires spring.web;
     requires spring.beans;
-    requires org.apache.httpcomponents.httpclient;
-    requires org.apache.httpcomponents.httpcore;
+    requires org.apache.httpcomponents.client5.httpclient5;
+    requires org.apache.httpcomponents.core5.httpcore5;
     requires java.annotation;
 
     opens com.kpouer.roadwork.configuration;
