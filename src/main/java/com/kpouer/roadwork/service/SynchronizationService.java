@@ -23,13 +23,13 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -73,9 +73,9 @@ public class SynchronizationService {
      */
     public void synchronize(RoadworkData roadworkData) {
         if (userSettings.isSynchronizationEnabled()) {
-            log.info("synchronize");
+            logger.info("synchronize");
             var url = getUrl(roadworkData.getSource());
-            log.info("Will synchronize with url {}", url);
+            logger.info("Will synchronize with url {}", url);
             var restTemplate = new RestTemplate();
             try {
                 var body = new HashMap<String, SyncData>();
@@ -96,7 +96,7 @@ public class SynchronizationService {
                     roadwork.updateMarker();
                 }
             } catch (HttpClientErrorException.Unauthorized e) {
-                log.warn("Error posting to synchronization server, invalid credencials");
+                logger.warn("Error posting to synchronization server, invalid credencials");
                 JOptionPane.showMessageDialog(softwareModel.getMainFrame(),
                         localizationService.getMessage("dialog.synchronization.unauthorized.message"),
                         localizationService.getMessage("dialog.synchronization.unauthorized.title"),
@@ -104,17 +104,17 @@ public class SynchronizationService {
                 applicationContext.getBean(SynchronizationSettingsAction.class).actionPerformed(null);
             } catch (RestClientException e) {
                 if (e.getCause() instanceof ConnectException) {
-                    log.error("Unable to connect to synchronization server {}", url);
+                    logger.error("Unable to connect to synchronization server {}", url);
                     userSettings.setSynchronizationEnabled(false);
                     applicationEventPublisher.publishEvent(new SynchronizationSettingsUpdated(this));
                 } else {
-                    log.error("Error posting to synchronization server", e);
+                    logger.error("Error posting to synchronization server", e);
                 }
             }
         }
     }
 
-    @NotNull
+    @NonNull
     private String getUrl(String source) {
         var synchronizationTeam = userSettings.getSynchronizationTeam();
         var url = userSettings.getSynchronizationUrl();

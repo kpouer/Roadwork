@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,15 @@
  */
 package com.kpouer.roadwork.event;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
 
 /**
  * @author Matthieu Casanova
  */
+@Getter
+@Setter
 public class OpendataServiceUpdated extends ApplicationEvent {
     private String oldService;
     private String newService;
@@ -27,22 +31,6 @@ public class OpendataServiceUpdated extends ApplicationEvent {
     public OpendataServiceUpdated(Object source, String oldService, String newService) {
         super(source);
         this.oldService = oldService;
-        this.newService = newService;
-    }
-
-    public String getOldService() {
-        return oldService;
-    }
-
-    public String getNewService() {
-        return newService;
-    }
-
-    public void setOldService(String oldService) {
-        this.oldService = oldService;
-    }
-
-    public void setNewService(String newService) {
         this.newService = newService;
     }
 }

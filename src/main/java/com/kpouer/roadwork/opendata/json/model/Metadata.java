@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,17 @@
 package com.kpouer.roadwork.opendata.json.model;
 
 import com.kpouer.mapview.LatLng;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Metadata {
     private String country;
     private LatLng center;
@@ -34,98 +40,6 @@ public class Metadata {
     private Map<String, String> urlParams;
     private String tileServer = "WazeINTL";
     private String editorPattern = "https://waze.com/fr/editor?env=row&lat=${lat}&lon=${lon}&zoomLevel=19";
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public LatLng getCenter() {
-        return center;
-    }
-
-    public void setCenter(LatLng center) {
-        this.center = center;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(String sourceUrl) {
-        this.sourceUrl = sourceUrl;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public String getEditorPattern() {
-        return editorPattern;
-    }
-
-    public Map<String, String> getUrlParams() {
-        return urlParams;
-    }
-
-    public void setUrlParams(Map<String, String> urlParams) {
-        this.urlParams = urlParams;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
-    public void setProducer(String producer) {
-        this.producer = producer;
-    }
-
-    public String getLicenceName() {
-        return licenceName;
-    }
-
-    public void setLicenceName(String licenceName) {
-        this.licenceName = licenceName;
-    }
-
-    public String getLicenceUrl() {
-        return licenceUrl;
-    }
-
-    public void setLicenceUrl(String licenceUrl) {
-        this.licenceUrl = licenceUrl;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
-    public String getTileServer() {
-        return tileServer;
-    }
-
-    public void setTileServer(String tileServer) {
-        this.tileServer = tileServer;
-    }
 
     @Override
     public String toString() {

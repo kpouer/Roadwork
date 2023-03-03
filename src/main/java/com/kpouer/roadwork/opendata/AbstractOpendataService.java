@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@ package com.kpouer.roadwork.opendata;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.lang.Nullable;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,23 +33,13 @@ import java.util.*;
 /**
  * @author Matthieu Casanova
  */
+@RequiredArgsConstructor
+@Slf4j
 public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> implements OpendataService {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractOpendataService.class);
-
     private final Class<E> responseType;
     private final RestTemplate restTemplate;
+    @Getter
     private final Metadata metadata;
-
-    protected AbstractOpendataService(Metadata metadata, Class<E> responseType, RestTemplate restTemplate) {
-        this.metadata = metadata;
-        this.responseType = responseType;
-        this.restTemplate = restTemplate;
-    }
-
-    @Override
-    public Metadata getMetadata() {
-        return metadata;
-    }
 
     @Override
     public Optional<RoadworkData> getData() throws RestClientException {

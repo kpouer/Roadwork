@@ -15,8 +15,7 @@
  */
 package com.kpouer.roadwork.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -29,9 +28,8 @@ import static javax.swing.JComponent.getDefaultLocale;
  * @author Matthieu Casanova
  */
 @Service
+@Slf4j
 public class LocalizationService {
-    private static final Logger logger = LoggerFactory.getLogger(LocalizationService.class);
-
     private final MessageSource resourceBundle;
 
     public LocalizationService() {

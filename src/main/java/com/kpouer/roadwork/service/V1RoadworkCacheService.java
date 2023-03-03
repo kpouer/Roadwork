@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.v1.RoadworkDataV1;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -36,9 +35,8 @@ import java.util.Optional;
  * @author Matthieu Casanova
  */
 @Service
+@Slf4j
 public class V1RoadworkCacheService implements RoadworkMigrationService {
-    private static final Logger logger = LoggerFactory.getLogger(V1RoadworkCacheService.class);
-
     private final Config config;
 
     public V1RoadworkCacheService(Config config) {
@@ -47,12 +45,12 @@ public class V1RoadworkCacheService implements RoadworkMigrationService {
 
     @Override
     public Optional<RoadworkData> migrateData() {
-        Path pathV1 = getPath(config.getOpendataService());
+        var pathV1 = getPath(config.getOpendataService());
         if (Files.exists(pathV1)) {
-            ObjectMapper objectMapper = new ObjectMapper();
+            var objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
-                RoadworkDataV1 roadworkDataV1 = objectMapper.readValue(pathV1.toFile(), RoadworkDataV1.class);
+                var roadworkDataV1 = objectMapper.readValue(pathV1.toFile(), RoadworkDataV1.class);
                 RoadworkData roadworkData = roadworkDataV1.toRoadWork();
                 return Optional.of(roadworkData);
             } catch (IOException e) {
@@ -64,10 +62,10 @@ public class V1RoadworkCacheService implements RoadworkMigrationService {
 
     @Override
     public void archive() {
-        String opendataService = config.getOpendataService();
-        Path pathV1 = getPath(opendataService);
+        var opendataService = config.getOpendataService();
+        var pathV1 = getPath(opendataService);
         if (Files.exists(pathV1)) {
-            Path archivePath = Path.of(config.getDataPath(), opendataService + ".json.bak");
+            var archivePath = Path.of(config.getDataPath(), opendataService + ".json.bak");
             if (!Files.exists(archivePath)) {
                 logger.info("Archiving {} to {}", pathV1, archivePath);
                 if (!pathV1.toFile().renameTo(archivePath.toFile())) {
@@ -79,7 +77,7 @@ public class V1RoadworkCacheService implements RoadworkMigrationService {
         }
     }
 
-    @NotNull
+    @NonNull
     private Path getPath(String opendataService) {
         return Path.of(config.getDataPath(), opendataService + ".json");
     }

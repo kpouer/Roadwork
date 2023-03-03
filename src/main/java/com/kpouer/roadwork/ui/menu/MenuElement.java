@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,16 @@
  */
 package com.kpouer.roadwork.ui.menu;
 
+import lombok.Data;
+
 import java.util.Arrays;
 
 /**
  * @author Matthieu Casanova
  */
+@Data
 public class MenuElement {
     private String name;
     private String action;
     private MenuElement[] children;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public MenuElement[] getChildren() {
-        return children;
-    }
-
-    public void setChildren(MenuElement[] children) {
-        this.children = children;
-    }
-
-    @Override
-    public String toString() {
-        return "MenuElement{" +
-                "name='" + name + '\'' +
-                ", action='" + action + '\'' +
-                ", children=" + Arrays.toString(children) +
-                '}';
-    }
 }

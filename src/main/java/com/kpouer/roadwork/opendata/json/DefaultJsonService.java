@@ -30,7 +30,7 @@ import com.kpouer.roadwork.service.HttpService;
 import com.kpouer.wkt.shape.Polygon;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
-import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestClientException;
 
 import java.net.URLEncoder;
@@ -59,7 +59,7 @@ public class DefaultJsonService implements OpendataService {
     @Override
     public Optional<RoadworkData> getData() throws RestClientException {
         var url = buildUrl();
-        log.info("getData {}", url);
+        logger.info("getData {}", url);
         var json = httpService.getUrl(url);
         var document = Configuration.defaultConfiguration().jsonProvider().parse(json);
         List<?> roadworkArray = JsonPath.read(document, serviceDescriptor.getRoadworkArray());
@@ -89,15 +89,15 @@ public class DefaultJsonService implements OpendataService {
 
     public static boolean isValid(Roadwork roadwork) {
         if (roadwork.getLongitude() == 0 && roadwork.getLatitude() == 0) {
-            log.warn("{} is invalid because it has no location", roadwork);
+            logger.warn("{} is invalid because it has no location", roadwork);
             return false;
         }
 //        if (roadwork.getStart() == 0) {
-//            log.warn("{} is invalid because it's start date is 0", roadwork);
+//            logger.warn("{} is invalid because it's start date is 0", roadwork);
 //            return false;
 //        }
 //        if (roadwork.getEnd() == 0) {
-//            log.warn("{} is invalid because it's end date is 0", roadwork);
+//            logger.warn("{} is invalid because it's end date is 0", roadwork);
 //            return false;
 //        }
         return true;
@@ -105,7 +105,7 @@ public class DefaultJsonService implements OpendataService {
 
     private static Optional<DateResult> parseDate(Object node, DateParser dateParser, ServiceDescriptor serviceDescriptor) throws ParseException {
         if (dateParser == null) {
-            log.debug("Cannot parse date as dateParse is null");
+            logger.debug("Cannot parse date as dateParse is null");
             return Optional.empty();
         }
         var calendar = Calendar.getInstance();
@@ -132,7 +132,7 @@ public class DefaultJsonService implements OpendataService {
             var start = parseDate(node, serviceDescriptor.getFrom(), serviceDescriptor);
             startTime = start.map(DateResult::getDate).orElse(0L);
         } catch (Exception e) {
-            log.error("Error parsing start date", e);
+            logger.error("Error parsing start date", e);
             startTime = 0L;
         }
         long endDate;
@@ -151,7 +151,7 @@ public class DefaultJsonService implements OpendataService {
                 endDate = 0L;
             }
         } catch (Exception e) {
-            log.error("Error parsing end date", e);
+            logger.error("Error parsing end date", e);
             endDate = 0L;
         }
         return new DateRange(startTime, endDate);
@@ -172,30 +172,30 @@ public class DefaultJsonService implements OpendataService {
         return calendar.getTimeInMillis();
     }
 
-    @NotNull
-    public static Roadwork buildRoadwork(ServiceDescriptor serviceDescriptor, @NotNull Object node) {
+    @NonNull
+    public static Roadwork buildRoadwork(ServiceDescriptor serviceDescriptor, @NonNull Object node) {
         var roadworkBuilder = Roadwork.builder();
         roadworkBuilder.syncData(new SyncData());
         roadworkBuilder.id(getPath(node, serviceDescriptor.getId()));
         try {
             var latitudePath = serviceDescriptor.getLatitude();
             if (latitudePath == null || latitudePath.isEmpty()) {
-                log.warn("Unable to get latitude as it's path is empty");
+                logger.warn("Unable to get latitude as it's path is empty");
             } else {
                 roadworkBuilder.latitude(getPathAsDouble(node, latitudePath));
             }
         } catch (Exception e) {
-            log.warn("Unable to get latitude from {}, {}", node, e.getMessage());
+            logger.warn("Unable to get latitude from {}, {}", node, e.getMessage());
         }
         try {
             var longitudePath = serviceDescriptor.getLongitude();
             if (longitudePath == null || longitudePath.isEmpty()) {
-                log.warn("Unable to get longitude as it's path is empty");
+                logger.warn("Unable to get longitude as it's path is empty");
             } else {
                 roadworkBuilder.longitude(getPathAsDouble(node, longitudePath));
             }
         } catch (Exception e) {
-            log.warn("Unable to get longitude from {}, {}", node, e.getMessage());
+            logger.warn("Unable to get longitude from {}, {}", node, e.getMessage());
         }
         var polygonPath = serviceDescriptor.getPolygon();
         if (polygonPath != null && !polygonPath.isEmpty()) {
@@ -212,10 +212,10 @@ public class DefaultJsonService implements OpendataService {
         }
         try {
             var dateRange = getDateRange(node, serviceDescriptor);
-            roadworkBuilder.start(dateRange.getFrom());
-            roadworkBuilder.end(dateRange.getTo());
+            roadworkBuilder.start(dateRange.from());
+            roadworkBuilder.end(dateRange.to());
         } catch (ParseException e) {
-            log.error("Unable to parse date", e);
+            logger.error("Unable to parse date", e);
         }
         if (serviceDescriptor.getImpactCirculationDetail() != null) {
             roadworkBuilder.impactCirculationDetail(getPath(node, serviceDescriptor.getImpactCirculationDetail()));
@@ -247,7 +247,7 @@ public class DefaultJsonService implements OpendataService {
                 }
             }
         } catch (Exception exception) {
-            log.error("Error parsing polygon", exception);
+            logger.error("Error parsing polygon", exception);
         }
         return null;
     }
@@ -258,7 +258,7 @@ public class DefaultJsonService implements OpendataService {
         return secondLevel.get(0) instanceof JSONArray;
     }
 
-    @NotNull
+    @NonNull
     private static Polygon getPolygon(JSONArray polygonArray) {
         var xpoints = new double[polygonArray.size()];
         var ypoints = new double[polygonArray.size()];
@@ -282,7 +282,7 @@ public class DefaultJsonService implements OpendataService {
         return null;
     }
 
-    private static double getPathAsDouble(@NotNull Object node, @NotNull String path) throws ParseException {
+    private static double getPathAsDouble(@NonNull Object node, @NonNull String path) throws ParseException {
         try {
             Objects.requireNonNull(path);
             var value = JsonPath.read(node, path);
@@ -292,7 +292,7 @@ public class DefaultJsonService implements OpendataService {
             }
             return Double.parseDouble(String.valueOf(value).replace(',', '.'));
         } catch (Exception e) {
-            log.error("Error parsing double", e);
+            logger.error("Error parsing double", e);
         }
         throw new ParseException("Unable to parse", 0);
     }

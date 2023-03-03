@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.kpouer.mapview.tile.cache.ImageCacheImpl;
 import com.kpouer.roadwork.log.LoopListAppender;
 import com.kpouer.roadwork.service.SoftwareModel;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +32,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -57,7 +57,6 @@ public class Config {
     private int threadCount = 2;
     private String datePattern = "yyyy-MM-dd";
     private String dataPath;
-    private String legacyDataPath = "data";
     private UserSettings userSettings;
     private final SoftwareModel softwareModel;
     private int connectTimeout = 1000;
@@ -67,7 +66,7 @@ public class Config {
     public Config(SoftwareModel softwareModel, ApplicationEventPublisher applicationEventPublisher) {
         this.softwareModel = softwareModel;
         configureLogger(applicationEventPublisher);
-        log.info("Config start");
+        logger.info("Config start");
 
         var userHome = System.getProperty("user.home");
         if (userHome == null) {
@@ -82,7 +81,7 @@ public class Config {
             try {
                 userSettings = objectMapper.readValue(userSettingsPath.toFile(), UserSettings.class);
             } catch (IOException e) {
-                log.error("Error trying to read user settings");
+                logger.error("Error trying to read user settings");
                 userSettings = new UserSettings();
             }
         } else {
@@ -106,24 +105,24 @@ public class Config {
         if (!Files.exists(Path.of(dataPath))) {
             var oldData = Path.of("data");
             if (Files.exists(oldData)) {
-                log.info("migrate data");
+                logger.info("migrate data");
                 try {
                     Files.move(oldData, Path.of(dataPath));
                 } catch (IOException e) {
-                    log.error("Unable to migrate data", e);
+                    logger.error("Unable to migrate data", e);
                 }
             }
         }
     }
 
-    @NotNull
+    @NonNull
     private Path getUserSettingsPath() {
         return Path.of(dataPath, "userSettings.json");
     }
 
     @PreDestroy
     public void stop() {
-        log.info("stop");
+        logger.info("stop");
         try {
             var bounds = softwareModel.getMainFrame().getBounds();
             userSettings.setFrameX(bounds.x);
@@ -137,7 +136,7 @@ public class Config {
             }
             objectMapper.writeValue(userSettingsPath.toFile(), userSettings);
         } catch (IOException e) {
-            log.error("Error while saving settings", e);
+            logger.error("Error while saving settings", e);
         }
     }
 

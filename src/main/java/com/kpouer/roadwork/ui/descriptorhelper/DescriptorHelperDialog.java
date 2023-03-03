@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022-2023 Matthieu Casanova
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.kpouer.roadwork.ui.descriptorhelper;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,6 +30,7 @@ import com.kpouer.roadwork.opendata.json.model.Parser;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.ui.MainPanel;
+import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 import net.minidev.json.JSONArray;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -22,11 +38,9 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -44,9 +58,8 @@ import java.util.Optional;
 @Component
 @Lazy
 @Scope("prototype")
+@Slf4j
 public class DescriptorHelperDialog extends JDialog {
-    private static final Logger logger = LoggerFactory.getLogger(DescriptorHelperDialog.class);
-
     private final JTextField urlTextField;
     /**
      * The editor
@@ -213,7 +226,7 @@ public class DescriptorHelperDialog extends JDialog {
         return Optional.empty();
     }
 
-    @NotNull
+    @NonNull
     private static RSyntaxTextArea createTextArea() {
         var textArea = new TextEditorPane(RTextArea.INSERT_MODE, false);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);

@@ -26,11 +26,11 @@ import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -109,7 +109,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
 
     @PostConstruct
     public void init() {
-        log.info("init");
+        logger.info("init");
         var serviceNames = opendataServiceManager.getServices().toArray(new String[0]);
         Arrays.sort(serviceNames);
         EventQueue.invokeLater(() -> {
@@ -119,7 +119,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
     }
 
     @Override
-    public void onApplicationEvent(@NotNull ApplicationEvent event) {
+    public void onApplicationEvent(@NonNull ApplicationEvent event) {
         if (event instanceof SynchronizationSettingsUpdated) {
             synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
         } else if (event instanceof ExceptionEvent) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package com.kpouer.roadwork.service;
 
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.swing.*;
@@ -25,36 +27,10 @@ import javax.swing.*;
  * @author Matthieu Casanova
  */
 @Service
+@Getter
+@Setter
 public class SoftwareModel {
     private RoadworkData roadworkData;
     private Roadwork roadwork;
     private JFrame mainFrame;
-
-    public RoadworkData getRoadworkData() {
-        return roadworkData;
-    }
-
-    public void setRoadworkData(RoadworkData roadworkData) {
-        this.roadworkData = roadworkData;
-    }
-
-    public void setSelectedRoadwork(Roadwork roadwork) {
-        this.roadwork = roadwork;
-    }
-
-    public Roadwork getRoadwork() {
-        return roadwork;
-    }
-
-    public Roadwork getSelectedRoadwork() {
-        return roadwork;
-    }
-
-    public JFrame getMainFrame() {
-        return mainFrame;
-    }
-
-    public void setMainFrame(JFrame mainFrame) {
-        this.mainFrame = mainFrame;
-    }
 }

@@ -16,7 +16,6 @@
 package com.kpouer.roadwork.ui.about;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jetbrains.annotations.Nls;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -51,7 +50,6 @@ public class OpensourceTableModel implements TableModel {
         return 3;
     }
 
-    @Nls
     @Override
     public String getColumnName(int columnIndex) {
         return null;

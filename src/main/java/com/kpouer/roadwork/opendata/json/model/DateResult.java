@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,14 @@
  */
 package com.kpouer.roadwork.opendata.json.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@AllArgsConstructor
+@Getter
+@Setter
 public class DateResult {
     private long date;
     private final Parser parser;
-
-    public DateResult(long date, Parser parser) {
-        this.date = date;
-        this.parser = parser;
-    }
-
-    public long getDate() {
-        return date;
-    }
-
-    public Parser getParser() {
-        return parser;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
 }
