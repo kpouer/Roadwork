@@ -17,8 +17,6 @@ package com.kpouer.roadwork.ui.menu;
 
 import lombok.Data;
 
-import java.util.Arrays;
-
 /**
  * @author Matthieu Casanova
  */

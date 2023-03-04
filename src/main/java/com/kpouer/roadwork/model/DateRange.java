@@ -15,8 +15,6 @@
  */
 package com.kpouer.roadwork.model;
 
-import lombok.ToString;
-
 public record DateRange(long from, long to) {
     @Override
     public String toString() {
