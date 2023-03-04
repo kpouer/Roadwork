@@ -35,6 +35,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -57,6 +58,12 @@ public class OpendataServiceManager {
     private final ApplicationContext applicationContext;
     private final SynchronizationService synchronizationService;
     private final ResourceService resourceService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @PostConstruct
+    public void postConstruct() {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     /**
      * Retrieve service names
@@ -238,8 +245,6 @@ public class OpendataServiceManager {
     private DefaultJsonService getJsonService(String opendataService) throws OpenDataException {
         logger.info("getJsonService {}", opendataService);
         try {
-            var objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             var opendataServicePath = resourceService.getResource(opendataService);
             if (opendataServicePath.isPresent()) {
                 var serviceDescriptor = objectMapper.readValue(opendataServicePath.get(), ServiceDescriptor.class);

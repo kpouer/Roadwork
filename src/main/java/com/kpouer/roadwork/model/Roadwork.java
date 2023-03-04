@@ -22,18 +22,18 @@ import com.kpouer.mapview.marker.PolygonMarker;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.model.sync.SyncData;
 import com.kpouer.wkt.shape.Polygon;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.awt.*;
 
 /**
  * @author Matthieu Casanova
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Roadwork {
     private String id;
     private double latitude;
