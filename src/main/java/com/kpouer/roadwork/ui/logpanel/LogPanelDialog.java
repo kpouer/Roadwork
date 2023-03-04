@@ -44,15 +44,12 @@ public class LogPanelDialog extends JDialog {
         var toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         var copy = new JButton("Copy");
         toolbarPanel.add(copy);
-        copy.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                StringBuilder builder = new StringBuilder(10000);
-                list.getSelectedValuesList().forEach(line -> builder.append(line).append('\n'));
-                Toolkit.getDefaultToolkit()
-                        .getSystemClipboard()
-                        .setContents(new StringSelection(builder.toString()), null);
-            }
+        copy.addActionListener(e -> {
+            var builder = new StringBuilder(10000);
+            list.getSelectedValuesList().forEach(line -> builder.append(line).append('\n'));
+            Toolkit.getDefaultToolkit()
+                    .getSystemClipboard()
+                    .setContents(new StringSelection(builder.toString()), null);
         });
         getContentPane().add(toolbarPanel, BorderLayout.NORTH);
     }

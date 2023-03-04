@@ -56,8 +56,7 @@ public class OpendataInformationDialog extends JDialog {
             TreePath path = e.getPath();
             DefaultMutableTreeNode leaf = (DefaultMutableTreeNode) path.getLastPathComponent();
             Object userObject = leaf.getUserObject();
-            if (userObject instanceof Metadata) {
-                var metadata = (Metadata) userObject;
+            if (userObject instanceof Metadata metadata) {
                 opendataInformationPanel.setMetadata(metadata);
             }
         });
@@ -108,11 +107,7 @@ public class OpendataInformationDialog extends JDialog {
             mapView.addMarker(buildCircle(metadata, Color.RED));
 
             var country = metadata.getCountry();
-            var countryNode = countryNodes.get(country);
-            if (countryNode == null) {
-                countryNode = new DefaultMutableTreeNode(country);
-                countryNodes.put(country, countryNode);
-            }
+            var countryNode = countryNodes.computeIfAbsent(country, DefaultMutableTreeNode::new);
             countryNode.add(node);
         }
         countryNodes.keySet().stream().sorted()

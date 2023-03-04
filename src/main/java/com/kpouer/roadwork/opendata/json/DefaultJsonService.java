@@ -267,8 +267,7 @@ public class DefaultJsonService implements OpendataService {
             xpoints[i] = (double) point.get(0);
             ypoints[i] = (double) point.get(1);
         }
-        var polygon = new Polygon(xpoints, ypoints);
-        return polygon;
+        return new Polygon(xpoints, ypoints);
     }
 
     private static String getPath(Object node, String path) {
@@ -278,6 +277,7 @@ public class DefaultJsonService implements OpendataService {
                 return String.valueOf(value);
             }
         } catch (Exception ignored) {
+            // ignored
         }
         return null;
     }

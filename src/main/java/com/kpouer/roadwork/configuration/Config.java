@@ -23,7 +23,12 @@ import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.mapview.tile.cache.ImageCacheImpl;
 import com.kpouer.roadwork.log.LoopListAppender;
 import com.kpouer.roadwork.service.SoftwareModel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.core5.http.io.SocketConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,12 +46,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Matthieu Casanova
  */
 @Configuration
 @Slf4j
+@Getter
+@Setter
 public class Config {
     public static final String DEFAULT_OPENDATA_SERVICE = "France-Paris.json";
 
@@ -140,70 +148,6 @@ public class Config {
         }
     }
 
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public void setConnectTimeout(int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    public int getConnectionRequestTimeout() {
-        return connectionRequestTimeout;
-    }
-
-    public void setConnectionRequestTimeout(int connectionRequestTimeout) {
-        this.connectionRequestTimeout = connectionRequestTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public void setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
-    }
-
-    public int getTilesSize() {
-        return tilesSize;
-    }
-
-    public void setTilesSize(int tilesSize) {
-        this.tilesSize = tilesSize;
-    }
-
-    public int getMinZoom() {
-        return minZoom;
-    }
-
-    public void setMinZoom(int minZoom) {
-        this.minZoom = minZoom;
-    }
-
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-
-    public void setMaxZoom(int maxZoom) {
-        this.maxZoom = maxZoom;
-    }
-
-    public int getThreadCount() {
-        return threadCount;
-    }
-
-    public void setThreadCount(int threadCount) {
-        this.threadCount = threadCount;
-    }
-
-    public String getDatePattern() {
-        return datePattern;
-    }
-
-    public void setDatePattern(String datePattern) {
-        this.datePattern = datePattern;
-    }
-
     public String getOpendataService() {
         if (StringUtils.hasLength(userSettings.getOpendataService())) {
             return userSettings.getOpendataService();
@@ -213,18 +157,6 @@ public class Config {
 
     public void setOpendataService(String opendataService) {
         userSettings.setOpendataService(opendataService);
-    }
-
-    public String getDataPath() {
-        return dataPath;
-    }
-
-    public void setDataPath(String dataPath) {
-        this.dataPath = dataPath;
-    }
-
-    public UserSettings getUserSettings() {
-        return userSettings;
     }
 
     @Bean("mapview")
@@ -298,10 +230,23 @@ public class Config {
 
     @Bean
     public RestTemplate restTemplate() {
-        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        SocketConfig socketConfig = SocketConfig
+                .custom()
+                .setSoTimeout(readTimeout, TimeUnit.MILLISECONDS)
+                .build();
+        var poolingHttpClientConnectionManager = PoolingHttpClientConnectionManagerBuilder
+                .create()
+                .setMaxConnPerRoute(10)
+                .setMaxConnTotal(10)
+                .setDefaultSocketConfig(socketConfig)
+                .build();
+        var httpClient = HttpClientBuilder
+                .create()
+                .setConnectionManager(poolingHttpClientConnectionManager)
+                .build();
+        var httpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
         httpRequestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
         httpRequestFactory.setConnectTimeout(connectTimeout);
-        httpRequestFactory.setReadTimeout(readTimeout);
 
         return new RestTemplate(httpRequestFactory);
     }

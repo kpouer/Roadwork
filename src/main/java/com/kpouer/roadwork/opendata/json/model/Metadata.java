@@ -18,7 +18,6 @@ package com.kpouer.roadwork.opendata.json.model;
 import com.kpouer.mapview.LatLng;
 import lombok.*;
 
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
