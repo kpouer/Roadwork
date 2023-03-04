@@ -17,26 +17,26 @@ package com.kpouer.roadwork.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @Slf4j
 public class HttpService {
+    private final HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();
+
     public String getUrl(String url) throws RestClientException {
         logger.info("getUrl {}", url);
         try (var httpClient = HttpClients.createDefault()) {
             var getMethod = new HttpGet(url);
 
-            var response = httpClient.execute(getMethod);
-            return EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-        } catch (IOException | ParseException e) {
+            return httpClient.execute(getMethod, responseHandler);
+        } catch (IOException e) {
             throw new RestClientException("Error retrieving " + url, e);
         }
     }
