@@ -59,6 +59,10 @@ public class OpendataServiceManager {
     private final SynchronizationService synchronizationService;
     private final ResourceService resourceService;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Map of loaded opendata services.
+     */
+    private final Map<String, OpendataService> opendataServices = new HashMap<>();
 
     @PostConstruct
     public void postConstruct() {
@@ -231,14 +235,20 @@ public class OpendataServiceManager {
     @NonNull
     public OpendataService getOpendataService(String opendataService) throws OpenDataException {
         logger.info("getOpendataService {}", opendataService);
-        if (opendataService.endsWith(".json")) {
-            return getJsonService(opendataService);
+        var opendataServiceInstance = opendataServices.get(opendataService);
+        if (opendataServiceInstance == null) {
+            if (opendataService.endsWith(".json")) {
+                opendataServiceInstance = getJsonService(opendataService);
+            } else {
+                try {
+                    opendataServiceInstance = applicationContext.getBean(opendataService, OpendataService.class);
+                } catch (NoSuchBeanDefinitionException e) {
+                    throw new OpenDataException(e.getMessage(), e);
+                }
+            }
+            opendataServices.put(opendataService, opendataServiceInstance);
         }
-        try {
-            return applicationContext.getBean(opendataService, OpendataService.class);
-        } catch (NoSuchBeanDefinitionException e) {
-            throw new OpenDataException(e.getMessage(), e);
-        }
+        return opendataServiceInstance;
     }
 
     @NonNull
@@ -307,8 +317,9 @@ public class OpendataServiceManager {
     }
 
     public void deleteCache() {
-        logger.info("deleteCache {}", config.getOpendataService());
-        var currentPath = getPath(config.getOpendataService());
+        var opendataService = config.getOpendataService();
+        logger.info("deleteCache {}", opendataService);
+        var currentPath = getPath(opendataService);
         try {
             Files.deleteIfExists(currentPath);
         } catch (IOException e) {
