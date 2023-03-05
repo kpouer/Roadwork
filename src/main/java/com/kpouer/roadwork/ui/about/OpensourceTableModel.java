@@ -30,7 +30,7 @@ public class OpensourceTableModel implements TableModel {
     public OpensourceTableModel() {
         try {
             var objectMapper = new ObjectMapper();
-            data = objectMapper.readValue(OpensourceTableModel.class.getResource("/com/kpouer/ui/oss.json"), Oss[].class);
+            data = objectMapper.readValue(OpensourceTableModel.class.getResource("/com/kpouer/roadwork/ui/oss.json"), Oss[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
