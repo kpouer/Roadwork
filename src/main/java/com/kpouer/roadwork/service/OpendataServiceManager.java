@@ -17,15 +17,18 @@ package com.kpouer.roadwork.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.kpouer.mapview.LatLng;
 import com.kpouer.mapview.tile.TileServer;
 import com.kpouer.roadwork.configuration.Config;
-import com.kpouer.roadwork.model.*;
+import com.kpouer.roadwork.model.Roadwork;
+import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.opendata.OpendataService;
 import com.kpouer.roadwork.opendata.json.DefaultJsonService;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import com.kpouer.roadwork.service.exception.OpenDataException;
+import com.kpouer.roadwork.service.serdes.ShapeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -38,7 +41,9 @@ import org.springframework.web.client.RestClientException;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.*;
 
 import static com.kpouer.roadwork.service.ResourceService.OPENDATA_JSON;
@@ -67,6 +72,12 @@ public class OpendataServiceManager {
     @PostConstruct
     public void postConstruct() {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        var module = new SimpleModule();
+        applicationContext
+                .getBeansOfType(ShapeSerializer.class)
+                .values()
+                .forEach(module::addSerializer);
+        objectMapper.registerModule(module);
     }
 
     /**
@@ -134,14 +145,12 @@ public class OpendataServiceManager {
 
     public void save(RoadworkData roadworkData) {
         logger.info("save {}", roadworkData.getSource());
-        var objectMapper = new ObjectMapper();
-
         var savePath = getPath(roadworkData.getSource());
         try {
             Files.createDirectories(savePath.getParent());
             Files.write(savePath, objectMapper.writeValueAsBytes(roadworkData));
         } catch (IOException e) {
-            logger.error("Unable to save cache to {}", savePath);
+            logger.error("Unable to save cache to {}", savePath, e);
         }
     }
 
@@ -234,7 +243,7 @@ public class OpendataServiceManager {
      */
     @NonNull
     public OpendataService getOpendataService(String opendataService) throws OpenDataException {
-        logger.info("getOpendataService {}", opendataService);
+        logger.debug("getOpendataService {}", opendataService);
         var opendataServiceInstance = opendataServices.get(opendataService);
         if (opendataServiceInstance == null) {
             if (opendataService.endsWith(".json")) {
@@ -276,7 +285,7 @@ public class OpendataServiceManager {
             var objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
-                RoadworkData roadworkData = objectMapper.readValue(cachePath.toFile(), RoadworkData.class);
+                var roadworkData = objectMapper.readValue(cachePath.toFile(), RoadworkData.class);
                 logger.info("Cache loaded");
                 return Optional.of(roadworkData);
             } catch (IOException e) {

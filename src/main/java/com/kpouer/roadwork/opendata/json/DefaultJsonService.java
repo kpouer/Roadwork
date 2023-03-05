@@ -176,7 +176,9 @@ public class DefaultJsonService implements OpendataService {
     public static Roadwork buildRoadwork(ServiceDescriptor serviceDescriptor, @NonNull Object node) {
         var roadworkBuilder = Roadwork.builder();
         roadworkBuilder.syncData(new SyncData());
-        roadworkBuilder.id(getPath(node, serviceDescriptor.getId()));
+        var id = getPath(node, serviceDescriptor.getId());
+        Objects.requireNonNull(id, "Unable to get id from " + node + " using path " + serviceDescriptor.getId());
+        roadworkBuilder.id(id);
         try {
             var latitudePath = serviceDescriptor.getLatitude();
             if (latitudePath == null || latitudePath.isEmpty()) {
