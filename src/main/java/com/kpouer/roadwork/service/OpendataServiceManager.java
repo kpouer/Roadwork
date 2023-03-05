@@ -282,8 +282,6 @@ public class OpendataServiceManager {
 
     private Optional<RoadworkData> loadCache(Path cachePath) {
         if (Files.exists(cachePath)) {
-            var objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             try {
                 var roadworkData = objectMapper.readValue(cachePath.toFile(), RoadworkData.class);
                 logger.info("Cache loaded");
