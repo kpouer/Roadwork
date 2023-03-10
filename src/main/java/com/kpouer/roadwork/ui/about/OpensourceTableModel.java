@@ -16,7 +16,6 @@
 package com.kpouer.roadwork.ui.about;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jetbrains.annotations.Nls;
 
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
@@ -31,7 +30,7 @@ public class OpensourceTableModel implements TableModel {
     public OpensourceTableModel() {
         try {
             var objectMapper = new ObjectMapper();
-            data = objectMapper.readValue(OpensourceTableModel.class.getResource("/com/kpouer/ui/oss.json"), Oss[].class);
+            data = objectMapper.readValue(OpensourceTableModel.class.getResource("/com/kpouer/roadwork/ui/oss.json"), Oss[].class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -51,7 +50,6 @@ public class OpensourceTableModel implements TableModel {
         return 3;
     }
 
-    @Nls
     @Override
     public String getColumnName(int columnIndex) {
         return null;

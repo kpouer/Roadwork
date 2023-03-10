@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,25 @@
 package com.kpouer.roadwork;
 
 import com.kpouer.roadwork.ui.MainPanel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import javax.swing.*;
 
 /**
  * @author Matthieu Casanova
  */
+@Slf4j
 public class RoadworkApplication {
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext("com.kpouer");
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
+            logger.error("Unable to set the look and feel", e);
+        }
+        var applicationContext = new AnnotationConfigApplicationContext("com.kpouer");
         applicationContext.registerShutdownHook();
         applicationContext.getBean(MainPanel.class);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,12 @@ import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.mapview.tile.cache.ImageCacheImpl;
 import com.kpouer.roadwork.log.LoopListAppender;
 import com.kpouer.roadwork.service.SoftwareModel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.core5.http.io.SocketConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,12 +46,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Matthieu Casanova
  */
 @Configuration
 @Slf4j
+@Getter
+@Setter
 public class Config {
     public static final String DEFAULT_OPENDATA_SERVICE = "France-Paris.json";
 
@@ -57,7 +65,6 @@ public class Config {
     private int threadCount = 2;
     private String datePattern = "yyyy-MM-dd";
     private String dataPath;
-    private String legacyDataPath = "data";
     private UserSettings userSettings;
     private final SoftwareModel softwareModel;
     private int connectTimeout = 1000;
@@ -67,7 +74,7 @@ public class Config {
     public Config(SoftwareModel softwareModel, ApplicationEventPublisher applicationEventPublisher) {
         this.softwareModel = softwareModel;
         configureLogger(applicationEventPublisher);
-        log.info("Config start");
+        logger.info("Config start");
 
         var userHome = System.getProperty("user.home");
         if (userHome == null) {
@@ -82,7 +89,7 @@ public class Config {
             try {
                 userSettings = objectMapper.readValue(userSettingsPath.toFile(), UserSettings.class);
             } catch (IOException e) {
-                log.error("Error trying to read user settings");
+                logger.error("Error trying to read user settings");
                 userSettings = new UserSettings();
             }
         } else {
@@ -106,24 +113,24 @@ public class Config {
         if (!Files.exists(Path.of(dataPath))) {
             var oldData = Path.of("data");
             if (Files.exists(oldData)) {
-                log.info("migrate data");
+                logger.info("migrate data");
                 try {
                     Files.move(oldData, Path.of(dataPath));
                 } catch (IOException e) {
-                    log.error("Unable to migrate data", e);
+                    logger.error("Unable to migrate data", e);
                 }
             }
         }
     }
 
-    @NotNull
+    @NonNull
     private Path getUserSettingsPath() {
         return Path.of(dataPath, "userSettings.json");
     }
 
     @PreDestroy
     public void stop() {
-        log.info("stop");
+        logger.info("stop");
         try {
             var bounds = softwareModel.getMainFrame().getBounds();
             userSettings.setFrameX(bounds.x);
@@ -137,72 +144,8 @@ public class Config {
             }
             objectMapper.writeValue(userSettingsPath.toFile(), userSettings);
         } catch (IOException e) {
-            log.error("Error while saving settings", e);
+            logger.error("Error while saving settings", e);
         }
-    }
-
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public void setConnectTimeout(int connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    public int getConnectionRequestTimeout() {
-        return connectionRequestTimeout;
-    }
-
-    public void setConnectionRequestTimeout(int connectionRequestTimeout) {
-        this.connectionRequestTimeout = connectionRequestTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public void setReadTimeout(int readTimeout) {
-        this.readTimeout = readTimeout;
-    }
-
-    public int getTilesSize() {
-        return tilesSize;
-    }
-
-    public void setTilesSize(int tilesSize) {
-        this.tilesSize = tilesSize;
-    }
-
-    public int getMinZoom() {
-        return minZoom;
-    }
-
-    public void setMinZoom(int minZoom) {
-        this.minZoom = minZoom;
-    }
-
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-
-    public void setMaxZoom(int maxZoom) {
-        this.maxZoom = maxZoom;
-    }
-
-    public int getThreadCount() {
-        return threadCount;
-    }
-
-    public void setThreadCount(int threadCount) {
-        this.threadCount = threadCount;
-    }
-
-    public String getDatePattern() {
-        return datePattern;
-    }
-
-    public void setDatePattern(String datePattern) {
-        this.datePattern = datePattern;
     }
 
     public String getOpendataService() {
@@ -214,18 +157,6 @@ public class Config {
 
     public void setOpendataService(String opendataService) {
         userSettings.setOpendataService(opendataService);
-    }
-
-    public String getDataPath() {
-        return dataPath;
-    }
-
-    public void setDataPath(String dataPath) {
-        this.dataPath = dataPath;
-    }
-
-    public UserSettings getUserSettings() {
-        return userSettings;
     }
 
     @Bean("mapview")
@@ -299,10 +230,23 @@ public class Config {
 
     @Bean
     public RestTemplate restTemplate() {
-        HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        SocketConfig socketConfig = SocketConfig
+                .custom()
+                .setSoTimeout(readTimeout, TimeUnit.MILLISECONDS)
+                .build();
+        var poolingHttpClientConnectionManager = PoolingHttpClientConnectionManagerBuilder
+                .create()
+                .setMaxConnPerRoute(10)
+                .setMaxConnTotal(10)
+                .setDefaultSocketConfig(socketConfig)
+                .build();
+        var httpClient = HttpClientBuilder
+                .create()
+                .setConnectionManager(poolingHttpClientConnectionManager)
+                .build();
+        var httpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
         httpRequestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
         httpRequestFactory.setConnectTimeout(connectTimeout);
-        httpRequestFactory.setReadTimeout(readTimeout);
 
         return new RestTemplate(httpRequestFactory);
     }

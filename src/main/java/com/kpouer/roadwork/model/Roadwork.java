@@ -16,25 +16,29 @@
 package com.kpouer.roadwork.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kpouer.mapview.marker.Circle;
 import com.kpouer.mapview.marker.Marker;
 import com.kpouer.mapview.marker.PolygonMarker;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.model.sync.SyncData;
 import com.kpouer.wkt.shape.Polygon;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import org.springframework.lang.NonNull;
 
 import java.awt.*;
 
 /**
  * @author Matthieu Casanova
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class Roadwork {
+    @NonNull
     private String id;
     private double latitude;
     private double longitude;
@@ -70,6 +74,7 @@ public class Roadwork {
         }
     }
 
+    @JsonIgnore
     public Marker[] getMarker() {
         if (markers == null) {
             if (polygons != null) {
@@ -88,10 +93,7 @@ public class Roadwork {
         return markers;
     }
 
-    public SyncData getSyncData() {
-        return syncData;
-    }
-
+    @JsonIgnore
     private Color getColor() {
         switch (getSyncData().getStatus()) {
             case New -> {
@@ -115,5 +117,10 @@ public class Roadwork {
 
     public boolean isExpired() {
         return end < System.currentTimeMillis();
+    }
+
+    @Override
+    public String toString() {
+        return "Roadwork[" + id + ']';
     }
 }

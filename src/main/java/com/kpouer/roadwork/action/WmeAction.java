@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class WmeAction extends AbstractAction {
 
     @Override
     public void actionPerformed(@Nullable ActionEvent e) {
-        var selectedRoadwork = softwareModel.getSelectedRoadwork();
+        var selectedRoadwork = softwareModel.getRoadwork();
         if (selectedRoadwork != null) {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try {

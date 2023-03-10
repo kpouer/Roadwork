@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
  */
 package com.kpouer.roadwork.model;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.lang.NonNull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +28,9 @@ import java.util.Map;
 /**
  * @author Matthieu Casanova
  */
+@NoArgsConstructor
+@Getter
+@Setter
 public class RoadworkData implements Iterable<Roadwork> {
     /**
      * The name of the opendata source
@@ -36,9 +42,6 @@ public class RoadworkData implements Iterable<Roadwork> {
      */
     private long created;
 
-    public RoadworkData() {
-    }
-
     public RoadworkData(String source, Collection<Roadwork> roadworks) {
         this.source = source;
         this.roadworks = new HashMap<>(roadworks.size());
@@ -46,35 +49,12 @@ public class RoadworkData implements Iterable<Roadwork> {
         created = System.currentTimeMillis();
     }
 
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    @NotNull
+    @NonNull
     @Override
     public Iterator<Roadwork> iterator() {
         return roadworks.values().iterator();
     }
 
-    public Map<String, Roadwork> getRoadworks() {
-        return roadworks;
-    }
-
-    public void setRoadworks(Map<String, Roadwork> roadworks) {
-        this.roadworks = roadworks;
-    }
-
-    public long getCreated() {
-        return created;
-    }
-
-    public void setCreated(long created) {
-        this.created = created;
-    }
 
     public Roadwork getRoadwork(String id) {
         return roadworks.get(id);

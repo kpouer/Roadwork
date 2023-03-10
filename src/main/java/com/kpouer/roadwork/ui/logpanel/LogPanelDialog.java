@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.ui.logpanel;
 
 import com.kpouer.roadwork.ui.MainPanel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -36,33 +37,35 @@ import java.util.List;
 public class LogPanelDialog extends JDialog {
     public LogPanelDialog(MainPanel parent, List<String> logs) {
         super(parent);
-        var list = new JList<>(new AbstractListModel<String>() {
-            @Override
-            public int getSize() {
-                return logs.size();
-            }
-
-            @Override
-            public String getElementAt(int index) {
-                return logs.get(index);
-            }
-        });
+        var list = new JList<>(new StringAbstractListModel(logs));
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         add(new JScrollPane(list));
         setSize(1024, 768);
         var toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
         var copy = new JButton("Copy");
         toolbarPanel.add(copy);
-        copy.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                StringBuilder builder = new StringBuilder(10000);
-                list.getSelectedValuesList().forEach(line -> builder.append(line).append('\n'));
-                Toolkit.getDefaultToolkit()
-                        .getSystemClipboard()
-                        .setContents(new StringSelection(builder.toString()), null);
-            }
+        copy.addActionListener(e -> {
+            var builder = new StringBuilder(10000);
+            list.getSelectedValuesList().forEach(line -> builder.append(line).append('\n'));
+            Toolkit.getDefaultToolkit()
+                    .getSystemClipboard()
+                    .setContents(new StringSelection(builder.toString()), null);
         });
         getContentPane().add(toolbarPanel, BorderLayout.NORTH);
+    }
+
+    @RequiredArgsConstructor
+    private static class StringAbstractListModel extends AbstractListModel<String> {
+        private final List<String> logs;
+
+        @Override
+        public int getSize() {
+            return logs.size();
+        }
+
+        @Override
+        public String getElementAt(int index) {
+            return logs.get(index);
+        }
     }
 }

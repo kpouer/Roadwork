@@ -15,7 +15,7 @@ class ServiceDescriptorTest {
     void deserialize() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        ServiceDescriptor serviceDescriptor = objectMapper.readValue(new File("opendata/France-Issy-les-Moulineaux.json"), ServiceDescriptor.class);
+        ServiceDescriptor serviceDescriptor = objectMapper.readValue(new File("opendata/json/France-Issy-les-Moulineaux.json"), ServiceDescriptor.class);
         assertEquals("France", serviceDescriptor.getMetadata().getCountry());
     }
 }

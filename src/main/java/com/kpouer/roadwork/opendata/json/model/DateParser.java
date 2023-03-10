@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package com.kpouer.roadwork.opendata.json.model;
 
-import org.jetbrains.annotations.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.lang.NonNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,18 +25,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class DateParser {
     private String path;
     private List<Parser> parsers;
-    public String getPath() {
-        return path;
-    }
 
-    public List<Parser> getParsers(){
-        return parsers;
-    }
-
-    public DateResult parse(@NotNull String value, Locale locale) throws ParseException {
+    public DateResult parse(@NonNull String value, Locale locale) throws ParseException {
         for (var parser : parsers) {
             var match = parser.match(value);
             if (match.matches()) {
@@ -67,13 +64,5 @@ public class DateParser {
         var simpleDateFormat = new SimpleDateFormat(pattern, locale);
         var date = simpleDateFormat.parse(value);
         return date.getTime();
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public void setParsers(List<Parser> parsers) {
-        this.parsers = parsers;
     }
 }

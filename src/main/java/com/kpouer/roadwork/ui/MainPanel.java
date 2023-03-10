@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package com.kpouer.roadwork.ui;
 
 import com.kpouer.mapview.MapView;
-import com.kpouer.mapview.marker.Marker;
 import com.kpouer.roadwork.action.ExitAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.event.OpendataServiceUpdated;
@@ -29,13 +28,11 @@ import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.GenericApplicationListener;
 import org.springframework.core.ResolvableType;
-import org.springframework.core.io.Resource;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
@@ -64,8 +61,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     private final Config config;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public MainPanel(@Value("classpath:com/kpouer/ui/menu.json") Resource menu,
-                     ExitAction exitAction,
+    public MainPanel(ExitAction exitAction,
                      MapView mapView,
                      MenuService menuService,
                      DetailPanel detailPanel,
@@ -92,7 +88,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             }
         });
 //        getContentPane().add(menuService.loadMenu(menu), BorderLayout.PAGE_START);
-        setJMenuBar(menuService.loadMenu(menu));
+        setJMenuBar(menuService.loadMenu());
         getContentPane().add(toolbarPanel, BorderLayout.PAGE_START);
         this.detailPanel = detailPanel;
         var split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.detailPanel, mapView);
@@ -117,11 +113,8 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     }
 
     @Override
-    public void onApplicationEvent(@NotNull ApplicationEvent event) {
+    public void onApplicationEvent(@NonNull ApplicationEvent event) {
         if (event instanceof OpendataServiceUpdated) {
-            mapView.setCenter(opendataServiceManager.getCenter());
-            mapView.setTileServer(opendataServiceManager.getTileServer());
-            mapView.repaint();
             loadData();
         } else if (event instanceof UserSettingsUpdated) {
             var userSettings = config.getUserSettings();
@@ -129,7 +122,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             var roadworkData = softwareModel.getRoadworkData();
             for (var roadwork : roadworkData) {
                 if (!userSettings.isHideExpired() || roadwork.getSyncData().getStatus() != Status.Finished) {
-                    Marker[] markers = roadwork.getMarker();
+                    var markers = roadwork.getMarker();
                     Arrays.stream(markers).forEach(mapView::addMarker);
                 }
             }
@@ -144,19 +137,18 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             mapView.removeAllMarkers();
             var roadworkDataOptional = opendataServiceManager.getData();
             roadworkDataOptional.ifPresent(this::setRoadworkData);
-            mapView.fitToMarkers();
         } catch (OpenDataException e) {
-            log.error("Opendata exception", e);
+            logger.error("Opendata exception", e);
             resetCurrentOpendataService();
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE));
         } catch (IOException | RestClientException e) {
-            log.error("Error retrieving data", e);
+            logger.error("Error retrieving data", e);
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
         }
     }
 
     private void resetCurrentOpendataService() {
-        log.info("resetCurrentOpendataService");
+        logger.info("resetCurrentOpendataService");
         if (!DEFAULT_OPENDATA_SERVICE.equals(config.getOpendataService())) {
             var event = new OpendataServiceUpdated(this, config.getOpendataService(), DEFAULT_OPENDATA_SERVICE);
             config.setOpendataService(DEFAULT_OPENDATA_SERVICE);
@@ -167,6 +159,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
     private void setRoadworkData(RoadworkData roadworkData) {
         softwareModel.setRoadworkData(roadworkData);
         roadworkData.forEach(this::addMarker);
+        mapView.fitToMarkers();
         mapView.repaint();
     }
 
@@ -174,7 +167,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
         var mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                softwareModel.setSelectedRoadwork(roadwork);
+                softwareModel.setRoadwork(roadwork);
                 detailPanel.setRoadwork(roadwork);
             }
         };

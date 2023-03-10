@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class ResourceService {
     public static final String THIRDPARTY = "thirdparty";
 
     List<String> listFilesFromClasspath(String path) throws URISyntaxException, IOException {
-        log.debug("listFiles {}", path);
+        logger.debug("listFiles {}", path);
         var dirURL = getClass().getClassLoader().getResource(path);
 
         if (dirURL == null) {
@@ -62,7 +62,7 @@ public class ResourceService {
             }
         }
 
-        log.error("Unable to list files under path {}", path);
+        logger.error("Unable to list files under path {}", path);
         return Collections.emptyList();
     }
 
@@ -73,17 +73,17 @@ public class ResourceService {
      * @return the url of a resource
      */
     public Optional<URL> getResource(String filename) {
-        log.info("getResource {}", filename);
-        Optional<URL> thirdParty = getFile(THIRDPARTY, filename);
+        logger.info("getResource {}", filename);
+        var thirdParty = getFile(THIRDPARTY, filename);
         if (thirdParty.isPresent()) {
             return thirdParty;
         }
-        Optional<URL> file = getFile(OPENDATA_JSON, filename);
+        var file = getFile(OPENDATA_JSON, filename);
         if (file.isPresent()) {
             return file;
         }
 
-        log.warn("Resource not found");
+        logger.warn("Resource not found");
 
         return Optional.empty();
     }
@@ -92,12 +92,12 @@ public class ResourceService {
         try {
             var path = Path.of(parentPath, filename);
             if (Files.exists(path)) {
-                log.info("Found resource with url");
+                logger.info("Found resource with url");
                 var url = path.toUri().toURL();
                 return Optional.of(url);
             }
         } catch (MalformedURLException e) {
-            log.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return Optional.empty();
     }

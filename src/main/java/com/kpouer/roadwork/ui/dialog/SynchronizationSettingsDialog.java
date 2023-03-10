@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.service.SoftwareModel;
 import net.miginfocom.swing.MigLayout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.swing.*;
@@ -29,8 +27,6 @@ import javax.swing.*;
  * @author Matthieu Casanova
  */
 public class SynchronizationSettingsDialog extends JDialog {
-    private static final Logger logger = LoggerFactory.getLogger(SynchronizationSettingsDialog.class);
-
     public SynchronizationSettingsDialog(SoftwareModel softwareModel,
                                          Config config,
                                          ApplicationEventPublisher applicationEventPublisher) {

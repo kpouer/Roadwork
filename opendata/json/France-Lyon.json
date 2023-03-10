@@ -14,9 +14,10 @@
     "locale": "fr_FR"
   },
   "roadworkArray": "$.features",
-  "id": "@.properties.identifiant",
+  "id": "@.properties.gid",
   "latitude": "@.geometry.coordinates[0][0][1]",
   "longitude": "@.geometry.coordinates[0][0][0]",
+  "polygon": "@.geometry.coordinates",
   "road": "@.properties.nom",
   "impactCirculationDetail": "@.properties.typeperturbation",
   "locationDetails": "@.properties.precisionlocalisation",
@@ -25,7 +26,7 @@
     "parsers": [
       {
         "matcher": ".*",
-        "format": "dd/MM/yyyy"
+        "format": "yyyy-MM-dd'T'HH:mm:ss'Z'"
       }
     ]
   },
@@ -34,7 +35,7 @@
     "parsers": [
       {
         "matcher": ".*",
-        "format": "dd/MM/yyyy"
+        "format": "yyyy-MM-dd'T'HH:mm:ss'Z'"
       }
     ]
   }

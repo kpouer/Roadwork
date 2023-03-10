@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,13 @@
 package com.kpouer.roadwork.opendata.model;
 
 import com.kpouer.roadwork.opendata.model.GeometryType;
+import lombok.Data;
 
 /**
  * @author Matthieu Casanova
  */
+@Data
 public class Geometry {
     private GeometryType type;
     private double[] coordinates;
-
-    public GeometryType getType() {
-        return type;
-    }
-
-    public void setType(GeometryType type) {
-        this.type = type;
-    }
-
-    public double[] getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(double[] coordinates) {
-        this.coordinates = coordinates;
-    }
 }

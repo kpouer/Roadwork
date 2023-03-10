@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class DetailPanel extends JPanel {
     private final MapView mapView;
     private final Map<Status, JRadioButton> statusRadioButtons;
     private Roadwork roadwork;
-    private JButton urlDetails;
+    private final JButton urlDetails;
 
     public DetailPanel(Config config, MapView mapView, LocalizationService localizationService, WmeAction wmeAction) {
         super(new MigLayout());

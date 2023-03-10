@@ -47,7 +47,8 @@ public class ReloadAction extends AbstractAction {
     @Override
     public void actionPerformed(@Nullable ActionEvent e) {
         opendataServiceManager.deleteCache();
-        OpendataServiceUpdated event = new OpendataServiceUpdated(this, config.getOpendataService(), config.getOpendataService());
+        var opendataService = config.getOpendataService();
+        var event = new OpendataServiceUpdated(this, opendataService, opendataService);
         applicationEventPublisher.publishEvent(event);
     }
 }

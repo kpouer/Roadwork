@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Matthieu Casanova
+ * Copyright 2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kpouer.roadwork.opendata.json.model;
+package com.kpouer.roadwork.service.serdes;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-@Getter
-@Setter
-public class Parser {
-    private String format;
-    private String matcher;
-    private boolean addYear;
-    private boolean resetHour = true;
-    private Pattern pattern;
-
-    public Matcher match(String value) {
-        if (pattern == null) {
-            pattern = Pattern.compile(matcher);
-        }
-        return pattern.matcher(value);
+public abstract class ShapeSerializer<T> extends StdSerializer<T> {
+    protected ShapeSerializer(Class<T> t) {
+        super(t);
     }
 }
