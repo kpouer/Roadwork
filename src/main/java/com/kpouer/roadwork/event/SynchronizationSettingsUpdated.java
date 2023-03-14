@@ -15,11 +15,8 @@
  */
 package com.kpouer.roadwork.event;
 
-import lombok.RequiredArgsConstructor;
-
 /**
  * @author Matthieu Casanova
  */
-@RequiredArgsConstructor
 public record SynchronizationSettingsUpdated(Object source) {
 }
