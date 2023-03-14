@@ -23,13 +23,13 @@ import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
+import com.kpouer.themis.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * @author Matthieu Casanova
  */
-@Service
+@Component
 @Slf4j
 public class SynchronizationService {
     private final UserSettings userSettings;

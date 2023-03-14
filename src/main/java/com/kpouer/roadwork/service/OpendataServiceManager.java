@@ -33,9 +33,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.ApplicationContext;
+import com.kpouer.themis.ApplicationContext;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.Component;
 import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
@@ -54,7 +54,7 @@ import static com.kpouer.roadwork.service.ResourceService.THIRDPARTY;
  */
 @AllArgsConstructor
 @Slf4j
-@Service
+@Component
 public class OpendataServiceManager {
     private static final String VERSION = "2";
 

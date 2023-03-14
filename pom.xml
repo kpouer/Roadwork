@@ -53,11 +53,6 @@
             <version>1.4.5</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>6.0.5</version>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.14.0</version>
@@ -133,6 +128,11 @@
         <dependency>
             <groupId>com.kpouer</groupId>
             <artifactId>hermes</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.kpouer</groupId>
+            <artifactId>themis</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

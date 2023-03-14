@@ -20,8 +20,8 @@ import com.kpouer.roadwork.service.LocalizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.ApplicationContext;
+import com.kpouer.themis.Component;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * @author Matthieu Casanova
  */
-@Service
+@Component
 @Slf4j
 @RequiredArgsConstructor
 public class MenuService {

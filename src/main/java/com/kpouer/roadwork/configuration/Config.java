@@ -33,9 +33,7 @@ import org.apache.hc.core5.http.io.SocketConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import com.kpouer.themis.Component;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
@@ -51,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Matthieu Casanova
  */
-@Configuration
+@Component
 @Slf4j
 @Getter
 @Setter

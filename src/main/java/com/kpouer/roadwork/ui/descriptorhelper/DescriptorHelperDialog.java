@@ -38,10 +38,8 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.swing.*;
@@ -55,9 +53,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Component
-@Lazy
-@Scope("prototype")
+@Component(singleton = false)
 @Slf4j
 public class DescriptorHelperDialog extends JDialog {
     private final JTextField urlTextField;

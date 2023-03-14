@@ -20,14 +20,14 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.Component;
 
 import static javax.swing.JComponent.getDefaultLocale;
 
 /**
  * @author Matthieu Casanova
  */
-@Service
+@Component
 @Slf4j
 public class LocalizationService {
     private final MessageSource resourceBundle;

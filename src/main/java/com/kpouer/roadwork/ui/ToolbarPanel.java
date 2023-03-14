@@ -28,8 +28,8 @@ import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.ApplicationContext;
+import com.kpouer.themis.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;

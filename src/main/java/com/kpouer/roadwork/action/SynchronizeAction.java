@@ -25,7 +25,7 @@ import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.service.SynchronizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

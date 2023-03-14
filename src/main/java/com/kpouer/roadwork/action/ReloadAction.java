@@ -20,7 +20,7 @@ import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.event.OpendataServiceUpdated;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

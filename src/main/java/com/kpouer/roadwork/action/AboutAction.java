@@ -19,7 +19,7 @@ import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.about.AboutDialog;
 import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

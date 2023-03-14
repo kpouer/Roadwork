@@ -30,7 +30,7 @@ import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.Component;
 import org.springframework.web.client.RestClientException;
 
 import javax.swing.*;
@@ -48,7 +48,7 @@ import static com.kpouer.roadwork.configuration.Config.*;
  * @author Matthieu Casanova
  */
 @Slf4j
-@Service
+@Component
 public class MainPanel extends JFrame {
 
     private final MapView mapView;

@@ -20,12 +20,12 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.Component;
 import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 
-@Service
+@Component
 @Slf4j
 public class HttpService {
     private final HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();

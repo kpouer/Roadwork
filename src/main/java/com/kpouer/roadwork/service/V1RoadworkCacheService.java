@@ -22,7 +22,7 @@ import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.v1.RoadworkDataV1;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,7 +34,7 @@ import java.util.Optional;
  *
  * @author Matthieu Casanova
  */
-@Service
+@Component
 @Slf4j
 public class V1RoadworkCacheService implements RoadworkMigrationService {
     private final Config config;
