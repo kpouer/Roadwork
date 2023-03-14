@@ -103,12 +103,12 @@ public class MainPanel extends JFrame {
     }
 
     @Listener
-    public void onApplicationEvent(OpendataServiceUpdated event) {
+    public void onOpendataServiceUpdated(OpendataServiceUpdated event) {
         loadData();
     }
 
     @Listener
-    public void onApplicationEvent(UserSettingsUpdated event) {
+    public void onUserSettingsUpdated(UserSettingsUpdated event) {
         var userSettings = config.getUserSettings();
         mapView.removeAllMarkers();
         var roadworkData = softwareModel.getRoadworkData();
