@@ -15,16 +15,15 @@
  */
 package com.kpouer.roadwork.service;
 
+import com.kpouer.hermes.Hermes;
 import com.kpouer.roadwork.action.SynchronizationSettingsAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
-import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -51,18 +50,18 @@ public class SynchronizationService {
     private final UserSettings userSettings;
     private final LocalizationService localizationService;
     private final SoftwareModel softwareModel;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final Hermes hermes;
     private final ApplicationContext applicationContext;
 
     public SynchronizationService(Config config,
                                   LocalizationService localizationService,
                                   SoftwareModel softwareModel,
-                                  ApplicationEventPublisher applicationEventPublisher,
+                                  Hermes hermes,
                                   ApplicationContext applicationContext) {
         userSettings = config.getUserSettings();
         this.localizationService = localizationService;
         this.softwareModel = softwareModel;
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.hermes = hermes;
         this.applicationContext = applicationContext;
     }
 
@@ -106,7 +105,7 @@ public class SynchronizationService {
                 if (e.getCause() instanceof ConnectException) {
                     logger.error("Unable to connect to synchronization server {}", url);
                     userSettings.setSynchronizationEnabled(false);
-                    applicationEventPublisher.publishEvent(new SynchronizationSettingsUpdated(this));
+                    hermes.publish(new SynchronizationSettingsUpdated(this));
                 } else {
                     logger.error("Error posting to synchronization server", e);
                 }

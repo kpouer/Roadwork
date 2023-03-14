@@ -16,21 +16,17 @@
 package com.kpouer.roadwork.event;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.context.ApplicationEvent;
 
 /**
  * @author Matthieu Casanova
  */
 @Getter
 @Setter
-public class OpendataServiceUpdated extends ApplicationEvent {
-    private String oldService;
-    private String newService;
-
-    public OpendataServiceUpdated(Object source, String oldService, String newService) {
-        super(source);
-        this.oldService = oldService;
-        this.newService = newService;
-    }
+@RequiredArgsConstructor
+public class OpendataServiceUpdated {
+    private final Object source;
+    private final String oldService;
+    private final String newService;
 }

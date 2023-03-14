@@ -15,6 +15,8 @@
  */
 package com.kpouer.roadwork.ui;
 
+import com.kpouer.hermes.Hermes;
+import com.kpouer.hermes.Listener;
 import com.kpouer.roadwork.action.LogsPanelAction;
 import com.kpouer.roadwork.action.ReloadAction;
 import com.kpouer.roadwork.action.SynchronizeAction;
@@ -27,10 +29,6 @@ import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -43,7 +41,7 @@ import java.util.Arrays;
  */
 @Component
 @Slf4j
-public class ToolbarPanel extends JPanel implements ApplicationListener<ApplicationEvent> {
+public class ToolbarPanel extends JPanel {
     private final JButton synchronizeButton;
     private final Config config;
     private final OpendataServiceManager opendataServiceManager;
@@ -53,7 +51,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
 
     public ToolbarPanel(ApplicationContext applicationContext,
                         Config config,
-                        ApplicationEventPublisher applicationEventPublisher,
+                        Hermes hermes,
                         LocalizationService localizationService,
                         OpendataServiceManager opendataServiceManager) {
         super(new BorderLayout());
@@ -87,7 +85,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
             assert selectedItem != null;
             var event = new OpendataServiceUpdated(this, config.getOpendataService(), selectedItem);
             config.setOpendataService(selectedItem);
-            applicationEventPublisher.publishEvent(event);
+            hermes.publish(event);
         });
         panel.add(opendataServiceComboBox);
         synchronizeButton = new JButton(applicationContext.getBean(SynchronizeAction.class));
@@ -97,7 +95,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
         var hideExpired = new JCheckBox(localizationService.getMessage("toolbarPanel.hideExpired"));
         hideExpired.addActionListener(e -> {
             config.getUserSettings().setHideExpired(hideExpired.isSelected());
-            applicationEventPublisher.publishEvent(new UserSettingsUpdated(this));
+            hermes.publish(new UserSettingsUpdated(this));
         });
         panel.add(hideExpired);
         logsPanelButton = new JButton(applicationContext.getBean(LogsPanelAction.class));
@@ -105,6 +103,7 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
         logsPanelButton.addActionListener(e -> logsPanelButton.setBackground(defaultBackground));
         panel.add(logsPanelButton);
         add(panel);
+        hermes.subscribe(this);
     }
 
     @PostConstruct
@@ -118,16 +117,22 @@ public class ToolbarPanel extends JPanel implements ApplicationListener<Applicat
         });
     }
 
-    @Override
-    public void onApplicationEvent(@NonNull ApplicationEvent event) {
-        if (event instanceof SynchronizationSettingsUpdated) {
-            synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
-        } else if (event instanceof ExceptionEvent) {
-            logsPanelButton.setBackground(Color.RED);
-        } else if (event instanceof OpendataServiceUpdated opendataServiceUpdated) {
-            if (!opendataServiceUpdated.getNewService().equals(opendataServiceComboBox.getSelectedItem())) {
-                opendataServiceComboBox.setSelectedItem(opendataServiceUpdated.getNewService());
-            }
+    @Listener
+    private void onSynchronizationSettingsUpdated(SynchronizationSettingsUpdated event) {
+        synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
+    }
+
+
+    @Listener
+    private void onExceptionEvent(ExceptionEvent event) {
+        logsPanelButton.setBackground(Color.RED);
+    }
+
+
+    @Listener
+    private void onOpendataServiceUpdated(OpendataServiceUpdated opendataServiceUpdated) {
+        if (!opendataServiceUpdated.getNewService().equals(opendataServiceComboBox.getSelectedItem())) {
+            opendataServiceComboBox.setSelectedItem(opendataServiceUpdated.getNewService());
         }
     }
 }

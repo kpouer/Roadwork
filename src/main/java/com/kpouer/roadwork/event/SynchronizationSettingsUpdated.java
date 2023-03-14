@@ -15,13 +15,13 @@
  */
 package com.kpouer.roadwork.event;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEvent;
 
 /**
  * @author Matthieu Casanova
  */
-public class SynchronizationSettingsUpdated extends ApplicationEvent {
-    public SynchronizationSettingsUpdated(Object source) {
-        super(source);
-    }
+@RequiredArgsConstructor
+public class SynchronizationSettingsUpdated {
+    private final Object source;
 }

@@ -18,6 +18,7 @@ package com.kpouer.roadwork.configuration;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpouer.hermes.Hermes;
 import com.kpouer.mapview.MapView;
 import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.mapview.tile.cache.ImageCacheImpl;
@@ -32,7 +33,6 @@ import org.apache.hc.core5.http.io.SocketConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -70,10 +70,12 @@ public class Config {
     private int connectTimeout = 1000;
     private int connectionRequestTimeout = 1000;
     private int readTimeout = 300000;
+    private Hermes hermes;
 
-    public Config(SoftwareModel softwareModel, ApplicationEventPublisher applicationEventPublisher) {
-        this.softwareModel = softwareModel;
-        configureLogger(applicationEventPublisher);
+    public Config() {
+        hermes = new Hermes();
+        softwareModel = new SoftwareModel();
+        configureLogger(hermes);
         logger.info("Config start");
 
         var userHome = System.getProperty("user.home");
@@ -97,12 +99,12 @@ public class Config {
         }
     }
 
-    private void configureLogger(ApplicationEventPublisher applicationEventPublisher) {
+    private void configureLogger(Hermes hermes) {
         var layout = new PatternLayout();
         layout.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
         layout.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg");
         layout.start();
-        var loopListAppender = new LoopListAppender(layout, applicationEventPublisher);
+        var loopListAppender = new LoopListAppender(layout, hermes);
         logs = loopListAppender.getList();
         var rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         loopListAppender.start();
@@ -254,5 +256,15 @@ public class Config {
     @Bean
     public List<String> logs() {
         return logs;
+    }
+
+    @Bean
+    public Hermes getHermes() {
+        return hermes;
+    }
+
+    @Bean
+    public SoftwareModel getSoftwareModel() {
+        return softwareModel;
     }
 }
