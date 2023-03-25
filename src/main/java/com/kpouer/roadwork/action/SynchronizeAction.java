@@ -25,7 +25,7 @@ import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.service.SynchronizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

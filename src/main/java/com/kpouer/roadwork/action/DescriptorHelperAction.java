@@ -17,9 +17,9 @@ package com.kpouer.roadwork.action;
 
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.descriptorhelper.DescriptorHelperDialog;
-import com.kpouer.themis.ApplicationContext;
+import com.kpouer.themis.Themis;
 import org.springframework.lang.Nullable;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -30,17 +30,17 @@ import java.awt.event.ActionEvent;
 @Component
 public class DescriptorHelperAction extends AbstractAction {
     private final SoftwareModel softwareModel;
-    private final ApplicationContext applicationContext;
+    private final Themis themis;
 
-    public DescriptorHelperAction(SoftwareModel softwareModel, ApplicationContext applicationContext) {
+    public DescriptorHelperAction(SoftwareModel softwareModel, Themis themis) {
         super("DescriptorHelper");
         this.softwareModel = softwareModel;
-        this.applicationContext = applicationContext;
+        this.themis = themis;
     }
 
     @Override
     public void actionPerformed(@Nullable ActionEvent e) {
-        DescriptorHelperDialog dialog = applicationContext.getBean(DescriptorHelperDialog.class);
+        DescriptorHelperDialog dialog = themis.getComponentOfType(DescriptorHelperDialog.class);
         dialog.setLocationRelativeTo(softwareModel.getMainFrame());
         dialog.setVisible(true);
     }

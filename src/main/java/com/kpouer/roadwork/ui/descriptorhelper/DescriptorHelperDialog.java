@@ -39,7 +39,7 @@ import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.springframework.lang.NonNull;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 import org.springframework.web.client.RestTemplate;
 
 import javax.swing.*;

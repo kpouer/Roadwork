@@ -16,7 +16,7 @@
 package com.kpouer.roadwork.service;
 
 import lombok.extern.slf4j.Slf4j;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 
 import java.io.File;
 import java.io.IOException;

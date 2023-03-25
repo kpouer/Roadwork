@@ -28,8 +28,8 @@ import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import lombok.extern.slf4j.Slf4j;
-import com.kpouer.themis.ApplicationContext;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.Themis;
+import com.kpouer.themis.annotation.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
@@ -49,7 +49,7 @@ public class ToolbarPanel extends JPanel {
     private final Color defaultBackground;
     private final JComboBox<Object> opendataServiceComboBox;
 
-    public ToolbarPanel(ApplicationContext applicationContext,
+    public ToolbarPanel(Themis themis,
                         Config config,
                         Hermes hermes,
                         LocalizationService localizationService,
@@ -88,9 +88,9 @@ public class ToolbarPanel extends JPanel {
             hermes.publish(event);
         });
         panel.add(opendataServiceComboBox);
-        synchronizeButton = new JButton(applicationContext.getBean(SynchronizeAction.class));
+        synchronizeButton = new JButton(themis.getComponentOfType(SynchronizeAction.class));
         synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
-        panel.add(new JButton(applicationContext.getBean(ReloadAction.class)));
+        panel.add(new JButton(themis.getComponentOfType(ReloadAction.class)));
         panel.add(synchronizeButton);
         var hideExpired = new JCheckBox(localizationService.getMessage("toolbarPanel.hideExpired"));
         hideExpired.addActionListener(e -> {
@@ -98,7 +98,7 @@ public class ToolbarPanel extends JPanel {
             hermes.publish(new UserSettingsUpdated(this));
         });
         panel.add(hideExpired);
-        logsPanelButton = new JButton(applicationContext.getBean(LogsPanelAction.class));
+        logsPanelButton = new JButton(themis.getComponentOfType(LogsPanelAction.class));
         defaultBackground = logsPanelButton.getBackground();
         logsPanelButton.addActionListener(e -> logsPanelButton.setBackground(defaultBackground));
         panel.add(logsPanelButton);

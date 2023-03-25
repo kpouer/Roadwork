@@ -20,7 +20,7 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;

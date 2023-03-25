@@ -33,7 +33,7 @@ import org.apache.hc.core5.http.io.SocketConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Matthieu Casanova
  */
-@Component
+@Component(lazy = false)
 @Slf4j
 @Getter
 @Setter
@@ -159,13 +159,12 @@ public class Config {
         userSettings.setOpendataService(opendataService);
     }
 
-    @Bean("mapview")
+    @Component("mapview")
     public MapView getMapView(@Qualifier("WazeINTLTileServer") DefaultTileServer tileServer) {
         return new MapView(tileServer);
     }
 
-    @Bean("OsmTileServer")
-    @Lazy
+    @Component("OsmTileServer")
     public DefaultTileServer getOsmTileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -181,8 +180,7 @@ public class Config {
         }
     }
 
-    @Bean("WazeINTLTileServer")
-    @Lazy
+    @Component("WazeINTLTileServer")
     public DefaultTileServer getWazeINTLTileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -198,8 +196,7 @@ public class Config {
         }
     }
 
-    @Bean("WazeNATileServer")
-    @Lazy
+    @Component("WazeNATileServer")
     public DefaultTileServer getWazeNATileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -213,8 +210,7 @@ public class Config {
         }
     }
 
-    @Bean("WazeILTileServer")
-    @Lazy
+    @Component("WazeILTileServer")
     public DefaultTileServer getWazeILTileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -228,7 +224,7 @@ public class Config {
         }
     }
 
-    @Bean
+    @Component
     public RestTemplate restTemplate() {
         SocketConfig socketConfig = SocketConfig
                 .custom()
@@ -251,17 +247,17 @@ public class Config {
         return new RestTemplate(httpRequestFactory);
     }
 
-    @Bean
+    @Component
     public List<String> logs() {
         return logs;
     }
 
-    @Bean
+    @Component
     public Hermes getHermes() {
         return hermes;
     }
 
-    @Bean
+    @Component
     public SoftwareModel getSoftwareModel() {
         return softwareModel;
     }

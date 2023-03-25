@@ -29,13 +29,13 @@ import com.kpouer.roadwork.opendata.json.DefaultJsonService;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.serdes.ShapeSerializer;
+import com.kpouer.themis.Themis;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import com.kpouer.themis.ApplicationContext;
 import org.springframework.lang.NonNull;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
@@ -60,7 +60,7 @@ public class OpendataServiceManager {
 
     private final HttpService httpService;
     private final Config config;
-    private final ApplicationContext applicationContext;
+    private final Themis themis;
     private final SynchronizationService synchronizationService;
     private final ResourceService resourceService;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -73,8 +73,8 @@ public class OpendataServiceManager {
     public void postConstruct() {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         var module = new SimpleModule();
-        applicationContext
-                .getBeansOfType(ShapeSerializer.class)
+        themis
+                .getComponentsOfType(ShapeSerializer.class)
                 .values()
                 .forEach(module::addSerializer);
         objectMapper.registerModule(module);
@@ -226,7 +226,7 @@ public class OpendataServiceManager {
             return config.getWazeINTLTileServer();
         }
         try {
-            return applicationContext.getBean(tileServerName + "TileServer", TileServer.class);
+            return themis.getComponentOfType(tileServerName + "TileServer", TileServer.class);
         } catch (BeansException e) {
             logger.error("Error getting tile server " + tileServerName, e);
         }
@@ -250,7 +250,7 @@ public class OpendataServiceManager {
                 opendataServiceInstance = getJsonService(opendataService);
             } else {
                 try {
-                    opendataServiceInstance = applicationContext.getBean(opendataService, OpendataService.class);
+                    opendataServiceInstance = themis.getComponentOfType(opendataService, OpendataService.class);
                 } catch (NoSuchBeanDefinitionException e) {
                     throw new OpenDataException(e.getMessage(), e);
                 }
@@ -298,7 +298,7 @@ public class OpendataServiceManager {
 
     private Optional<RoadworkData> getMigratedData() {
         logger.info("There is no cache, checking if there is old data");
-        var beansOfType = applicationContext.getBeansOfType(RoadworkMigrationService.class);
+        var beansOfType = themis.getComponentsOfType(RoadworkMigrationService.class);
         var migrationServices = beansOfType.values();
         for (var migrationService : migrationServices) {
             var roadworkData = migrationService.migrateData();

@@ -18,7 +18,7 @@ package com.kpouer.roadwork.service.serdes;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.kpouer.wkt.shape.AbstractMultiPointShape;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 
 import java.io.IOException;
 

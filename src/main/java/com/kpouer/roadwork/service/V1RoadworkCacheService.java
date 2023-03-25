@@ -22,7 +22,7 @@ import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.v1.RoadworkDataV1;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;

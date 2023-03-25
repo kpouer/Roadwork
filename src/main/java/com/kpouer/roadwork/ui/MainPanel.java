@@ -30,7 +30,7 @@ import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
 import lombok.extern.slf4j.Slf4j;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 import org.springframework.web.client.RestClientException;
 
 import javax.swing.*;

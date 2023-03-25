@@ -17,7 +17,7 @@ package com.kpouer.roadwork.ui.logpanel;
 
 import com.kpouer.roadwork.ui.MainPanel;
 import lombok.RequiredArgsConstructor;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.*;

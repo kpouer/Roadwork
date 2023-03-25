@@ -16,7 +16,7 @@
 package com.kpouer.roadwork;
 
 import com.kpouer.roadwork.ui.MainPanel;
-import com.kpouer.themis.ApplicationContext;
+import com.kpouer.themis.DefaultThemisImpl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -34,7 +34,7 @@ public class RoadworkApplication {
                  UnsupportedLookAndFeelException e) {
             logger.error("Unable to set the look and feel", e);
         }
-        var applicationContext = new ApplicationContext("com.kpouer");
-        applicationContext.getComponentOfType(MainPanel.class);
+        var themis = new DefaultThemisImpl("com.kpouer");
+        themis.getComponentOfType(MainPanel.class);
     }
 }

@@ -23,13 +23,13 @@ import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
 import lombok.extern.slf4j.Slf4j;
-import com.kpouer.themis.ApplicationContext;
+import com.kpouer.themis.Themis;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -51,18 +51,18 @@ public class SynchronizationService {
     private final LocalizationService localizationService;
     private final SoftwareModel softwareModel;
     private final Hermes hermes;
-    private final ApplicationContext applicationContext;
+    private final Themis themis;
 
     public SynchronizationService(Config config,
                                   LocalizationService localizationService,
                                   SoftwareModel softwareModel,
                                   Hermes hermes,
-                                  ApplicationContext applicationContext) {
+                                  Themis themis) {
         userSettings = config.getUserSettings();
         this.localizationService = localizationService;
         this.softwareModel = softwareModel;
         this.hermes = hermes;
-        this.applicationContext = applicationContext;
+        this.themis = themis;
     }
 
     /**
@@ -100,7 +100,7 @@ public class SynchronizationService {
                         localizationService.getMessage("dialog.synchronization.unauthorized.message"),
                         localizationService.getMessage("dialog.synchronization.unauthorized.title"),
                         JOptionPane.WARNING_MESSAGE);
-                applicationContext.getBean(SynchronizationSettingsAction.class).actionPerformed(null);
+                themis.getComponentOfType(SynchronizationSettingsAction.class).actionPerformed(null);
             } catch (RestClientException e) {
                 if (e.getCause() instanceof ConnectException) {
                     logger.error("Unable to connect to synchronization server {}", url);

@@ -22,7 +22,7 @@ import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.opendatainfo.OpendataInformationDialog;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.Nullable;
-import com.kpouer.themis.Component;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
