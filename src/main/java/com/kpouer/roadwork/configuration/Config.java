@@ -27,24 +27,18 @@ import com.kpouer.roadwork.service.SoftwareModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.core5.http.io.SocketConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import com.kpouer.themis.annotation.Component;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Matthieu Casanova
@@ -222,29 +216,6 @@ public class Config {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Component
-    public RestTemplate restTemplate() {
-        SocketConfig socketConfig = SocketConfig
-                .custom()
-                .setSoTimeout(readTimeout, TimeUnit.MILLISECONDS)
-                .build();
-        var poolingHttpClientConnectionManager = PoolingHttpClientConnectionManagerBuilder
-                .create()
-                .setMaxConnPerRoute(10)
-                .setMaxConnTotal(10)
-                .setDefaultSocketConfig(socketConfig)
-                .build();
-        var httpClient = HttpClientBuilder
-                .create()
-                .setConnectionManager(poolingHttpClientConnectionManager)
-                .build();
-        var httpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        httpRequestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
-        httpRequestFactory.setConnectTimeout(connectTimeout);
-
-        return new RestTemplate(httpRequestFactory);
     }
 
     @Component
