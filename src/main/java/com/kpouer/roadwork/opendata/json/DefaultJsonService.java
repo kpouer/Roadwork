@@ -33,6 +33,8 @@ import net.minidev.json.JSONArray;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestClientException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -57,7 +59,7 @@ public class DefaultJsonService implements OpendataService {
     }
 
     @Override
-    public Optional<RoadworkData> getData() throws RestClientException {
+    public Optional<RoadworkData> getData() throws URISyntaxException, IOException, InterruptedException {
         var url = buildUrl();
         logger.info("getData {}", url);
         var json = httpService.getUrl(url);

@@ -31,7 +31,6 @@ import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
 import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.annotation.Component;
-import org.springframework.web.client.RestClientException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,6 +39,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import static com.kpouer.roadwork.configuration.Config.*;
@@ -132,7 +132,7 @@ public class MainPanel extends JFrame {
             logger.error("Opendata exception", e);
             resetCurrentOpendataService();
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE));
-        } catch (IOException | RestClientException e) {
+        } catch (IOException | URISyntaxException | InterruptedException e) {
             logger.error("Error retrieving data", e);
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
         }

@@ -17,7 +17,6 @@ package com.kpouer.roadwork.service;
 
 import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.annotation.Component;
-import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -36,17 +35,13 @@ public class HttpService {
         httpClient = HttpClient.newBuilder().build();
     }
 
-    public String getUrl(String url) throws RestClientException {
+    public String getUrl(String url) throws URISyntaxException, IOException, InterruptedException {
         logger.info("getUrl {}", url);
-        try {
-            var httpRequest = HttpRequest.newBuilder(new URI(url))
-                    .version(HttpClient.Version.HTTP_2)
-                    .build();
-            HttpResponse<String> response = httpClient
-                    .send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            return response.body();
-        } catch (URISyntaxException | IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        HttpRequest httpRequest = HttpRequest.newBuilder(new URI(url))
+                .version(HttpClient.Version.HTTP_2)
+                .build();
+        HttpResponse<String> response = httpClient
+                .send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return response.body();
     }
 }

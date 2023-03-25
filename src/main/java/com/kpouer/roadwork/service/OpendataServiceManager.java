@@ -41,6 +41,7 @@ import org.springframework.web.client.RestClientException;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -134,7 +135,7 @@ public class OpendataServiceManager {
         return Collections.emptyList();
     }
 
-    public Optional<RoadworkData> getData() throws RestClientException, IOException, OpenDataException {
+    public Optional<RoadworkData> getData() throws IOException, OpenDataException, URISyntaxException, InterruptedException {
         var roadworks = getRoadworks();
         roadworks.ifPresent(roadworkData -> {
             applyFinishedStatus(roadworkData);
@@ -175,7 +176,7 @@ public class OpendataServiceManager {
      * @throws RestClientException if a RestClientException happens
      */
     @NonNull
-    private Optional<RoadworkData> getRoadworks() throws RestClientException, IOException, OpenDataException {
+    private Optional<RoadworkData> getRoadworks() throws IOException, OpenDataException, URISyntaxException, InterruptedException {
         var currentPath = getPath(config.getOpendataService());
         logger.info("getData {}", currentPath);
         var cachedDataOptional = loadCache(currentPath);

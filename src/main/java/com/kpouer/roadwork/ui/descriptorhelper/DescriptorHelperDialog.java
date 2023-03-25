@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
@@ -28,7 +27,7 @@ import com.kpouer.roadwork.opendata.json.model.DateParser;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
 import com.kpouer.roadwork.opendata.json.model.Parser;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
-import com.kpouer.roadwork.service.LocalizationService;
+import com.kpouer.roadwork.service.HttpService;
 import com.kpouer.roadwork.ui.MainPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
@@ -40,13 +39,12 @@ import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.springframework.lang.NonNull;
 import com.kpouer.themis.annotation.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.net.URI;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +66,8 @@ public class DescriptorHelperDialog extends JDialog {
     private final RSyntaxTextArea preview;
     private final RSyntaxTextArea roadworkPreview;
 
-    private final LocalizationService localizationService;
     private final Color defaultColor;
+    private final HttpService httpService;
     private Object sample;
     private final ObjectWriter objectWriter;
     private final ObjectMapper objectMapper;
@@ -78,10 +76,10 @@ public class DescriptorHelperDialog extends JDialog {
     private Object currentRoadwork;
     private Color ERROR_COLOR = new Color(255, 0, 0, 30);
 
-    public DescriptorHelperDialog(MainPanel parent, LocalizationService localizationService) {
+    public DescriptorHelperDialog(MainPanel parent, HttpService httpService) {
         super(parent);
+        this.httpService = httpService;
         objectMapper = new ObjectMapper();
-        this.localizationService = localizationService;
         objectWriter = new ObjectMapper()
                 .setDefaultPropertyInclusion(JsonInclude.Include.ALWAYS)
                 .writerWithDefaultPrettyPrinter();
@@ -233,18 +231,16 @@ public class DescriptorHelperDialog extends JDialog {
     private void callUrl() {
         var url = urlTextField.getText().trim();
         logger.info("callUrl {}", url);
-        var restTemplate = new RestTemplate();
         try {
-            var json = restTemplate.getForObject(new URI(url), ObjectNode.class);
+            var jsonString = httpService.getUrl(url);
 
-            var jsonString = objectWriter.writeValueAsString(json);
             sampleTextArea.setText(jsonString);
             sampleTextArea.setCaretPosition(0);
             sampleUpdated();
         } catch (URISyntaxException e) {
             JOptionPane.showMessageDialog(this, "Invalid url");
-        } catch (JsonProcessingException e) {
-            logger.error("Error", e);
+        } catch (IOException | InterruptedException e) {
+            JOptionPane.showMessageDialog(this, "Unable to load data");
         }
     }
 
