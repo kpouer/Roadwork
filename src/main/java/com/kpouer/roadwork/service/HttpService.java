@@ -16,7 +16,6 @@
 package com.kpouer.roadwork.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kpouer.roadwork.opendata.OpendataResponse;
 import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.annotation.Component;
 

@@ -7,10 +7,6 @@
         "action": "DescriptorHelperAction"
       },
       {
-        "name": "Synchronization settings",
-        "action": "SynchronizationSettingsAction"
-      },
-      {
         "name": "Exit",
         "action": "ExitAction"
       }

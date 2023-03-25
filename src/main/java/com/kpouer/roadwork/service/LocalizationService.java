@@ -16,7 +16,7 @@
 package com.kpouer.roadwork.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
+import jakarta.annotation.Nullable;
 import com.kpouer.themis.annotation.Component;
 
 import java.io.IOException;

@@ -24,15 +24,14 @@ import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.mapview.tile.cache.ImageCacheImpl;
 import com.kpouer.roadwork.log.LoopListAppender;
 import com.kpouer.roadwork.service.SoftwareModel;
+import com.kpouer.themis.annotation.Qualifier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import com.kpouer.themis.annotation.Component;
-import org.springframework.lang.NonNull;
-import org.springframework.util.StringUtils;
+import jakarta.annotation.Nonnull;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
@@ -117,7 +116,7 @@ public class Config {
         }
     }
 
-    @NonNull
+    @Nonnull
     private Path getUserSettingsPath() {
         return Path.of(dataPath, "userSettings.json");
     }
@@ -143,8 +142,9 @@ public class Config {
     }
 
     public String getOpendataService() {
-        if (StringUtils.hasLength(userSettings.getOpendataService())) {
-            return userSettings.getOpendataService();
+        String opendataService = userSettings.getOpendataService();
+        if (opendataService != null && !opendataService.isBlank()) {
+            return opendataService;
         }
         return DEFAULT_OPENDATA_SERVICE;
     }

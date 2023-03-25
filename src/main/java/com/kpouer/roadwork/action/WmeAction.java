@@ -19,7 +19,7 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
-import org.springframework.lang.Nullable;
+import jakarta.annotation.Nullable;
 import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;

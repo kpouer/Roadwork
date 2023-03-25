@@ -29,12 +29,11 @@ import com.kpouer.roadwork.opendata.json.DefaultJsonService;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.serdes.ShapeSerializer;
+import com.kpouer.themis.ComponentIocException;
 import com.kpouer.themis.Themis;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nonnull;
 import com.kpouer.themis.annotation.Component;
 
 import javax.annotation.PostConstruct;
@@ -173,7 +172,7 @@ public class OpendataServiceManager {
      *
      * @return an optional that should contains Roadwork data
      */
-    @NonNull
+    @Nonnull
     private Optional<RoadworkData> getRoadworks() throws IOException, OpenDataException, URISyntaxException, InterruptedException {
         var currentPath = getPath(config.getOpendataService());
         logger.info("getData {}", currentPath);
@@ -210,7 +209,7 @@ public class OpendataServiceManager {
         return cachedDataOptional;
     }
 
-    @NonNull
+    @Nonnull
     public OpendataService getOpendataService() throws OpenDataException {
         logger.debug("getOpendataService");
         var opendataService = config.getOpendataService();
@@ -226,7 +225,7 @@ public class OpendataServiceManager {
         }
         try {
             return themis.getComponentOfType(tileServerName + "TileServer", TileServer.class);
-        } catch (BeansException e) {
+        } catch (ComponentIocException e) {
             logger.error("Error getting tile server " + tileServerName, e);
         }
         return config.getWazeINTLTileServer();
@@ -240,7 +239,7 @@ public class OpendataServiceManager {
      * @param opendataService the service name
      * @return an instance of OpendataService
      */
-    @NonNull
+    @Nonnull
     public OpendataService getOpendataService(String opendataService) throws OpenDataException {
         logger.debug("getOpendataService {}", opendataService);
         var opendataServiceInstance = opendataServices.get(opendataService);
@@ -250,7 +249,7 @@ public class OpendataServiceManager {
             } else {
                 try {
                     opendataServiceInstance = themis.getComponentOfType(opendataService, OpendataService.class);
-                } catch (NoSuchBeanDefinitionException e) {
+                } catch (ComponentIocException e) {
                     throw new OpenDataException(e.getMessage(), e);
                 }
             }
@@ -259,7 +258,7 @@ public class OpendataServiceManager {
         return opendataServiceInstance;
     }
 
-    @NonNull
+    @Nonnull
     private DefaultJsonService getJsonService(String opendataService) throws OpenDataException {
         logger.info("getJsonService {}", opendataService);
         try {
@@ -274,7 +273,7 @@ public class OpendataServiceManager {
         throw new OpenDataException("Unable to find service " + opendataService);
     }
 
-    @NonNull
+    @Nonnull
     private Path getPath(String opendataService) {
         return Path.of(config.getDataPath(), opendataService + '.' + VERSION + ".json");
     }

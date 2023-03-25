@@ -20,7 +20,7 @@ import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.dialog.SynchronizationSettingsDialog;
-import org.springframework.lang.Nullable;
+import jakarta.annotation.Nullable;
 import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;

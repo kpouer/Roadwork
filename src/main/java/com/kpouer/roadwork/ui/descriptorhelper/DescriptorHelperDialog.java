@@ -37,7 +37,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nonnull;
 import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
@@ -220,7 +220,7 @@ public class DescriptorHelperDialog extends JDialog {
         return Optional.empty();
     }
 
-    @NonNull
+    @Nonnull
     private static RSyntaxTextArea createTextArea() {
         var textArea = new TextEditorPane(RTextArea.INSERT_MODE, false);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);

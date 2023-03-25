@@ -17,10 +17,10 @@ package com.kpouer.roadwork.ui.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kpouer.roadwork.service.LocalizationService;
+import com.kpouer.themis.ComponentIocException;
 import com.kpouer.themis.Themis;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
 import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
@@ -70,7 +70,7 @@ public class MenuService {
         try {
             var action = themis.getComponentOfType(actionName, AbstractAction.class);
             return new JMenuItem(action);
-        } catch (BeansException e) {
+        } catch (ComponentIocException e) {
             logger.error("Unable to find menu named {}", actionName);
             var jMenuItem = new JMenuItem(actionName);
             jMenuItem.setEnabled(false);

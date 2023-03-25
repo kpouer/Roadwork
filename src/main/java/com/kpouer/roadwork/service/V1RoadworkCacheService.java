@@ -21,7 +21,7 @@ import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.v1.RoadworkDataV1;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nonnull;
 import com.kpouer.themis.annotation.Component;
 
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class V1RoadworkCacheService implements RoadworkMigrationService {
         }
     }
 
-    @NonNull
+    @Nonnull
     private Path getPath(String opendataService) {
         return Path.of(config.getDataPath(), opendataService + ".json");
     }
