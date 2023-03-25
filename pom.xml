@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.kpouer</groupId>
             <artifactId>k-mapview</artifactId>
-            <version>1.2.0-SNAPSHOT</version>
+            <version>1.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.fifesoft</groupId>
