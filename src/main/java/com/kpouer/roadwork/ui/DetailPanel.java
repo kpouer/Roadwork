@@ -22,7 +22,7 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.service.LocalizationService;
 import net.miginfocom.swing.MigLayout;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.*;

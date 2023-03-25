@@ -15,6 +15,8 @@
  */
 package com.kpouer.roadwork.ui;
 
+import com.kpouer.hermes.Hermes;
+import com.kpouer.hermes.Listener;
 import com.kpouer.mapview.MapView;
 import com.kpouer.roadwork.action.ExitAction;
 import com.kpouer.roadwork.configuration.Config;
@@ -28,13 +30,7 @@ import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.menu.MenuService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.GenericApplicationListener;
-import org.springframework.core.ResolvableType;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,6 +39,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import static com.kpouer.roadwork.configuration.Config.*;
@@ -51,15 +48,15 @@ import static com.kpouer.roadwork.configuration.Config.*;
  * @author Matthieu Casanova
  */
 @Slf4j
-@Service
-public class MainPanel extends JFrame implements GenericApplicationListener {
+@Component
+public class MainPanel extends JFrame {
 
     private final MapView mapView;
     private final DetailPanel detailPanel;
     private final OpendataServiceManager opendataServiceManager;
     private final SoftwareModel softwareModel;
     private final Config config;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final Hermes hermes;
 
     public MainPanel(ExitAction exitAction,
                      MapView mapView,
@@ -69,9 +66,9 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
                      ToolbarPanel toolbarPanel,
                      SoftwareModel softwareModel,
                      Config config,
-                     ApplicationEventPublisher applicationEventPublisher) throws IOException {
+                     Hermes hermes) throws IOException {
         super("Roadwork");
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.hermes = hermes;
         if ("Mac OS X".equals(System.getProperty("os.name"))) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         }
@@ -102,32 +99,26 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
         }
         setVisible(true);
         EventQueue.invokeLater(this::loadData);
+        hermes.subscribe(this);
     }
 
-    @Override
-    public boolean supportsEventType(ResolvableType eventType) {
-        var rawClass = eventType.getRawClass();
-        return rawClass != null &&
-                (rawClass.isAssignableFrom(OpendataServiceUpdated.class) ||
-                        rawClass.isAssignableFrom(UserSettingsUpdated.class));
+    @Listener
+    public void onOpendataServiceUpdated(OpendataServiceUpdated event) {
+        loadData();
     }
 
-    @Override
-    public void onApplicationEvent(@NonNull ApplicationEvent event) {
-        if (event instanceof OpendataServiceUpdated) {
-            loadData();
-        } else if (event instanceof UserSettingsUpdated) {
-            var userSettings = config.getUserSettings();
-            mapView.removeAllMarkers();
-            var roadworkData = softwareModel.getRoadworkData();
-            for (var roadwork : roadworkData) {
-                if (!userSettings.isHideExpired() || roadwork.getSyncData().getStatus() != Status.Finished) {
-                    var markers = roadwork.getMarker();
-                    Arrays.stream(markers).forEach(mapView::addMarker);
-                }
+    @Listener
+    public void onUserSettingsUpdated(UserSettingsUpdated event) {
+        var userSettings = config.getUserSettings();
+        mapView.removeAllMarkers();
+        var roadworkData = softwareModel.getRoadworkData();
+        for (var roadwork : roadworkData) {
+            if (!userSettings.isHideExpired() || roadwork.getSyncData().getStatus() != Status.Finished) {
+                var markers = roadwork.getMarker();
+                Arrays.stream(markers).forEach(mapView::addMarker);
             }
-            mapView.repaint();
         }
+        mapView.repaint();
     }
 
     private void loadData() {
@@ -141,7 +132,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
             logger.error("Opendata exception", e);
             resetCurrentOpendataService();
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE));
-        } catch (IOException | RestClientException e) {
+        } catch (IOException | URISyntaxException | InterruptedException e) {
             logger.error("Error retrieving data", e);
             EventQueue.invokeLater(() -> JOptionPane.showMessageDialog(this, "Error retrieving data", "Error", JOptionPane.ERROR_MESSAGE));
         }
@@ -152,7 +143,7 @@ public class MainPanel extends JFrame implements GenericApplicationListener {
         if (!DEFAULT_OPENDATA_SERVICE.equals(config.getOpendataService())) {
             var event = new OpendataServiceUpdated(this, config.getOpendataService(), DEFAULT_OPENDATA_SERVICE);
             config.setOpendataService(DEFAULT_OPENDATA_SERVICE);
-            applicationEventPublisher.publishEvent(event);
+            hermes.publish(event);
         }
     }
 

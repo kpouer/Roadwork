@@ -24,7 +24,7 @@ import com.kpouer.roadwork.model.sync.Status;
 import com.kpouer.roadwork.model.sync.SyncData;
 import com.kpouer.wkt.shape.Polygon;
 import lombok.*;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nonnull;
 
 import java.awt.*;
 
@@ -38,7 +38,7 @@ import java.awt.*;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class Roadwork {
-    @NonNull
+    @Nonnull
     private String id;
     private double latitude;
     private double longitude;

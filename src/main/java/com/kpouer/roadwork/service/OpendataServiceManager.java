@@ -29,18 +29,17 @@ import com.kpouer.roadwork.opendata.json.DefaultJsonService;
 import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.serdes.ShapeSerializer;
+import com.kpouer.themis.ComponentIocException;
+import com.kpouer.themis.Themis;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import jakarta.annotation.Nonnull;
+import com.kpouer.themis.annotation.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -54,13 +53,13 @@ import static com.kpouer.roadwork.service.ResourceService.THIRDPARTY;
  */
 @AllArgsConstructor
 @Slf4j
-@Service
+@Component
 public class OpendataServiceManager {
     private static final String VERSION = "2";
 
     private final HttpService httpService;
     private final Config config;
-    private final ApplicationContext applicationContext;
+    private final Themis themis;
     private final SynchronizationService synchronizationService;
     private final ResourceService resourceService;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -73,8 +72,8 @@ public class OpendataServiceManager {
     public void postConstruct() {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         var module = new SimpleModule();
-        applicationContext
-                .getBeansOfType(ShapeSerializer.class)
+        themis
+                .getComponentsOfType(ShapeSerializer.class)
                 .values()
                 .forEach(module::addSerializer);
         objectMapper.registerModule(module);
@@ -134,7 +133,7 @@ public class OpendataServiceManager {
         return Collections.emptyList();
     }
 
-    public Optional<RoadworkData> getData() throws RestClientException, IOException, OpenDataException {
+    public Optional<RoadworkData> getData() throws IOException, OpenDataException, URISyntaxException, InterruptedException {
         var roadworks = getRoadworks();
         roadworks.ifPresent(roadworkData -> {
             applyFinishedStatus(roadworkData);
@@ -172,10 +171,9 @@ public class OpendataServiceManager {
      * If
      *
      * @return an optional that should contains Roadwork data
-     * @throws RestClientException if a RestClientException happens
      */
-    @NonNull
-    private Optional<RoadworkData> getRoadworks() throws RestClientException, IOException, OpenDataException {
+    @Nonnull
+    private Optional<RoadworkData> getRoadworks() throws IOException, OpenDataException, URISyntaxException, InterruptedException {
         var currentPath = getPath(config.getOpendataService());
         logger.info("getData {}", currentPath);
         var cachedDataOptional = loadCache(currentPath);
@@ -211,7 +209,7 @@ public class OpendataServiceManager {
         return cachedDataOptional;
     }
 
-    @NonNull
+    @Nonnull
     public OpendataService getOpendataService() throws OpenDataException {
         logger.debug("getOpendataService");
         var opendataService = config.getOpendataService();
@@ -226,8 +224,8 @@ public class OpendataServiceManager {
             return config.getWazeINTLTileServer();
         }
         try {
-            return applicationContext.getBean(tileServerName + "TileServer", TileServer.class);
-        } catch (BeansException e) {
+            return themis.getComponentOfType(tileServerName + "TileServer", TileServer.class);
+        } catch (ComponentIocException e) {
             logger.error("Error getting tile server " + tileServerName, e);
         }
         return config.getWazeINTLTileServer();
@@ -241,7 +239,7 @@ public class OpendataServiceManager {
      * @param opendataService the service name
      * @return an instance of OpendataService
      */
-    @NonNull
+    @Nonnull
     public OpendataService getOpendataService(String opendataService) throws OpenDataException {
         logger.debug("getOpendataService {}", opendataService);
         var opendataServiceInstance = opendataServices.get(opendataService);
@@ -250,8 +248,8 @@ public class OpendataServiceManager {
                 opendataServiceInstance = getJsonService(opendataService);
             } else {
                 try {
-                    opendataServiceInstance = applicationContext.getBean(opendataService, OpendataService.class);
-                } catch (NoSuchBeanDefinitionException e) {
+                    opendataServiceInstance = themis.getComponentOfType(opendataService, OpendataService.class);
+                } catch (ComponentIocException e) {
                     throw new OpenDataException(e.getMessage(), e);
                 }
             }
@@ -260,7 +258,7 @@ public class OpendataServiceManager {
         return opendataServiceInstance;
     }
 
-    @NonNull
+    @Nonnull
     private DefaultJsonService getJsonService(String opendataService) throws OpenDataException {
         logger.info("getJsonService {}", opendataService);
         try {
@@ -275,7 +273,7 @@ public class OpendataServiceManager {
         throw new OpenDataException("Unable to find service " + opendataService);
     }
 
-    @NonNull
+    @Nonnull
     private Path getPath(String opendataService) {
         return Path.of(config.getDataPath(), opendataService + '.' + VERSION + ".json");
     }
@@ -298,7 +296,7 @@ public class OpendataServiceManager {
 
     private Optional<RoadworkData> getMigratedData() {
         logger.info("There is no cache, checking if there is old data");
-        var beansOfType = applicationContext.getBeansOfType(RoadworkMigrationService.class);
+        var beansOfType = themis.getComponentsOfType(RoadworkMigrationService.class);
         var migrationServices = beansOfType.values();
         for (var migrationService : migrationServices) {
             var roadworkData = migrationService.migrateData();

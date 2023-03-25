@@ -19,14 +19,12 @@ import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 
 /**
  * @author Matthieu Casanova
  */
-@Service
 @Getter
 @Setter
 public class SoftwareModel {

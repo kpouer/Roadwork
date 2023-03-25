@@ -17,15 +17,16 @@ package com.kpouer.roadwork.opendata;
 
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
-import org.springframework.web.client.RestClientException;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
  * @author Matthieu Casanova
  */
 public interface OpendataService {
-    Optional<RoadworkData> getData() throws RestClientException;
+    Optional<RoadworkData> getData() throws URISyntaxException, IOException, InterruptedException;
 
     Metadata getMetadata();
 }

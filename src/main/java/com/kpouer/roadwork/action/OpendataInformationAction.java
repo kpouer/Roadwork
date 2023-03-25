@@ -20,9 +20,9 @@ import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.opendatainfo.OpendataInformationDialog;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.annotation.Qualifier;
+import jakarta.annotation.Nullable;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

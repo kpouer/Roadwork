@@ -15,11 +15,11 @@
  */
 package com.kpouer.roadwork.ui.dialog;
 
+import com.kpouer.hermes.Hermes;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.service.SoftwareModel;
 import net.miginfocom.swing.MigLayout;
-import org.springframework.context.ApplicationEventPublisher;
 
 import javax.swing.*;
 
@@ -29,7 +29,7 @@ import javax.swing.*;
 public class SynchronizationSettingsDialog extends JDialog {
     public SynchronizationSettingsDialog(SoftwareModel softwareModel,
                                          Config config,
-                                         ApplicationEventPublisher applicationEventPublisher) {
+                                         Hermes hermes) {
         super(softwareModel.getMainFrame(), "Synchronization settings", true);
         var contentPane = getContentPane();
         contentPane.setLayout(new MigLayout());
@@ -83,7 +83,7 @@ public class SynchronizationSettingsDialog extends JDialog {
             userSettings.setSynchronizationTeam(synchronizationTeam);
             userSettings.setSynchronizationLogin(loginField.getText().trim());
             userSettings.setSynchronizationPassword(passwordField.getText().trim());
-            applicationEventPublisher.publishEvent(new SynchronizationSettingsUpdated(this));
+            hermes.publish(new SynchronizationSettingsUpdated(this));
             dispose();
         });
         var cancel = new JButton("cancel");

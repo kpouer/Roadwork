@@ -15,13 +15,8 @@
  */
 package com.kpouer.roadwork.event;
 
-import org.springframework.context.ApplicationEvent;
-
 /**
  * @author Matthieu Casanova
  */
-public class UserSettingsUpdated extends ApplicationEvent {
-    public UserSettingsUpdated(Object source) {
-        super(source);
-    }
+public record UserSettingsUpdated(Object source) {
 }

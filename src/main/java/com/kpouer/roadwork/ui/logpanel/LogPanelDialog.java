@@ -17,23 +17,17 @@ package com.kpouer.roadwork.ui.logpanel;
 
 import com.kpouer.roadwork.ui.MainPanel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
  * @author Matthieu Casanova
  */
-@Component
-@Lazy
-@Scope("prototype")
+@Component(singleton = false)
 public class LogPanelDialog extends JDialog {
     public LogPanelDialog(MainPanel parent, List<String> logs) {
         super(parent);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-(2023 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,8 @@
  */
 package com.kpouer.roadwork.event;
 
-import org.springframework.context.ApplicationEvent;
-
 /**
  * @author Matthieu Casanova
  */
-public class SynchronizationSettingsUpdated extends ApplicationEvent {
-    public SynchronizationSettingsUpdated(Object source) {
-        super(source);
-    }
+public record SynchronizationSettingsUpdated(Object source) {
 }

@@ -4,15 +4,11 @@
     "children": [
       {
         "name": "Descriptor helper",
-        "action": "descriptorHelperAction"
-      },
-      {
-        "name": "Synchronization settings",
-        "action": "synchronizationSettingsAction"
+        "action": "DescriptorHelperAction"
       },
       {
         "name": "Exit",
-        "action": "exitAction"
+        "action": "ExitAction"
       }
     ]
   },
@@ -21,11 +17,11 @@
     "children": [
       {
         "name": "OpendataInformationAction",
-        "action": "opendataInformationAction"
+        "action": "OpendataInformationAction"
       },
       {
         "name": "About",
-        "action": "aboutAction"
+        "action": "AboutAction"
       }
     ]
   }

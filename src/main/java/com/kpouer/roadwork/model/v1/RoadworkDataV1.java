@@ -17,7 +17,7 @@ package com.kpouer.roadwork.model.v1;
 
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class RoadworkDataV1 implements Iterable<RoadworkV1> {
         this.source = source;
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public Iterator<RoadworkV1> iterator() {
         return roadworks.values().iterator();

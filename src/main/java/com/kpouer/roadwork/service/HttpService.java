@@ -15,29 +15,36 @@
  */
 package com.kpouer.roadwork.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.io.HttpClientResponseHandler;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
+import com.kpouer.themis.annotation.Component;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
-@Service
+@Component
 @Slf4j
 public class HttpService {
-    private final HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();
+    private final HttpClient httpClient = HttpClient.newBuilder().build();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public String getUrl(String url) throws RestClientException {
+    public String getUrl(String url) throws URISyntaxException, IOException, InterruptedException {
         logger.info("getUrl {}", url);
-        try (var httpClient = HttpClients.createDefault()) {
-            var getMethod = new HttpGet(url);
+        HttpRequest httpRequest = HttpRequest.newBuilder(new URI(url))
+                .version(HttpClient.Version.HTTP_2)
+                .build();
+        HttpResponse<String> response = httpClient
+                .send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return response.body();
+    }
 
-            return httpClient.execute(getMethod, responseHandler);
-        } catch (IOException e) {
-            throw new RestClientException("Error retrieving " + url, e);
-        }
+    public <E> E getJsonObject(String url, Class<E> responseType) throws URISyntaxException, IOException, InterruptedException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException {
+        var json = getUrl(url);
+
+        return objectMapper.readValue(json, responseType);
     }
 }

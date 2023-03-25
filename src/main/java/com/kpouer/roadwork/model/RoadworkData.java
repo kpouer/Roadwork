@@ -18,7 +18,7 @@ package com.kpouer.roadwork.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.lang.NonNull;
+import jakarta.annotation.Nonnull;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class RoadworkData implements Iterable<Roadwork> {
         created = System.currentTimeMillis();
     }
 
-    @NonNull
+    @Nonnull
     @Override
     public Iterator<Roadwork> iterator() {
         return roadworks.values().iterator();

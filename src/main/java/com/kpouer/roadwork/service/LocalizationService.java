@@ -16,44 +16,34 @@
 package com.kpouer.roadwork.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
-import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
+import jakarta.annotation.Nullable;
+import com.kpouer.themis.annotation.Component;
 
-import static javax.swing.JComponent.getDefaultLocale;
+import java.io.IOException;
+import java.util.MissingResourceException;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 
 /**
  * @author Matthieu Casanova
  */
-@Service
+@Component
 @Slf4j
 public class LocalizationService {
-    private final MessageSource resourceBundle;
+    private final ResourceBundle resourceBundle;
 
-    public LocalizationService() {
-        var resourceBundle = new ResourceBundleMessageSource();
-        resourceBundle.setBasenames("messages");
-        resourceBundle.setUseCodeAsDefaultMessage(true);
-        this.resourceBundle = resourceBundle;
+    public LocalizationService() throws IOException {
+        resourceBundle = new PropertyResourceBundle(getClass().getResourceAsStream("/messages.properties"));
     }
 
-    public String getMessage(String code, @Nullable Object[] args) {
+    public String getMessage(String key, @Nullable Object... args) {
         try {
-            return resourceBundle.getMessage(code, args, getDefaultLocale());
-        } catch (NoSuchMessageException e) {
-            logger.error("Unable to get message {}", code);
-            return code;
-        }
-    }
-
-    public String getMessage(String code) {
-        try {
-            return resourceBundle.getMessage(code, null, getDefaultLocale());
-        } catch (NoSuchMessageException e) {
-            logger.error("Unable to get message {}", code);
-            return code;
+            var format = resourceBundle.getString(key);
+            if (args != null && args.length > 0)
+                return String.format(format, args);
+            return format;
+        } catch (MissingResourceException e) {
+            return key;
         }
     }
 }

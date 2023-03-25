@@ -15,12 +15,12 @@
  */
 package com.kpouer.roadwork.action;
 
+import com.kpouer.hermes.Hermes;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.event.OpendataServiceUpdated;
 import com.kpouer.roadwork.service.OpendataServiceManager;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import jakarta.annotation.Nullable;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -32,15 +32,15 @@ import java.awt.event.ActionEvent;
 public class ReloadAction extends AbstractAction {
 
     private final Config config;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final Hermes hermes;
     private final OpendataServiceManager opendataServiceManager;
 
     public ReloadAction(Config config,
-                        ApplicationEventPublisher applicationEventPublisher,
+                        Hermes hermes,
                         OpendataServiceManager opendataServiceManager) {
         super("Reload");
         this.config = config;
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.hermes = hermes;
         this.opendataServiceManager = opendataServiceManager;
     }
 
@@ -49,6 +49,6 @@ public class ReloadAction extends AbstractAction {
         opendataServiceManager.deleteCache();
         var opendataService = config.getOpendataService();
         var event = new OpendataServiceUpdated(this, opendataService, opendataService);
-        applicationEventPublisher.publishEvent(event);
+        hermes.publish(event);
     }
 }

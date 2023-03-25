@@ -30,9 +30,10 @@ import com.kpouer.roadwork.service.HttpService;
 import com.kpouer.wkt.shape.Polygon;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
-import org.springframework.lang.NonNull;
-import org.springframework.web.client.RestClientException;
+import jakarta.annotation.Nonnull;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -57,7 +58,7 @@ public class DefaultJsonService implements OpendataService {
     }
 
     @Override
-    public Optional<RoadworkData> getData() throws RestClientException {
+    public Optional<RoadworkData> getData() throws URISyntaxException, IOException, InterruptedException {
         var url = buildUrl();
         logger.info("getData {}", url);
         var json = httpService.getUrl(url);
@@ -172,8 +173,8 @@ public class DefaultJsonService implements OpendataService {
         return calendar.getTimeInMillis();
     }
 
-    @NonNull
-    public static Roadwork buildRoadwork(ServiceDescriptor serviceDescriptor, @NonNull Object node) {
+    @Nonnull
+    public static Roadwork buildRoadwork(ServiceDescriptor serviceDescriptor, @Nonnull Object node) {
         var roadworkBuilder = Roadwork.builder();
         roadworkBuilder.syncData(new SyncData());
         var id = getPath(node, serviceDescriptor.getId());
@@ -260,7 +261,7 @@ public class DefaultJsonService implements OpendataService {
         return secondLevel.get(0) instanceof JSONArray;
     }
 
-    @NonNull
+    @Nonnull
     private static Polygon getPolygon(JSONArray polygonArray) {
         var xpoints = new double[polygonArray.size()];
         var ypoints = new double[polygonArray.size()];
@@ -284,7 +285,7 @@ public class DefaultJsonService implements OpendataService {
         return null;
     }
 
-    private static double getPathAsDouble(@NonNull Object node, @NonNull String path) throws ParseException {
+    private static double getPathAsDouble(@Nonnull Object node, @Nonnull String path) throws ParseException {
         try {
             Objects.requireNonNull(path);
             var value = JsonPath.read(node, path);

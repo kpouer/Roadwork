@@ -15,13 +15,13 @@
  */
 package com.kpouer.roadwork.action;
 
+import com.kpouer.hermes.Hermes;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.SoftwareModel;
 import com.kpouer.roadwork.ui.dialog.SynchronizationSettingsDialog;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Component;
+import jakarta.annotation.Nullable;
+import com.kpouer.themis.annotation.Component;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,22 +34,22 @@ import java.awt.event.ActionEvent;
 public class SynchronizationSettingsAction extends AbstractAction {
     private final SoftwareModel softwareModel;
     private final Config config;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final Hermes hermes;
 
     public SynchronizationSettingsAction(SoftwareModel softwareModel,
                                          Config config,
-                                         ApplicationEventPublisher applicationEventPublisher,
+                                         Hermes hermes,
                                          LocalizationService localizationService) {
         super(localizationService.getMessage("action.synchronizationSettings"));
         this.softwareModel = softwareModel;
         this.config = config;
-        this.applicationEventPublisher = applicationEventPublisher;
+        this.hermes = hermes;
     }
 
     @Override
     public void actionPerformed(@Nullable ActionEvent e) {
         EventQueue.invokeLater(() -> {
-            SynchronizationSettingsDialog dialog = new SynchronizationSettingsDialog(softwareModel, config, applicationEventPublisher);
+            SynchronizationSettingsDialog dialog = new SynchronizationSettingsDialog(softwareModel, config, hermes);
             dialog.setLocationRelativeTo(softwareModel.getMainFrame());
             dialog.setVisible(true);
         });

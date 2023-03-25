@@ -15,13 +15,12 @@
  */
 package com.kpouer.roadwork.event;
 
-import org.springframework.context.ApplicationEvent;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Matthieu Casanova
  */
-public class ExceptionEvent extends ApplicationEvent {
-    public ExceptionEvent(Object source) {
-        super(source);
-    }
+@RequiredArgsConstructor
+public class ExceptionEvent {
+    private final Object source;
 }

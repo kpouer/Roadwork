@@ -44,7 +44,7 @@ class DefaultJsonServiceTest {
     }
 
     @Test
-    void testAvignon() throws IOException, URISyntaxException {
+    void testAvignon() throws Exception {
         var serviceDescriptor = getServiceDescriptor("opendata/json/France-Avignon.json", "/sample/france/avignon.json");
         var data = serviceDescriptor.getData();
         var roadworkData = data.get();
@@ -52,7 +52,7 @@ class DefaultJsonServiceTest {
         assertEquals("850041398", roadwork.getId());
     }
 
-    private DefaultJsonService getServiceDescriptor(String pathname, String samplePath) throws IOException, URISyntaxException {
+    private DefaultJsonService getServiceDescriptor(String pathname, String samplePath) throws IOException, URISyntaxException, InterruptedException {
         Mockito.when(httpService.getUrl(ArgumentCaptor.forClass(String.class).capture())).thenReturn(getSample(samplePath));
         var objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

@@ -16,7 +16,7 @@
 package com.kpouer.roadwork.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.kpouer.themis.annotation.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 
 @Slf4j
-@Service
+@Component
 public class ResourceService {
     public static final String OPENDATA_JSON = "opendata/json/";
     public static final String THIRDPARTY = "thirdparty";

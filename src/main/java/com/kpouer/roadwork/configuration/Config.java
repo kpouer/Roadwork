@@ -18,40 +18,31 @@ package com.kpouer.roadwork.configuration;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpouer.hermes.Hermes;
 import com.kpouer.mapview.MapView;
 import com.kpouer.mapview.tile.DefaultTileServer;
 import com.kpouer.mapview.tile.cache.ImageCacheImpl;
 import com.kpouer.roadwork.log.LoopListAppender;
 import com.kpouer.roadwork.service.SoftwareModel;
+import com.kpouer.themis.annotation.Qualifier;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
-import org.apache.hc.core5.http.io.SocketConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.lang.NonNull;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
+import com.kpouer.themis.annotation.Component;
+import jakarta.annotation.Nonnull;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Matthieu Casanova
  */
-@Configuration
+@Component(lazy = false)
 @Slf4j
 @Getter
 @Setter
@@ -70,10 +61,12 @@ public class Config {
     private int connectTimeout = 1000;
     private int connectionRequestTimeout = 1000;
     private int readTimeout = 300000;
+    private Hermes hermes;
 
-    public Config(SoftwareModel softwareModel, ApplicationEventPublisher applicationEventPublisher) {
-        this.softwareModel = softwareModel;
-        configureLogger(applicationEventPublisher);
+    public Config() {
+        hermes = new Hermes();
+        softwareModel = new SoftwareModel();
+        configureLogger(hermes);
         logger.info("Config start");
 
         var userHome = System.getProperty("user.home");
@@ -97,12 +90,12 @@ public class Config {
         }
     }
 
-    private void configureLogger(ApplicationEventPublisher applicationEventPublisher) {
+    private void configureLogger(Hermes hermes) {
         var layout = new PatternLayout();
         layout.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
         layout.setPattern("%date %level [%thread] %logger{10} [%file:%line] %msg");
         layout.start();
-        var loopListAppender = new LoopListAppender(layout, applicationEventPublisher);
+        var loopListAppender = new LoopListAppender(layout, hermes);
         logs = loopListAppender.getList();
         var rootLogger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         loopListAppender.start();
@@ -123,7 +116,7 @@ public class Config {
         }
     }
 
-    @NonNull
+    @Nonnull
     private Path getUserSettingsPath() {
         return Path.of(dataPath, "userSettings.json");
     }
@@ -149,8 +142,9 @@ public class Config {
     }
 
     public String getOpendataService() {
-        if (StringUtils.hasLength(userSettings.getOpendataService())) {
-            return userSettings.getOpendataService();
+        String opendataService = userSettings.getOpendataService();
+        if (opendataService != null && !opendataService.isBlank()) {
+            return opendataService;
         }
         return DEFAULT_OPENDATA_SERVICE;
     }
@@ -159,13 +153,12 @@ public class Config {
         userSettings.setOpendataService(opendataService);
     }
 
-    @Bean("mapview")
+    @Component("mapview")
     public MapView getMapView(@Qualifier("WazeINTLTileServer") DefaultTileServer tileServer) {
         return new MapView(tileServer);
     }
 
-    @Bean("OsmTileServer")
-    @Lazy
+    @Component("OsmTileServer")
     public DefaultTileServer getOsmTileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -181,8 +174,7 @@ public class Config {
         }
     }
 
-    @Bean("WazeINTLTileServer")
-    @Lazy
+    @Component("WazeINTLTileServer")
     public DefaultTileServer getWazeINTLTileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -198,8 +190,7 @@ public class Config {
         }
     }
 
-    @Bean("WazeNATileServer")
-    @Lazy
+    @Component("WazeNATileServer")
     public DefaultTileServer getWazeNATileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -213,8 +204,7 @@ public class Config {
         }
     }
 
-    @Bean("WazeILTileServer")
-    @Lazy
+    @Component("WazeILTileServer")
     public DefaultTileServer getWazeILTileServer() {
         try {
             return new DefaultTileServer(tilesSize,
@@ -228,31 +218,18 @@ public class Config {
         }
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        SocketConfig socketConfig = SocketConfig
-                .custom()
-                .setSoTimeout(readTimeout, TimeUnit.MILLISECONDS)
-                .build();
-        var poolingHttpClientConnectionManager = PoolingHttpClientConnectionManagerBuilder
-                .create()
-                .setMaxConnPerRoute(10)
-                .setMaxConnTotal(10)
-                .setDefaultSocketConfig(socketConfig)
-                .build();
-        var httpClient = HttpClientBuilder
-                .create()
-                .setConnectionManager(poolingHttpClientConnectionManager)
-                .build();
-        var httpRequestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        httpRequestFactory.setConnectionRequestTimeout(connectionRequestTimeout);
-        httpRequestFactory.setConnectTimeout(connectTimeout);
-
-        return new RestTemplate(httpRequestFactory);
-    }
-
-    @Bean
+    @Component
     public List<String> logs() {
         return logs;
+    }
+
+    @Component
+    public Hermes getHermes() {
+        return hermes;
+    }
+
+    @Component
+    public SoftwareModel getSoftwareModel() {
+        return softwareModel;
     }
 }
