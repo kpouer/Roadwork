@@ -16,28 +16,37 @@
 package com.kpouer.roadwork.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import com.kpouer.themis.annotation.Component;
 import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 @Component
 @Slf4j
 public class HttpService {
-    private final HttpClientResponseHandler<String> responseHandler = new BasicHttpClientResponseHandler();
+
+    private final HttpClient httpClient;
+
+    public HttpService() {
+        httpClient = HttpClient.newBuilder().build();
+    }
 
     public String getUrl(String url) throws RestClientException {
         logger.info("getUrl {}", url);
-        try (var httpClient = HttpClients.createDefault()) {
-            var getMethod = new HttpGet(url);
-
-            return httpClient.execute(getMethod, responseHandler);
-        } catch (IOException e) {
-            throw new RestClientException("Error retrieving " + url, e);
+        try {
+            var httpRequest = HttpRequest.newBuilder(new URI(url))
+                    .version(HttpClient.Version.HTTP_2)
+                    .build();
+            HttpResponse<String> response = httpClient
+                    .send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return response.body();
+        } catch (URISyntaxException | IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
