@@ -15,6 +15,8 @@
  */
 package com.kpouer.roadwork.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpouer.roadwork.opendata.OpendataResponse;
 import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.annotation.Component;
 
@@ -28,12 +30,8 @@ import java.net.http.HttpResponse;
 @Component
 @Slf4j
 public class HttpService {
-
-    private final HttpClient httpClient;
-
-    public HttpService() {
-        httpClient = HttpClient.newBuilder().build();
-    }
+    private final HttpClient httpClient = HttpClient.newBuilder().build();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public String getUrl(String url) throws URISyntaxException, IOException, InterruptedException {
         logger.info("getUrl {}", url);
@@ -43,5 +41,11 @@ public class HttpService {
         HttpResponse<String> response = httpClient
                 .send(httpRequest, HttpResponse.BodyHandlers.ofString());
         return response.body();
+    }
+
+    public <E> E getJsonObject(String url, Class<E> responseType) throws URISyntaxException, IOException, InterruptedException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException {
+        var json = getUrl(url);
+
+        return objectMapper.readValue(json, responseType);
     }
 }

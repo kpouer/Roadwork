@@ -18,16 +18,14 @@ package com.kpouer.roadwork.opendata;
 import com.kpouer.roadwork.model.Roadwork;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.opendata.json.model.Metadata;
+import com.kpouer.roadwork.service.HttpService;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.lang.Nullable;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -37,22 +35,15 @@ import java.util.*;
 @Slf4j
 public abstract class AbstractOpendataService<R, E extends OpendataResponse<R>> implements OpendataService {
     private final Class<E> responseType;
-    private final RestTemplate restTemplate;
+    private final HttpService httpService;
     @Getter
     private final Metadata metadata;
 
     @Override
-    public Optional<RoadworkData> getData() throws RestClientException {
+    public Optional<RoadworkData> getData() throws URISyntaxException, IOException, InterruptedException, com.fasterxml.jackson.core.JsonProcessingException, com.fasterxml.jackson.databind.JsonMappingException {
         logger.info("getData from {} -> {}", metadata.getUrl(), responseType);
 
-        // because some opendata service do not return Json content type
-        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
-        messageConverters.add(converter);
-
-        restTemplate.setMessageConverters(messageConverters);
-        E response = restTemplate.getForObject(metadata.getUrl(), responseType);
+        E response = httpService.getJsonObject(metadata.getUrl(), responseType);
         if (response == null) {
             logger.debug("No data");
             return Optional.empty();
