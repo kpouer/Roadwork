@@ -31,7 +31,6 @@ import com.kpouer.wkt.shape.Polygon;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.springframework.lang.NonNull;
-import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

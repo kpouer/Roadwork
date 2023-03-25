@@ -36,7 +36,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.lang.NonNull;
 import com.kpouer.themis.annotation.Component;
-import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -173,7 +172,6 @@ public class OpendataServiceManager {
      * If
      *
      * @return an optional that should contains Roadwork data
-     * @throws RestClientException if a RestClientException happens
      */
     @NonNull
     private Optional<RoadworkData> getRoadworks() throws IOException, OpenDataException, URISyntaxException, InterruptedException {
