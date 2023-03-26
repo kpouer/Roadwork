@@ -27,11 +27,11 @@ import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.event.UserSettingsUpdated;
 import com.kpouer.roadwork.service.LocalizationService;
 import com.kpouer.roadwork.service.OpendataServiceManager;
-import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.Themis;
 import com.kpouer.themis.annotation.Component;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;

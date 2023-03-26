@@ -31,12 +31,12 @@ import com.kpouer.roadwork.service.exception.OpenDataException;
 import com.kpouer.roadwork.service.serdes.ShapeSerializer;
 import com.kpouer.themis.ComponentIocException;
 import com.kpouer.themis.Themis;
+import com.kpouer.themis.annotation.Component;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import jakarta.annotation.Nonnull;
-import com.kpouer.themis.annotation.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
