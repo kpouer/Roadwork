@@ -53,7 +53,7 @@ public class SynchronizationSettingsDialog extends JDialog {
         urlField.setText(userSettings.getSynchronizationUrl());
         teamField.setText(userSettings.getSynchronizationTeam());
         loginField.setText(userSettings.getSynchronizationLogin());
-        passwordField.setText(userSettings.getSynchronizationPassword());
+        passwordField.setText(new String(userSettings.getSynchronizationPassword()));
 
         enableSynchronization.addActionListener(e -> {
             urlField.setEnabled(enableSynchronization.isSelected());
@@ -82,7 +82,7 @@ public class SynchronizationSettingsDialog extends JDialog {
             userSettings.setSynchronizationUrl(synchronizationUrl);
             userSettings.setSynchronizationTeam(synchronizationTeam);
             userSettings.setSynchronizationLogin(loginField.getText().trim());
-            userSettings.setSynchronizationPassword(passwordField.getText().trim());
+            userSettings.setSynchronizationPassword(passwordField.getPassword());
             hermes.publish(new SynchronizationSettingsUpdated(this));
             dispose();
         });
