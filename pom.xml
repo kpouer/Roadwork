@@ -39,7 +39,7 @@
         <sonar.projectKey>kpouer_Roadwork</sonar.projectKey>
         <sonar.organization>matthieu-casanova</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
     </properties>
     <dependencies>
         <dependency>
