@@ -1,0 +1,49 @@
+{
+  "metadata" : {
+    "country" : "France",
+    "center": {
+      "lat":49.4412338,
+      "lon": 1.0705721
+    },
+    "sourceUrl" : "https://data.metropole-rouen-normandie.fr/explore/dataset/travaux-json",
+    "url" : "https://data.metropole-rouen-normandie.fr/api/explore/v2.1/catalog/datasets/travaux-json/records?limit=100",
+    "name" : "Rouen",
+    "producer" : "Métropole Rouen Normandie",
+    "licenceName" : "Licence Ouverte v2.0",
+    "licenceUrl" : "https://www.etalab.gouv.fr/wp-content/uploads/2017/04/ETALAB-Licence-Ouverte-v2.0.pdf",
+    "locale" : "fr_FR",
+    "urlParams" : null,
+    "tileServer" : "WazeINTL",
+    "editorPattern" : "https://waze.com/fr/editor?env=row&lat=${lat}&lon=${lon}&zoomLevel=19"
+  },
+  "id" : "@.nid",
+  "latitude" : "@.field_coordonnees.lat",
+  "longitude" : "@.field_coordonnees.lon",
+  "polygon" : null,
+  "road" : "@.title",
+  "description" : "@.field_corps_de_texte",
+  "locationDetails" : null,
+  "impactCirculationDetail" :  "@.field_resume",
+  "from" : {
+    "path" : "@.field_date_debut_1",
+    "parsers" : [ {
+      "format" : "yyyy-MM-dd",
+      "matcher" : ".*",
+      "addYear" : false,
+      "resetHour" : true,
+      "pattern" : null
+    } ]
+  },
+  "to" : {
+    "path" : "@.field_date_fin_1",
+    "parsers" : [ {
+      "format" : "yyyy-MM-dd",
+      "matcher" : ".*",
+      "addYear" : false,
+      "resetHour" : true,
+      "pattern" : null
+    } ]
+  },
+  "roadworkArray" : "$.results",
+  "url" : "@.documents"
+}
