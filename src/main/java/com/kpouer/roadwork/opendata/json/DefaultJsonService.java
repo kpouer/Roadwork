@@ -29,7 +29,6 @@ import com.kpouer.roadwork.opendata.json.model.ServiceDescriptor;
 import com.kpouer.roadwork.service.HttpService;
 import com.kpouer.wkt.shape.Polygon;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
 import jakarta.annotation.Nonnull;
 
 import java.io.IOException;
@@ -234,17 +233,17 @@ public class DefaultJsonService implements OpendataService {
 
     private static Polygon[] getPathAsPolygons(Object node, String path) {
         try {
-            var value = (JSONArray) JsonPath.read(node, path);
+            List<?> value = JsonPath.read(node, path);
             if (value != null) {
                 if (isMultiPolygon(value)) {
                     var polygons = new Polygon[value.size()];
                     for (var i = 0; i < value.size(); i++) {
-                        var polygonArray = (JSONArray) value.get(i);
-                        polygons[i] = getPolygon((JSONArray) polygonArray.get(0));
+                        var polygonArray = (List<?>) value.get(i);
+                        polygons[i] = getPolygon((List<?>) polygonArray.get(0));
                     }
                     return polygons;
                 } else {
-                    var polygonArray = (JSONArray) value.get(0);
+                    var polygonArray = (List<?>) value.get(0);
                     var polygon = getPolygon(polygonArray);
                     return new Polygon[] {polygon};
                 }
@@ -255,18 +254,18 @@ public class DefaultJsonService implements OpendataService {
         return null;
     }
 
-    private static boolean isMultiPolygon(JSONArray value) {
-        var firstLevel = (JSONArray) value.get(0);
-        var secondLevel = (JSONArray) firstLevel.get(0);
-        return secondLevel.get(0) instanceof JSONArray;
+    private static boolean isMultiPolygon(List<?> value) {
+        var firstLevel = (List<?>) value.get(0);
+        var secondLevel = (List<?>) firstLevel.get(0);
+        return secondLevel.get(0) instanceof List<?>;
     }
 
     @Nonnull
-    private static Polygon getPolygon(JSONArray polygonArray) {
+    private static Polygon getPolygon(List<?> polygonArray) {
         var xpoints = new double[polygonArray.size()];
         var ypoints = new double[polygonArray.size()];
         for (var i = 0; i < polygonArray.size(); i++) {
-            var point = (JSONArray) polygonArray.get(i);
+            var point = (List<?>) polygonArray.get(i);
             xpoints[i] = (double) point.get(0);
             ypoints[i] = (double) point.get(1);
         }

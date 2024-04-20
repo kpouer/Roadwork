@@ -31,7 +31,6 @@ import com.kpouer.roadwork.service.HttpService;
 import com.kpouer.roadwork.ui.MainPanel;
 import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
-import net.minidev.json.JSONArray;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
@@ -212,7 +211,7 @@ public class DescriptorHelperDialog extends JDialog {
             return Optional.empty();
         }
         try {
-            JSONArray roadworkArray = JsonPath.read(sample, roadworkArrayPath);
+            List<?> roadworkArray = JsonPath.read(sample, roadworkArrayPath);
             return Optional.of(roadworkArray.get(0));
         } catch (ClassCastException e) {
             logger.error("Not an array");
