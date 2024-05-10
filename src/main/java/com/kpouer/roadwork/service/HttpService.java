@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Matthieu Casanova
+ * Copyright 2022-2024 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.kpouer.roadwork.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kpouer.roadwork.model.sync.SyncData;
 import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.annotation.Component;
 
@@ -25,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -46,5 +48,21 @@ public class HttpService {
         var json = getUrl(url);
 
         return objectMapper.readValue(json, responseType);
+    }
+
+    public <E> E postJsonObject(String url,
+                                Map<String, SyncData> body,
+                                Map<String, String> headers,
+                                Class<E> clazz) throws IOException, InterruptedException, URISyntaxException {
+        logger.info("postJsonObject");
+        var httpRequestBuilder = HttpRequest.newBuilder(new URI(url))
+            .version(HttpClient.Version.HTTP_2);
+
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            httpRequestBuilder.header(entry.getKey(), entry.getValue());
+        }
+        var httpRequest = httpRequestBuilder.build();
+        var response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return objectMapper.readValue(response.body(), clazz);
     }
 }
