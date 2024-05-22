@@ -1,0 +1,13 @@
+[package]
+name = "roadwork"
+version = "1.0.0"
+edition = "2021"
+authors = ["Matthieu Casanova"]
+description = "Roadwork"
+homepage = "https://github.com/kpouer/roadwork"
+repository = "https://github.com/kpouer/roadwork"
+license = "Apache-2.0 license "
+publish = false
+
+[dependencies]
+j4rs = "0.19.0"

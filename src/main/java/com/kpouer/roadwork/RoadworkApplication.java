@@ -37,4 +37,8 @@ public class RoadworkApplication {
         var themis = new ThemisImpl("com.kpouer");
         themis.getComponentOfType(MainPanel.class);
     }
+
+    public static void start() {
+        main(new String[0]);
+    }
 }
