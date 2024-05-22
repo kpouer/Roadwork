@@ -16,13 +16,22 @@
 package com.kpouer.roadwork.service;
 
 import com.kpouer.hermes.Hermes;
+import com.kpouer.roadwork.action.SynchronizationSettingsAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
+import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.model.RoadworkData;
+import com.kpouer.roadwork.model.sync.SyncData;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.Themis;
 import com.kpouer.themis.annotation.Component;
+
+import javax.swing.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Matthieu Casanova
@@ -58,38 +67,34 @@ public class SynchronizationService {
      */
     public void synchronize(RoadworkData roadworkData) {
         if (userSettings.isSynchronizationEnabled()) {
-//            logger.info("synchronize");
-//            var url = getUrl(roadworkData.getSource());
-//            logger.info("Will synchronize with url {}", url);
-//            try {
-//                var body = new HashMap<String, SyncData>();
-//                for (var roadwork : roadworkData) {
-//                    body.put(roadwork.getId(), roadwork.getSyncData());
-//                }
-//                var synchronizedData = httpService.postJsonObject(url, body, createHeaders(), responseType);
-//
-//                for (var entry : synchronizedData.entrySet()) {
-//                    var serverSyncData = entry.getValue();
-//                    var roadwork = roadworkData.getRoadwork(entry.getKey());
-//                    roadwork.getSyncData().copy(serverSyncData);
-//                    roadwork.updateMarker();
-//                }
+            logger.info("synchronize");
+            var url = getUrl(roadworkData.getSource());
+            logger.info("Will synchronize with url {}", url);
+            try {
+                var body = new HashMap<String, SyncData>();
+                for (var roadwork : roadworkData) {
+                    body.put(roadwork.getId(), roadwork.getSyncData());
+                }
+                Map<String, SyncData> synchronizedData = httpService.postJsonObject(url, body, createHeaders(), HashMap.class);
+
+                for (var entry : synchronizedData.entrySet()) {
+                    var serverSyncData = entry.getValue();
+                    var roadwork = roadworkData.getRoadwork(entry.getKey());
+                    roadwork.getSyncData().copy(serverSyncData);
+                    roadwork.updateMarker();
+                }
 //            } catch (HttpClientErrorException.Unauthorized e) {
 //                logger.warn("Error posting to synchronization server, invalid credencials");
 //                JOptionPane.showMessageDialog(softwareModel.getMainFrame(),
-//                        localizationService.getMessage("dialog.synchronization.unauthorized.message"),
-//                        localizationService.getMessage("dialog.synchronization.unauthorized.title"),
-//                        JOptionPane.WARNING_MESSAGE);
+//                                              localizationService.getMessage("dialog.synchronization.unauthorized.message"),
+//                                              localizationService.getMessage("dialog.synchronization.unauthorized.title"),
+//                                              JOptionPane.WARNING_MESSAGE);
 //                themis.getComponentOfType(SynchronizationSettingsAction.class).actionPerformed(null);
-//            } catch (RestClientException e) {
-//                if (e.getCause() instanceof ConnectException) {
-//                    logger.error("Unable to connect to synchronization server {}", url);
-//                    userSettings.setSynchronizationEnabled(false);
-//                    hermes.publish(new SynchronizationSettingsUpdated(this));
-//                } else {
-//                    logger.error("Error posting to synchronization server", e);
-//                }
-//            }
+            } catch (Exception e) {
+                logger.error("Unable to connect to synchronization server {}", url);
+                userSettings.setSynchronizationEnabled(false);
+                hermes.publish(new SynchronizationSettingsUpdated(this));
+            }
         }
     }
 
@@ -104,15 +109,12 @@ public class SynchronizationService {
         return url;
     }
 
-//    private HttpHeaders createHeaders() {
-//        var headers = new HttpHeaders();
-//        var auth = userSettings.getSynchronizationLogin() + ':' + userSettings.getSynchronizationPassword();
-//        var encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.US_ASCII));
-//        var authHeader = "Basic " + encodedAuth;
-//        headers.set("Authorization", authHeader);
-//        return headers;
-//    }
-//
-//    private static class MapParameterizedTypeReference extends ParameterizedTypeReference<Map<String, SyncData>> {
-//    }
+    private Map<String, String> createHeaders() {
+        var headers = new HashMap<String, String>();
+        var auth = userSettings.getSynchronizationLogin() + ':' + new String(userSettings.getSynchronizationPassword());
+        var encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes(StandardCharsets.US_ASCII));
+        var authHeader = "Basic " + encodedAuth;
+        headers.put("Authorization", authHeader);
+        return headers;
+    }
 }

@@ -91,7 +91,7 @@ public class ToolbarPanel extends JPanel {
         synchronizeButton = new JButton(themis.getComponentOfType(SynchronizeAction.class));
         synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
         panel.add(new JButton(themis.getComponentOfType(ReloadAction.class)));
-//        panel.add(synchronizeButton);
+        panel.add(synchronizeButton);
         var hideExpired = new JCheckBox(localizationService.getMessage("toolbarPanel.hideExpired"));
         hideExpired.addActionListener(e -> {
             config.getUserSettings().setHideExpired(hideExpired.isSelected());

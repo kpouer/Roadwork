@@ -53,7 +53,9 @@ public class SynchronizationSettingsDialog extends JDialog {
         urlField.setText(userSettings.getSynchronizationUrl());
         teamField.setText(userSettings.getSynchronizationTeam());
         loginField.setText(userSettings.getSynchronizationLogin());
-        passwordField.setText(new String(userSettings.getSynchronizationPassword()));
+        if (userSettings.getSynchronizationPassword() != null) {
+            passwordField.setText(new String(userSettings.getSynchronizationPassword()));
+        }
 
         enableSynchronization.addActionListener(e -> {
             urlField.setEnabled(enableSynchronization.isSelected());
