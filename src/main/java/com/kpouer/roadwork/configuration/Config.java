@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Matthieu Casanova
+ * Copyright 2022-2024 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,8 +78,8 @@ public class Config {
         }
         var userSettingsPath = getUserSettingsPath();
         if (Files.exists(userSettingsPath)) {
-            var objectMapper = new ObjectMapper();
             try {
+                var objectMapper = new ObjectMapper();
                 userSettings = objectMapper.readValue(userSettingsPath.toFile(), UserSettings.class);
             } catch (IOException e) {
                 logger.error("Error trying to read user settings");
@@ -88,6 +88,8 @@ public class Config {
         } else {
             userSettings = new UserSettings();
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
     }
 
     private void configureLogger(Hermes hermes) {
