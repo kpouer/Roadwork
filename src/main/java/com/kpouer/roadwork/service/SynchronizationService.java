@@ -16,10 +16,8 @@
 package com.kpouer.roadwork.service;
 
 import com.kpouer.hermes.Hermes;
-import com.kpouer.roadwork.action.SynchronizationSettingsAction;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
-import com.kpouer.roadwork.event.SynchronizationSettingsUpdated;
 import com.kpouer.roadwork.model.RoadworkData;
 import com.kpouer.roadwork.model.sync.SyncData;
 import jakarta.annotation.Nonnull;
@@ -27,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.kpouer.themis.Themis;
 import com.kpouer.themis.annotation.Component;
 
-import javax.swing.*;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -90,10 +88,14 @@ public class SynchronizationService {
 //                                              localizationService.getMessage("dialog.synchronization.unauthorized.title"),
 //                                              JOptionPane.WARNING_MESSAGE);
 //                themis.getComponentOfType(SynchronizationSettingsAction.class).actionPerformed(null);
+            } catch (IOException e) {
+                logger.error("Error posting to synchronization server", e);
+//                userSettings.setSynchronizationEnabled(false);
+//                hermes.publish(new SynchronizationSettingsUpdated(this));
             } catch (Exception e) {
-                logger.error("Unable to connect to synchronization server {}", url);
-                userSettings.setSynchronizationEnabled(false);
-                hermes.publish(new SynchronizationSettingsUpdated(this));
+                logger.error("Unable to connect to synchronization server, disable synchronization {}", url);
+//                userSettings.setSynchronizationEnabled(false);
+//                hermes.publish(new SynchronizationSettingsUpdated(this));
             }
         }
     }
@@ -105,7 +107,7 @@ public class SynchronizationService {
         if (!url.endsWith("/")) {
             url += '/';
         }
-        url += "setData/" + synchronizationTeam + '/' + source;
+        url += "roadwork/set_data/" + synchronizationTeam + '/' + source;
         return url;
     }
 

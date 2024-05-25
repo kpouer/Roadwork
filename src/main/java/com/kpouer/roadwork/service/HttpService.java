@@ -61,8 +61,13 @@ public class HttpService {
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             httpRequestBuilder.header(entry.getKey(), entry.getValue());
         }
+        httpRequestBuilder.header("Content-Type", "application/json");
+        httpRequestBuilder.POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(body)));
         var httpRequest = httpRequestBuilder.build();
-        var response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            throw new IOException("Error code " + response.statusCode());
+        }
         return objectMapper.readValue(response.body(), clazz);
     }
 }

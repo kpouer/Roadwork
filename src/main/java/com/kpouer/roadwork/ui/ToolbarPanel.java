@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Matthieu Casanova
+ * Copyright 2022-2024 Matthieu Casanova
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,19 +118,19 @@ public class ToolbarPanel extends JPanel {
     }
 
     @Listener
-    private void onSynchronizationSettingsUpdated(SynchronizationSettingsUpdated event) {
+    public void onSynchronizationSettingsUpdated(SynchronizationSettingsUpdated event) {
         synchronizeButton.setEnabled(config.getUserSettings().isSynchronizationEnabled());
     }
 
 
     @Listener
-    private void onExceptionEvent(ExceptionEvent event) {
+    public void onExceptionEvent(ExceptionEvent event) {
         logsPanelButton.setBackground(Color.RED);
     }
 
 
     @Listener
-    private void onOpendataServiceUpdated(OpendataServiceUpdated opendataServiceUpdated) {
+    public void onOpendataServiceUpdated(OpendataServiceUpdated opendataServiceUpdated) {
         if (!opendataServiceUpdated.getNewService().equals(opendataServiceComboBox.getSelectedItem())) {
             opendataServiceComboBox.setSelectedItem(opendataServiceUpdated.getNewService());
         }
