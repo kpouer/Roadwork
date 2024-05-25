@@ -83,11 +83,6 @@
             <version>3.3.4</version>
         </dependency>
         <dependency>
-            <groupId>com.kpouer</groupId>
-            <artifactId>roadwork-lib</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.10.2</version>
