@@ -15,6 +15,7 @@
  */
 package com.kpouer.roadwork.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.kpouer.hermes.Hermes;
 import com.kpouer.roadwork.configuration.Config;
 import com.kpouer.roadwork.configuration.UserSettings;
@@ -73,10 +74,14 @@ public class SynchronizationService {
                 for (var roadwork : roadworkData) {
                     body.put(roadwork.getId(), roadwork.getSyncData());
                 }
-                Map<String, SyncData> synchronizedData = httpService.postJsonObject(url, body, createHeaders(), HashMap.class);
+                Map<String, SyncData> synchronizedData = httpService.postJsonObject(url, body, createHeaders(), new TypeReference<HashMap<String, SyncData>>(){});
 
                 for (var entry : synchronizedData.entrySet()) {
-                    var serverSyncData = entry.getValue();
+                    String id = entry.getKey();
+                    if ("60d26b689c731974133c29b6518a3232c91c9249".equals(id)) {
+                        System.out.println();
+                    }
+                    SyncData serverSyncData = entry.getValue();
                     var roadwork = roadworkData.getRoadwork(entry.getKey());
                     roadwork.getSyncData().copy(serverSyncData);
                     roadwork.updateMarker();

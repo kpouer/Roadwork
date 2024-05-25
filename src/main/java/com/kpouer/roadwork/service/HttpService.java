@@ -15,6 +15,7 @@
  */
 package com.kpouer.roadwork.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kpouer.roadwork.model.sync.SyncData;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +54,7 @@ public class HttpService {
     public <E> E postJsonObject(String url,
                                 Map<String, SyncData> body,
                                 Map<String, String> headers,
-                                Class<E> clazz) throws IOException, InterruptedException, URISyntaxException {
+                                TypeReference<E> typeReference) throws IOException, InterruptedException, URISyntaxException {
         logger.info("postJsonObject");
         var httpRequestBuilder = HttpRequest.newBuilder(new URI(url))
             .version(HttpClient.Version.HTTP_2);
@@ -68,6 +69,6 @@ public class HttpService {
         if (response.statusCode() != 200) {
             throw new IOException("Error code " + response.statusCode());
         }
-        return objectMapper.readValue(response.body(), clazz);
+        return objectMapper.readValue(response.body(), typeReference);
     }
 }
